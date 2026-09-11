@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Axis</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Startup Auth Gate — shown before browser loads -->
+    <div id="axis-auth-gate">
+        <div class="axis-auth-card" id="axis-auth-card">
+            <div class="axis-auth-brand">
+                <div class="axis-auth-logo">⬡</div>
+                <div class="axis-auth-title">Axis</div>
+                <div class="axis-auth-subtitle">Secure Access Required</div>
+            </div>
+            <form class="axis-auth-form" id="axis-auth-form" autocomplete="off">
+                <div class="axis-auth-input-wrap">
+                    <input
+                        type="password"
+                        id="axis-auth-input"
+                        placeholder="Enter access code…"
+                        autocomplete="new-password"
+                        spellcheck="false"
+                    />
+                    <button type="button" class="axis-auth-toggle-vis" id="axis-auth-vis-btn" title="Show/hide">👁</button>
+                </div>
+                <div id="axis-auth-error"></div>
+                <button type="submit" id="axis-auth-submit">Authenticate</button>
+            </form>
+            <div class="axis-auth-footer">Axis · Authorized Personnel Only</div>
+        </div>
+    </div>
+
+    <!-- Custom Window Chrome. Drag only the left brand strip so min/max/close stay clickable. -->
+    <div id="titlebar">
+        <div class="titlebar-left" data-tauri-drag-region>
+            <img src="assets/logo.svg" alt="Axis" class="logo">
+            <span class="window-title">Axis</span>
+        </div>
+        <div class="titlebar-center">
+            <nav id="section-nav" aria-label="Axis sections">
+                <div class="section-nav-group">
+                    <button class="section-nav-btn active" data-section="browser" title="Browser">Browser</button>
+                    <button class="section-nav-btn" data-section="lisa" title="Lisa">Lisa</button>
+                </div>
+                <div class="section-nav-group">
+                    <button class="section-nav-btn" data-section="operations" title="Operations">Ops</button>
+                    <button class="section-nav-btn" data-section="people" title="People">People</button>
+                    <button class="section-nav-btn" data-section="comms" title="Comms">Comms</button>
+                    <button class="section-nav-btn" data-section="server-control" title="Server Control">Server</button>
+                    <button class="section-nav-btn" data-section="admin" title="Admin">Admin</button>
+                </div>
+            </nav>
+        </div>
+        <div class="titlebar-right">
+            <div id="spotlight-wrap">
+                <button id="spotlight-btn" class="titlebar-button titlebar-spotlight" title="Spotlight — contextual actions (Ctrl+K)">⚡</button>
+                <div id="spotlight-dropdown" class="hidden" hidden>
+                    <div class="spotlight-header">
+                        <input type="text" id="spotlight-search" placeholder="Filter actions…" autocomplete="off" spellcheck="false" />
+                        <button type="button" id="spotlight-close" class="spotlight-close" title="Close" aria-label="Close">×</button>
+                    </div>
+                    <p id="spotlight-context-line" class="spotlight-context-line">Axis watches the active tab and suggests the best next action.</p>
+                    <div id="spotlight-feed" class="spotlight-feed"></div>
+                </div>
+            </div>
+            <button id="titlebar-compact-toggle" class="titlebar-button titlebar-compact-toggle" title="Compact Titlebar">Zen</button>
+            <button id="minimize-btn" class="titlebar-button" title="Minimize">
+                <svg width="10" height="10"><line x1="0" y1="5" x2="10" y2="5" stroke="currentColor" stroke-width="1"/></svg>
+            </button>
+            <button id="maximize-btn" class="titlebar-button" title="Maximize">
+                <svg width="10" height="10"><rect x="0" y="0" width="10" height="10" stroke="currentColor" fill="none" stroke-width="1"/></svg>
+            </button>
+            <button id="close-btn" class="titlebar-button close" title="Close">
+                <svg width="10" height="10"><line x1="0" y1="0" x2="10" y2="10" stroke="currentColor" stroke-width="1"/><line x1="10" y1="0" x2="0" y2="10" stroke="currentColor" stroke-width="1"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Section: Browser (wraps existing browser chrome) -->
+    <div id="section-browser" class="axis-section active">
+
+    <!-- Tab Bar (Week 2) -->
+    <div id="tab-bar">
+        <div id="tabs"></div>
+        <button id="new-tab-btn" class="tab-button" title="New Tab">+</button>
+        <button id="recently-closed-btn" class="tab-button" title="Recently Closed">⟲</button>
+        <button id="sessions-btn" class="tab-button" title="Sessions">💾</button>
+        <button id="tab-bar-compact-toggle" class="tab-button tab-bar-compact-toggle" title="Compact Tab Bar">Compact</button>
+        <input type="text" id="tab-search" class="tab-search" placeholder="🔍 Search tabs..." />
+    </div>
+
+    <!-- Omnibox / Address Bar (Week 3) -->
+    <div id="omnibox-container">
+        <button id="back-btn" class="nav-button" title="Back" disabled>←</button>
+        <button id="forward-btn" class="nav-button" title="Forward" disabled>→</button>
+        <button id="refresh-btn" class="nav-button" title="Refresh">⟳</button>
+        <button id="home-btn" class="nav-button" title="Home">⌂</button>
+        <div class="omnibox-wrapper">
+            <button id="search-provider-btn" class="search-provider-icon" title="Search Provider">G</button>
+            <input type="text" id="omnibox" placeholder="Search or enter URL..." />
+            <div id="omnibox-suggestions" class="suggestions-dropdown hidden"></div>
+        </div>
+        <button id="omnibox-compact-toggle" class="nav-button omnibox-compact-toggle" title="Compact Omnibox">Slim</button>
+        <button id="bookmark-btn" class="nav-button" title="Bookmark">☆</button>
+        <button id="menu-btn" class="nav-button" title="Menu">☰</button>
+    </div>
+
+    <div id="bookmarks-bar" class="bookmarks-bar hidden" aria-label="Bookmarks bar">
+        <div class="bookmarks-bar-header">
+            <span class="bookmarks-bar-title">Bookmarks</span>
+            <span id="bookmarks-bar-count" class="bookmarks-bar-count">0</span>
+        </div>
+        <div id="bookmarks-bar-list" class="bookmarks-bar-list"></div>
+    </div>
+
+    <div id="workspace">
+        <!-- Axis Sidebar -->
+
+        <!-- WebView Container -->
+        <div id="webview-container"></div>
+    </div>
+
+    </div><!-- /#section-browser -->
+
+    <!-- Section: Lisa -->
+    <div id="section-lisa" class="axis-section hidden">
+        <div class="axis-section-inner" id="lisa-section-mount"></div>
+    </div>
+
+    <!-- Section: Operations (Raven CRM inside Axis) -->
+    <div id="section-operations" class="axis-section hidden">
+        <div class="axis-section-inner">
+            <div id="rnk-webview-operations"></div>
+        </div>
+    </div>
+
+    <!-- Section: People (Raven HR inside Axis) -->
+    <div id="section-people" class="axis-section hidden">
+        <div class="axis-section-inner">
+            <div id="rnk-webview-people"></div>
+        </div>
+    </div>
+
+    <!-- Section: Comms (Echonet inside Axis) -->
+    <div id="section-comms" class="axis-section hidden">
+        <div class="axis-section-inner">
+            <div id="rnk-webview-comms"></div>
+        </div>
+    </div>
+
+    <!-- Section: Server Control -->
+    <div id="section-server-control" class="axis-section hidden">
+        <div class="axis-section-inner" id="server-control-mount"></div>
+    </div>
+
+    <!-- Section: Admin -->
+    <div id="section-admin" class="axis-section hidden">
+        <div class="axis-section-inner" id="admin-section-mount">
+            <div class="axis-section-placeholder">
+                <span class="axis-section-icon">🔐</span>
+                <h2>Admin</h2>
+                <p>Loading ops plane…</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div id="statusbar">
+        <span id="status-text">Ready</span>
+        <div class="statusbar-right">
+            <button id="statusbar-minimal-toggle" class="statusbar-button" type="button" title="Minimal Status Bar">Mini</button>
+            <span id="axis-status" class="status-indicator">Axis: Disconnected</span>
+            <span id="fps-counter">0 FPS</span>
+        </div>
+    </div>
+
+    <!-- Settings Panel -->
+    <div id="settings-panel" class="settings-panel hidden">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h2>Settings</h2>
+                <button id="settings-dense-toggle" class="close-btn settings-dense-toggle" type="button" title="Dense Settings">Dense</button>
+                <button id="close-settings" class="close-btn">&times;</button>
+            </div>
+
+            <div class="settings-body">
+                <div class="settings-nav">
+                    <button class="settings-tab active" data-tab="general">General</button>
+                    <button class="settings-tab" data-tab="appearance">Appearance</button>
+                    <button class="settings-tab" data-tab="privacy">Privacy</button>
+                    <button class="settings-tab" data-tab="performance">Performance</button>
+                    <button class="settings-tab" data-tab="axis">Axis</button>
+                    <button class="settings-tab" data-tab="advanced">Advanced</button>
+                </div>
+
+                <div class="settings-sections">
+                    <!-- General Settings -->
+                    <div id="settings-section-general" class="settings-section active" data-section="general">
+                        <h3 class="settings-section-heading">General Settings <button id="settings-general-toggle" class="axis-sidebar-mini-action" type="button">Collapse</button></h3>
+                        <div class="setting-item">
+                            <label>Homepage</label>
+                            <input type="text" id="setting-homepage" placeholder="https://www.google.com">
+                        </div>
+                        <div class="setting-item">
+                            <label>Search Engine</label>
+                            <select id="setting-search-engine">
+                                <option value="google">Google</option>
+                                <option value="duckduckgo">DuckDuckGo</option>
+                                <option value="bing">Bing</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label>New Tab Behavior</label>
+                            <select id="setting-new-tab">
+                                <option value="homepage">Homepage</option>
+                                <option value="blank">Blank Page</option>
+                                <option value="bookmarks">Bookmarks</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="setting-show-bookmarks-bar">
+                                Show Bookmarks Bar
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Appearance Settings -->
+                    <div id="settings-section-appearance" class="settings-section" data-section="appearance">
+                        <h3 class="settings-section-heading">Appearance <button id="settings-appearance-toggle" class="axis-sidebar-mini-action" type="button">Collapse</button></h3>
+                        <div class="setting-item">
+                            <label>Theme</label>
+                            <select id="setting-theme">
+                                <option value="dark-neutral">Dark Neutral (Default)</option>
+                                <option value="dark">Dark</option>
+                                <option value="light">Light</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label>Font Size</label>
+                            <select id="setting-font-size">
+                                <option value="small">Small</option>
+                                <option value="medium">Medium</option>
+                                <option value="large">Large</option>
+                            </select>
+                        </div>
+                        <div id="settings-density-matrix"></div>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="setting-show-status-bar">
+                                Show Status Bar
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="setting-enable-animations">
+                                Enable Animations
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Privacy Settings -->
+                    <div id="settings-section-privacy" class="settings-section" data-section="privacy">
+                        <h3 class="settings-section-heading">Privacy & Security <button id="settings-privacy-toggle" class="axis-sidebar-mini-action" type="button">Collapse</button></h3>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="setting-block-cookies">
+                                Block Third-Party Cookies
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="setting-enable-dnt">
+                                Enable Do Not Track
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="setting-clear-history">
+                                Clear History on Exit
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <button id="clear-history-btn" class="action-btn">Clear Browsing History</button>
+                        </div>
+                    </div>
+
+                    <!-- Performance Settings -->
+                    <div id="settings-section-performance" class="settings-section" data-section="performance">
+                        <h3 class="settings-section-heading">Performance <button id="settings-performance-toggle" class="axis-sidebar-mini-action" type="button">Collapse</button></h3>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="setting-hardware-accel">
+                                Enable Hardware Acceleration
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="setting-axis-engines">
+                                Enable Axis Engines
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="setting-preload-pages">
+                                Preload Pages for Faster Browsing
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>Max Cache Size (MB)</label>
+                            <input type="number" id="setting-cache-size" min="100" max="5000" step="100">
+                        </div>
+                    </div>
+
+                    <!-- Axis Capabilities -->
+                    <div id="settings-section-axis" class="settings-section" data-section="axis">
+                        <h3 class="settings-section-heading">Axis Capabilities <button id="settings-axis-toggle" class="axis-sidebar-mini-action" type="button">Collapse</button></h3>
+                        <div class="setting-item">
+                            <label>Loaded Manifest</label>
+                            <div id="axis-manifest-summary" class="axis-summary">Loading Axis manifest...</div>
+                        </div>
+                        <div class="setting-item">
+                            <label>Capability Categories</label>
+                            <div id="axis-category-list" class="axis-chip-list"></div>
+                        </div>
+                        <div class="setting-item">
+                            <label>Available Surfaces</label>
+                            <div id="axis-surface-list" class="axis-chip-list"></div>
+                        </div>
+                        <div class="setting-item">
+                            <label>Enabled Capabilities</label>
+                            <div id="axis-capability-list" class="axis-capability-list"></div>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Settings -->
+                    <div id="settings-section-advanced" class="settings-section" data-section="advanced">
+                        <h3 class="settings-section-heading">Advanced Settings <button id="settings-advanced-toggle" class="axis-sidebar-mini-action" type="button">Collapse</button></h3>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="setting-dev-tools">
+                                Enable Developer Tools
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="setting-experimental">
+                                Enable Experimental Features
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>Custom User Agent (optional)</label>
+                            <input type="text" id="setting-user-agent" placeholder="Leave blank for default">
+                        </div>
+                        <div class="setting-item">
+                            <button id="reset-settings-btn" class="action-btn danger">Reset to Defaults</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recently Closed Modal -->
+    <div id="recently-closed-modal" class="modal hidden">
+        <div class="modal-content sessions-history-panel">
+            <div class="modal-header">
+                <h3>Recently Closed Tabs</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div id="recently-closed-list" class="modal-list"></div>
+        </div>
+    </div>
+
+    <!-- Sessions Modal -->
+    <div id="sessions-modal" class="modal hidden">
+        <div class="modal-content sessions-history-panel">
+            <div class="modal-header">
+                <h3>Saved Sessions</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-actions">
+                <input type="text" id="session-name-input" placeholder="Session name..." />
+                <button id="save-session-btn" class="action-btn">Save Current Session</button>
+            </div>
+            <div id="sessions-list" class="modal-list"></div>
+        </div>
+    </div>
+
+    <!-- Search Provider Modal -->
+    <div id="search-provider-modal" class="modal hidden">
+        <div class="modal-content small search-provider-panel">
+            <div class="modal-header">
+                <h3>Search Provider</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="provider-list">
+                <div class="provider-item" data-provider="google">
+                    <span class="provider-icon">G</span>
+                    <span class="provider-name">Google</span>
+                </div>
+                <div class="provider-item" data-provider="duckduckgo">
+                    <span class="provider-icon">D</span>
+                    <span class="provider-name">DuckDuckGo</span>
+                </div>
+                <div class="provider-item" data-provider="bing">
+                    <span class="provider-icon">B</span>
+                    <span class="provider-name">Bing</span>
+                </div>
+                <div class="provider-item" data-provider="brave">
+                    <span class="provider-icon">🦁</span>
+                    <span class="provider-name">Brave Search</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Monitor -->
+    <div id="performance-panel" class="performance-panel hidden">
+        <div class="perf-header">
+            <h3>Performance Monitor</h3>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="perf-metrics">
+            <div class="perf-metric">
+                <span class="perf-label">Memory Usage:</span>
+                <span id="perf-memory" class="perf-value">0 MB</span>
+            </div>
+            <div class="perf-metric">
+                <span class="perf-label">CPU Usage:</span>
+                <span id="perf-cpu" class="perf-value">0%</span>
+            </div>
+            <div class="perf-metric">
+                <span class="perf-label">Tab Count:</span>
+                <span id="perf-tabs" class="perf-value">0</span>
+            </div>
+            <div class="perf-metric">
+                <span class="perf-label">Network:</span>
+                <span id="perf-network" class="perf-value">Idle</span>
+            </div>
+            <div class="perf-metric">
+                <span class="perf-label">Axis Connection:</span>
+                <span id="perf-axis" class="perf-value">Disconnected</span>
+            </div>
+        </div>
+        <div class="perf-summary">
+            <span id="perf-summary-state" class="perf-summary-state">Ready</span>
+            <span id="perf-summary-text" class="perf-summary-text">Axis performance is standing by.</span>
+        </div>
+        <div class="perf-chart">
+            <canvas id="perf-canvas" width="400" height="150"></canvas>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Keyboard Shortcuts Help -->
+    <div id="shortcuts-help" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>⌨️ Keyboard Shortcuts</h3>
+                <button id="shortcuts-dense-toggle" class="shortcuts-dense-toggle" type="button" title="Dense Shortcuts">Dense</button>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="shortcuts-list">
+                <div class="shortcut-section">
+                    <h4>Tabs</h4>
+                    <div class="shortcut-item">
+                        <kbd>Ctrl+T</kbd><span>New Tab</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>Ctrl+W</kbd><span>Close Tab</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>Ctrl+Shift+T</kbd><span>Reopen Closed Tab</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>Ctrl+Tab</kbd><span>Next Tab</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>Ctrl+Shift+Tab</kbd><span>Previous Tab</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>Ctrl+F</kbd><span>Search Tabs</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>Ctrl+K</kbd><span>Open Axis Launcher</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>Alt+Enter</kbd><span>Pin or unpin launcher result</span>
+                    </div>
+                </div>
+                <div class="shortcut-section">
+                    <h4>Navigation</h4>
+                    <div class="shortcut-item">
+                        <kbd>Ctrl+L</kbd><span>Focus Address Bar</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>Ctrl+R</kbd> / <kbd>F5</kbd><span>Refresh</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>Ctrl+D</kbd><span>Bookmark Page</span>
+                    </div>
+                </div>
+                <div class="shortcut-section">
+                    <h4>Sessions</h4>
+                    <div class="shortcut-item">
+                        <kbd>Ctrl+Shift+S</kbd><span>Save Session</span>
+                    </div>
+                </div>
+                <div class="shortcut-section">
+                    <h4>Other</h4>
+                    <div class="shortcut-item">
+                        <kbd>Ctrl+,</kbd><span>Settings</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>?</kbd><span>Show This Help</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Inline initialization to ensure it loads
+        console.log('Axis initializing...');
+    </script>
+    <script type="module" src="./axis-auth-gate.js"></script>
+    <script type="module" src="./axis-cookies-bar.js"></script>
+    <script type="module" src="./main.js"></script>
+</body>
+</html>

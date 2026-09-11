@@ -1,0 +1,35 @@
+# RNK Axis Browser - Build Artifacts
+
+# Rust
+/target
+/Cargo.lock
+
+# Node
+node_modules/
+dist/
+*.log
+
+# Build outputs
+src-tauri/target/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary
+*.tmp
+*.temp
+
+# Playwright
+playwright-report/
+test-results/
+
+# Local tooling state / non-project dirs
+.freebuff/
+git/

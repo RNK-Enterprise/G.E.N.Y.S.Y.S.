@@ -1,0 +1,51 @@
+# Axis™ — verification gate
+# Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
+#
+# Runs scripts/ci-verify.sh on every push: global audit → jest → playwright →
+# cargo test (scripts/verify.sh --fail-fast), so an unwired global, a broken
+# page, or a failing Rust test can never land.
+
+name: verify
+
+on:
+  push:
+    branches: ['**']
+  workflow_dispatch:
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      # Playwright's own apt helper installs the browser's OS libraries; the
+      # GTK/WebKit dev packages come from scripts/ci-verify.sh.
+      - run: npx playwright install --with-deps chromium
+
+      - name: Run verification gate (audit → unit → e2e → cargo test)
+        run: bash scripts/ci-verify.sh
+
+      - name: Upload stage logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verify-logs
+          path: |
+            /tmp/axis-verify/*.log
+          if-no-files-found: ignore

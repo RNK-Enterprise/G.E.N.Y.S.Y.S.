@@ -1,0 +1,38 @@
+[package]
+name = "rnk-axis"
+version = "0.1.0"
+description = "Axis - RNK privacy browser with embedded Lisa policy"
+authors = ["Asgard Innovations / RNK™"]
+license = "PROPRIETARY"
+repository = ""
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "1.5", features = [] }
+
+[dependencies]
+tauri = { version = "1.5", features = [ "window-unminimize", "window-close", "window-hide", "window-unmaximize", "window-minimize", "http-all", "window-show", "window-maximize", "window-start-dragging", "shell-open"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1", features = ["full"] }
+reqwest = { version = "0.11", features = ["json"] }
+rusqlite = { version = "0.30", features = ["bundled"] }
+url = "2.5"
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
+
+[dev-dependencies]
+# Unlocks tauri::test (mock runtime) for headless window-lifecycle tests.
+tauri = { version = "1.5", features = ["test"] }
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "z"
+strip = true
+
+[patch.crates-io]
+wry = { path = "../vendor/wry" }
