@@ -82,7 +82,10 @@ jobs:
           # assets instead of failing on the duplicate tag name.
           if gh release view "${GITHUB_REF_NAME}" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
             echo "release ${GITHUB_REF_NAME} already exists — updating assets"
-            gh release edit "${GITHUB_REF_NAME}" --repo "$GITHUB_REPOSITORY" --generate-notes
+            gh api "repos/$GITHUB_REPOSITORY/releases/generate-notes" \
+              -f tag_name="${GITHUB_REF_NAME}" --jq .body > /tmp/release-notes.md
+            gh release edit "${GITHUB_REF_NAME}" --repo "$GITHUB_REPOSITORY" \
+              --title "Axis ${GITHUB_REF_NAME}" --notes-file /tmp/release-notes.md
             for f in src-tauri/target/release/bundle/deb/*.deb \
                      src-tauri/target/release/bundle/rpm/*.rpm \
                      src-tauri/target/release/bundle/appimage/*.AppImage; do
