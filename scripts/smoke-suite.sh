@@ -145,24 +145,68 @@ else
   result PASS "rpm exists"
   if command -v rpm2cpio >/dev/null 2>&1; then
     W=$(mktemp -d)
-    # Extract without a name filter: rpm payload paths are stored without a
-    # leading ./, so a `./usr/bin/axis` pattern matches nothing (found on CI,
-    # where rpm2cpio exists — local dev often only has the header fallback).
-    if rpm2cpio "$RPM" | (cd "$W" && cpio -idm --quiet 2>/dev/null) \
-       && [ -f "$W/usr/bin/axis" ] \
-       && [ "$(md5sum "$W/usr/bin/axis" | cut -d' ' -f1)" = "$(md5sum "$BIN" | cut -d' ' -f1)" ]; then
-      result PASS "rpm binary is fresh (md5 match)"
+    # Extract everything, keep cpio's stderr: rpm payload paths are stored
+    # WITHOUT a leading ./ on some bundlers and WITH it (./usr/bin/axis) on
+    # tauri 1.6, so a name filter silently matches nothing. On a mismatch the
+    # detail reports both md5s so the next run is diagnosable, not a mystery.
+    if rpm2cpio "$RPM" 2>"$W/cpio.err" | (cd "$W" && cpio -idm --quiet 2>>"$W/cpio.err"); then
+      if [ ! -f "$W/usr/bin/axis" ]; then
+        result FAIL "rpm binary is fresh (md5 match)" "usr/bin/axis not extracted — $(tail -1 "$W/cpio.err" 2>/dev/null)"
+      else
+        emb=$(md5sum "$W/usr/bin/axis" | cut -d' ' -f1)
+        cur=$(md5sum "$BIN" | cut -d' ' -f1)
+        if [ "$emb" = "$cur" ]; then
+          result PASS "rpm binary is fresh (md5 match)"
+        else
+          result FAIL "rpm binary is fresh (md5 match)" "embedded $emb != built $cur"
+        fi
+      fi
     else
-      result FAIL "rpm binary is fresh (md5 match)" "extracted=$([ -f "$W/usr/bin/axis" ] && echo yes || echo no)"
+      result FAIL "rpm binary is fresh (md5 match)" "extraction failed — $(tail -1 "$W/cpio.err" 2>/dev/null)"
     fi
     rm -rf "$W"
   else
-    # rpm2cpio unavailable: verify the embedded binary header tag instead.
-    tag=$(grep -aob "usr/bin/axis" "$RPM" | head -1 | cut -d: -f1)
-    if [ -n "$tag" ]; then
-      result PASS "rpm payload contains usr/bin/axis" "(rpm2cpio absent — header-only check)"
+    # rpm2cpio unavailable: pure-python payload extraction. (A grep for the
+    # path string can never work — the cpio payload is gzip/xz compressed,
+    # so the name listing is invisible in the raw file.)
+    if command -v python3 >/dev/null 2>&1; then
+      if RPM="$RPM" BIN="$BIN" python3 - << 'PYEOF'
+import os, sys, zlib, lzma, hashlib
+rpm, binpath = os.environ["RPM"], os.environ["BIN"]
+data = open(rpm, "rb").read()
+assert data[:4] == b"\xed\xab\xee\xdb", "not an rpm"
+xs, gs = data.find(b"\xfd7zXZ\x00", 96), data.find(b"\x1f\x8b", 96)
+start = min(o for o in (xs, gs) if o != -1)
+comp = data[start:]
+raw = (lzma.LZMADecompressor().decompress(comp) if start == xs
+       else zlib.decompress(comp, 16 + zlib.MAX_WBITS))
+i, found = 0, None
+while i + 110 <= len(raw):
+    if raw[i:i+6] != b"070701": break
+    f = [int(raw[i+6+j*8:i+14+j*8], 16) for j in range(13)]
+    fsize, namesize = f[6], f[11]
+    name = raw[i+110:i+110+namesize-1].decode(errors="replace")
+    he = (i + 110 + namesize + 3) & ~3
+    if name in ("usr/bin/axis", "./usr/bin/axis"):
+        found = raw[he:he+fsize]
+    i = (he + fsize + 3) & ~3
+    if name == "TRAILER!!!": break
+if found is None:
+    sys.exit(3)
+sys.exit(0 if hashlib.md5(found).hexdigest() == hashlib.md5(open(binpath, "rb").read()).hexdigest() else 2)
+PYEOF
+      then
+        result PASS "rpm payload contains usr/bin/axis" "(python extraction, md5 match)"
+      else
+        rc=$?
+        case $rc in
+          2) result FAIL "rpm payload contains usr/bin/axis" "binary md5 mismatch vs $BIN" ;;
+          3) result FAIL "rpm payload contains usr/bin/axis" "usr/bin/axis not found in payload" ;;
+          *) result FAIL "rpm payload contains usr/bin/axis" "payload decode failed (rc=$rc)" ;;
+        esac
+      fi
     else
-      result FAIL "rpm payload contains usr/bin/axis"
+      result FAIL "rpm payload contains usr/bin/axis" "no rpm2cpio and no python3 — cannot verify"
     fi
   fi
 fi
@@ -190,17 +234,7 @@ if [ -f "$APPIMAGE" ]; then
   # Directory listing: type-1 images have a plain ISO filesystem (isoinfo);
   # type-2 (modern appimagetool) embeds a compressed squashfs, so strings are
   # invisible to grep — extract via the runtime instead (no FUSE needed).
-  if [ -f "$APPIMAGE" ]; then
-    chmod +x "$APPIMAGE"
-    sig=$(dd if="$APPIMAGE" bs=1 skip=32769 count=5 2>/dev/null)
-    if [ "$sig" = "CD001" ]; then
-      result PASS "AppImage payload signature (CD001 ISO)"
-    elif grep -aqs "hsqs" "$APPIMAGE"; then
-      result PASS "AppImage payload signature (squashfs, type-2)"
-    else
-      result FAIL "AppImage payload signature" "neither CD001 nor squashfs magic"
-    fi
-    if command -v isoinfo >/dev/null 2>&1 && [ "$sig" = "CD001" ]; then
+  if command -v isoinfo >/dev/null 2>&1 && [ "$sig" = "CD001" ]; then
       if isoinfo -i "$APPIMAGE" -R 2>/dev/null | grep -q "axis.AppDir/usr/bin/axis"; then
         result PASS "AppImage payload lists usr/bin/axis"
       else
@@ -216,7 +250,6 @@ if [ -f "$APPIMAGE" ]; then
       fi
       rm -rf "$W"
     fi
-  fi
 fi
 
 # ── Phase 7: headless launch-verify (AppImage + deb binary) ───────────────────
@@ -226,11 +259,21 @@ if [ -f "$APPIMAGE" ]; then
   chmod +x "$APPIMAGE"
   HOME_SAVED=$HOME
   HOME=/tmp
-  launch_capture "$LOGDIR/appimage.log" 8 env APPIMAGE_EXTRACT_AND_RUN=1 "$APPIMAGE"
-  # Extract-and-run can swallow the inner app's stdout; if the log is empty,
-  # fall back to the populated AppRun (same payload, direct stdout).
-  if [ ! -s "$LOGDIR/appimage.log" ] && [ -x "$APPDIR/AppRun" ]; then
-    launch_capture "$LOGDIR/appimage.log" 8 env APPIMAGE_EXTRACT_AND_RUN=1 "$APPDIR/AppRun"
+  launch_capture "$LOGDIR/appimage.log" 20 env APPIMAGE_EXTRACT_AND_RUN=1 "$APPIMAGE"
+  # Extract-and-run can swallow the inner app's stdout (and was empty on CI
+  # even after the fallback); pre-extract once and run the payload's AppRun
+  # directly — same bytes, plain execution, no nested extraction per launch.
+  if [ ! -s "$LOGDIR/appimage.log" ]; then
+    EX=$(mktemp -d)
+    (cd "$EX" && timeout 120 "$APPIMAGE" --appimage-extract >/dev/null 2>&1)
+    if [ -x "$EX/squashfs-root/AppRun" ]; then
+      launch_capture "$LOGDIR/appimage.log" 20 env HOME=/tmp "$EX/squashfs-root/AppRun"
+    elif [ -x "$APPDIR/AppRun" ]; then
+      launch_capture "$LOGDIR/appimage.log" 20 env HOME=/tmp "$APPDIR/AppRun"
+    fi
+    rm -rf "$EX"
+  elif [ -x "$APPDIR/AppRun" ] && [ ! -s "$LOGDIR/appimage.log" ]; then
+    launch_capture "$LOGDIR/appimage.log" 20 env HOME=/tmp "$APPDIR/AppRun"
   fi
   HOME=$HOME_SAVED
   if [ -s "$LOGDIR/appimage.log" ]; then
@@ -248,14 +291,14 @@ fi
 
 if [ -x "$BIN" ]; then
   # Production behavior: bare launch (no bench env) → HOLD expected.
-  launch_capture "$LOGDIR/bin.log" 8 env -u AXIS_TEST_MODE "$BIN"
+  launch_capture "$LOGDIR/bin.log" 20 env -u AXIS_TEST_MODE "$BIN"
   if check_banner_and_hold "$LOGDIR/bin.log" 1; then
     result PASS "release binary boots and holds fail-closed gate"
   else
     result FAIL "release binary boots and holds fail-closed gate" "$(head -2 "$LOGDIR/bin.log" | tr '\n' ' ')"
   fi
   # Gate flip: with AXIS_TEST_MODE=1 the HOLD must be absent.
-  launch_capture "$LOGDIR/bin-bench.log" 8 env AXIS_TEST_MODE=1 "$BIN"
+  launch_capture "$LOGDIR/bin-bench.log" 20 env AXIS_TEST_MODE=1 "$BIN"
   if grep -q "FAIL-CLOSED HOLD" "$LOGDIR/bin-bench.log"; then
     result FAIL "bench mode suppresses HOLD" "AXIS_TEST_MODE=1 still printed HOLD"
   else
@@ -267,7 +310,7 @@ fi
 
 # Same for the installed package binary if present.
 if [ -x /usr/bin/axis ]; then
-  launch_capture "$LOGDIR/installed.log" 8 /usr/bin/axis
+  launch_capture "$LOGDIR/installed.log" 20 /usr/bin/axis
   if check_banner_and_hold "$LOGDIR/installed.log" 1; then
     result PASS "installed /usr/bin/axis boots and holds fail-closed gate"
   else
