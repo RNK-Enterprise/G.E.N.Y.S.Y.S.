@@ -363,6 +363,19 @@ fn window_close(window: Window) -> Result<(), String> {
 }
 
 fn main() {
+    // Banner + fail-closed gate print BEFORE the Tauri Builder: window/webview
+    // creation happens before the setup hook runs, and on GPU-less CI runners
+    // WebKitGTK init can wedge there — headless verification must observe the
+    // gate without depending on webview init succeeding.
+    println!("Axis™ v0.1.0 — P.R.O.T.E.C.T.S.-governed browser (RNK's only client)");
+    let gate_lisa_url = resolve_lisa_url();
+    if gate_lisa_url.is_empty() {
+        println!("P.R.O.T.E.C.T.S. mode: embedded local policy (fail-closed)");
+    } else {
+        println!("P.R.O.T.E.C.T.S. mode: local + optional remote {}", gate_lisa_url);
+    }
+    command_gate::enforce_command_gate();
+
     let lisa_url = resolve_lisa_url();
     let prefer_remote = !lisa_url.is_empty();
 
@@ -430,14 +443,6 @@ fn main() {
             }
         })
         .setup(|_app| {
-            println!("Axis™ v0.1.0 — P.R.O.T.E.C.T.S.-governed browser (RNK's only client)");
-            let url = resolve_lisa_url();
-            if url.is_empty() {
-                println!("P.R.O.T.E.C.T.S. mode: embedded local policy (fail-closed)");
-            } else {
-                println!("P.R.O.T.E.C.T.S. mode: local + optional remote {}", url);
-            }
-            command_gate::enforce_command_gate();
             tab_commands::spawn_meta_watcher(_app.handle().clone());
             #[cfg(debug_assertions)]
             {

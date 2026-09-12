@@ -101,9 +101,14 @@ command -v xdotool >/dev/null 2>&1 || die "prerequisite 'xdotool' not on PATH (a
 if [ -n "$BIN" ]; then
   [ -x "$BIN" ] || die "binary not executable: $BIN"
 elif [ "$RELEASE" = 1 ]; then
-  # Tauri 1 renames the release binary to productName (tauri.conf package),
-  # so release lives at target/release/axis — unlike debug (crate name).
-  BIN="$ROOT/src-tauri/target/release/axis"
+  # Bare `cargo build --release` emits the crate name; the tauri CLI build
+  # additionally copies it to the productName (tauri.conf package). Accept
+  # whichever exists, preferring the CLI layout when present.
+  if [ -f "$ROOT/src-tauri/target/release/axis" ]; then
+    BIN="$ROOT/src-tauri/target/release/axis"
+  else
+    BIN="$ROOT/src-tauri/target/release/rnk-axis"
+  fi
 else
   BIN="$ROOT/src-tauri/target/debug/rnk-axis"
 fi
@@ -171,7 +176,10 @@ drive() { # runs inside the chosen display session
   fi
 
   # ── Launch the app (own process group → clean group kill in cleanup) ─────
-  setsid "$BIN" >"$APP_LOG" 2>&1 < /dev/null &
+  # A release (production) build holds fail-closed with no auth core; the
+  # live drive is by definition a bench test, so opt into AXIS_TEST_MODE
+  # exactly as the gate instructs. Debug builds ignore it.
+  setsid env AXIS_TEST_MODE=1 "$BIN" >"$APP_LOG" 2>&1 < /dev/null &
   APP_PID=$!
   echo "app: launched pid $APP_PID ($BIN)"
 
