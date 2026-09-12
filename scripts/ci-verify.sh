@@ -14,13 +14,14 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
 if command -v apt-get >/dev/null 2>&1 && [ ! -f /usr/lib/x86_64-linux-gnu/pkgconfig/webkit2gtk-4.1.pc ]; then
-  echo "ci-verify: installing WebKitGTK 4.1 + GTK3 development packages…"
+  echo "ci-verify: installing WebKitGTK 4.1 + GTK3 + soup2 development packages…"
   sudo apt-get update -qq
   sudo apt-get install -y -qq \
     libwebkit2gtk-4.1-dev \
     libgtk-3-dev \
     libayatana-appindicator3-dev \
     librsvg2-dev \
+    libsoup2.4-dev \
     patchelf
 fi
 

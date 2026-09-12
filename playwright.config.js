@@ -30,9 +30,16 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'npm run dev',
+    // Pin the host: on some CI runners vite's dev-server default binds ::1
+    // only, which 127.0.0.1 probes never reach (and `url` cannot override
+    // the bind, only the poll). --host pins both sides to IPv4 loopback.
+    command: 'npm run dev -- --host 127.0.0.1',
     url: 'http://127.0.0.1:1420',
     reuseExistingServer: !process.env.CI,
-    timeout: 60_000,
+    timeout: 120_000,
+    // Playwright swallows webServer output by default; pipe it so a vite
+    // crash names itself instead of surfacing as a bare poll timeout.
+    stdout: 'pipe',
+    stderr: 'pipe',
   },
 });
