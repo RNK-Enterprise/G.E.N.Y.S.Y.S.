@@ -1,9 +1,13 @@
 # Axis™ — verification gate
 # Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
 #
-# Runs scripts/ci-verify.sh on every push: global audit → jest → playwright →
-# cargo test (scripts/verify.sh --fail-fast), so an unwired global, a broken
-# page, or a failing Rust test can never land.
+# Two jobs on every push:
+#   1. verify — scripts/ci-verify.sh: global audit → jest → playwright →
+#      cargo test (scripts/verify.sh --fail-fast), so an unwired global, a
+#      broken page, or a failing Rust test can never land.
+#   2. package — builds the real .deb/.rpm/AppImage and runs the packaging
+#      smoke suite (integrity, freshness, dependency sanity, headless
+#      launch-verify), so CI proves the BUNDLES, not just the source tree.
 
 name: verify
 
@@ -49,3 +53,64 @@ jobs:
           path: |
             /tmp/axis-verify/*.log
           if-no-files-found: ignore
+
+  package:
+    needs: verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      # Build deps (WebKitGTK 4.1 + GTK3) and packaging/verification tooling:
+      # dpkg-dev (dpkg-deb), desktop-file-utils (.desktop validation),
+      # file (ELF magic), cpio/rpm (rpm payload checks), xvfb (launch-verify).
+      - name: Install build + packaging dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq \
+            libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev \
+            librsvg2-dev patchelf dpkg-dev desktop-file-utils file cpio rpm \
+            xvfb xdotool
+
+      - run: npm ci
+
+      # Builds deb + rpm + AppImage (fetches appimagetool; FUSE-free via
+      # APPIMAGE_EXTRACT_AND_RUN inside the script).
+      - name: Build packages (deb / rpm / AppImage)
+        run: bash scripts/build-appimage.sh /tmp/appimagetool.AppImage
+
+      # Same gate the release process runs: artifact integrity, freshness
+      # (embedded binary == current build), dep sanity, headless launch.
+      - name: Run packaging smoke suite
+        run: bash scripts/smoke-suite.sh --skip-build
+
+      # The compositor-level proof, headlessly: builds the debug binary (cached),
+      # launches Axis under Xvfb, drives a real tab open/close, and asserts the
+      # [axis:tabwin] create → close → destroyed journal lines + X-window teardown.
+      - name: Live tab-window proof (headless, Xvfb)
+        run: |
+          (cd src-tauri && bash ../scripts/with-webkit-pc.sh cargo build)
+          bash scripts/verify-live.sh --xvfb
+
+      - name: Upload packages
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: axis-packages
+          path: |
+            src-tauri/target/release/bundle/deb/*.deb
+            src-tauri/target/release/bundle/rpm/*.rpm
+            src-tauri/target/release/bundle/appimage/*.AppImage
+          if-no-files-found: error
+          retention-days: 14

@@ -70,7 +70,8 @@ Header names are documented here (not secret); tokens are per-session. Raven / E
 | `npm run catalog` | Emit the tiny real-only manifest |
 | `npm run check:rust` | `cargo check` with the webkit shim |
 | `npm run verify` | Every gate in one run: global audit → Jest → Playwright → `cargo test` (40 Rust tests) |
-| `npm run verify -- <stage>` | Run one stage only (`audit`, `unit`, `e2e`, `rust`); `--fail-fast` stops at the first failure |
+| `npm run verify -- <stage>` | Run one stage only (`audit`, `unit`, `e2e`, `rust`, `live`); `--fail-fast` stops at the first failure |
+| `npm run verify:live` | Compositor proof: launches Axis, opens/closes a tab, asserts OS-level WebviewWindow destruction (`[axis:tabwin]` journal) — headless-capable (Xvfb) |
 | `npm test` | Jest unit suite (`tests/`, `src/**/*.test.js`) |
 | `npm run test:e2e` | Playwright E2E — boots the shell, fails on any console error |
 | `npm run audit:globals` | Global-wiring gate — an unwired `window.*` read fails the build |

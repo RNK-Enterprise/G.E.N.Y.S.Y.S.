@@ -11,13 +11,20 @@
 #              boots Axis and fails on any console error or uncaught throw.
 #   4. rust  — cargo test in src-tauri/ through the WebKitGTK pkg-config
 #              wrapper (Ubuntu 24.04 ships 4.1; Tauri 1 looks for 4.0 names).
+#   5. live  — the compositor-level tab-window proof (scripts/verify-live.sh
+#              forced under Xvfb for determinism): launches Axis, drives a real
+#              tab open/close, asserts OS-level WebviewWindow destruction via
+#              the [axis:tabwin] journal lines. NOT in the default set: opt in
+#              via `npm run verify -- live` (needs xdotool + xvfb). Direct
+#              scripts/verify-live.sh runs accept more flags (real display,
+#              release binary, etc.).
 #
 # By default every selected stage runs even if an earlier one fails, so a single
 # invocation reports the whole picture; --fail-fast stops at the first failure.
 # Stages run cheap → expensive (audit, unit, e2e, rust).
 #
 # Usage: npm run verify [-- [stage...]] [--fail-fast] [--verbose]
-#   stages          subset of: audit unit e2e rust (default: all, in that order)
+#   stages          subset of: audit unit e2e rust live (default: all but live)
 #   -v, --verbose   stream each stage's output live instead of capturing it
 #   -h, --help      show this help
 #
@@ -28,7 +35,8 @@ set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 LOGDIR="${AXIS_VERIFY_LOGDIR:-/tmp/axis-verify}"
-ORDER=(audit unit e2e rust)
+ORDER=(audit unit e2e rust live)
+DEFAULT_STAGES=(audit unit e2e rust)
 
 FAIL_FAST=0
 VERBOSE=0
@@ -58,7 +66,7 @@ while [ "$#" -gt 0 ]; do
 done
 
 if [ "${#SELECTED[@]}" -eq 0 ]; then
-  SELECTED=("${ORDER[@]}")
+  SELECTED=("${DEFAULT_STAGES[@]}")
 fi
 
 for want in "${SELECTED[@]}"; do
@@ -108,6 +116,7 @@ stage_audit() { (cd "$ROOT" && npm --silent run audit:globals); }
 stage_unit() { (cd "$ROOT" && npm --silent run test); }
 stage_e2e() { (cd "$ROOT" && npm --silent run test:e2e); }
 stage_rust() { (cd "$ROOT/src-tauri" && bash "$ROOT/scripts/with-webkit-pc.sh" cargo test); }
+stage_live() { bash "$ROOT/scripts/verify-live.sh" --xvfb; }  # forced Xvfb: deterministic, WM-less-safe
 
 stage_label() {
   case "$1" in
@@ -115,6 +124,7 @@ stage_label() {
     unit) echo "jest unit tests" ;;
     e2e) echo "playwright e2e" ;;
     rust) echo "cargo test" ;;
+    live) echo "live tab-window proof (compositor)" ;;
   esac
 }
 
@@ -126,6 +136,11 @@ stage_preflight() {
       ;;
     rust)
       command -v cargo >/dev/null 2>&1 || { echo "cargo not on PATH" >&2; return 1; }
+      ;;
+    live)
+      for t in xdotool xvfb-run; do
+        command -v "$t" >/dev/null 2>&1 || { echo "live stage needs '$t' (apt install xdotool xvfb)" >&2; return 1; }
+      done
       ;;
   esac
   return 0
@@ -150,6 +165,13 @@ stage_detail() {
       grep -oE 'test result: ok\. [0-9]+ passed' "$log" |
         grep -oE '[0-9]+' |
         awk '{s += $1} END {if (s > 0) print s " tests passed"}'
+      ;;
+    live)
+      # Echo the strongest line of evidence: OS-level destroy confirmation.
+      {
+        grep -oE 'create tab-[0-9]+: url=[^ ]+ .*' "$log" | tail -1
+        grep -E '^destroyed\(journal\): OK' "$log" | tail -1
+      } | paste -sd' · ' -
       ;;
   esac
 }
