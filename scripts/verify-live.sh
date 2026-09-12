@@ -179,7 +179,17 @@ drive() { # runs inside the chosen display session
   # A release (production) build holds fail-closed with no auth core; the
   # live drive is by definition a bench test, so opt into AXIS_TEST_MODE
   # exactly as the gate instructs. Debug builds ignore it.
-  setsid env AXIS_TEST_MODE=1 "$BIN" >"$APP_LOG" 2>&1 < /dev/null &
+  #
+  # WebKitGTK env hardening mirrors smoke-suite.sh's proven launch set:
+  # GPU-less runners wedge webview init (DMABUF), lack user namespaces
+  # (bubblewrap aborts), and have no GLX (force llvmpipe) — without these
+  # the tab window's webview never realizes and the drive fails at "Axis
+  # Tab never appeared". NO_AT_BRIDGE skips the a11y-bus lookup that errors
+  # on minimal runners. Verification-only launches in a scratch profile.
+  setsid env NO_AT_BRIDGE=1 GDK_BACKEND=x11 \
+    WEBKIT_FORCE_SANDBOX=0 WEBKIT_DISABLE_COMPOSITING_MODE=1 \
+    WEBKIT_DISABLE_DMABUF_RENDERER=1 LIBGL_ALWAYS_SOFTWARE=1 \
+    AXIS_TEST_MODE=1 "$BIN" >"$APP_LOG" 2>&1 < /dev/null &
   APP_PID=$!
   echo "app: launched pid $APP_PID ($BIN)"
 
@@ -239,10 +249,23 @@ drive() { # runs inside the chosen display session
   echo "create: OK — X window $TABWIN | journal: $CREATE_LINE"
 
   # ── Assert CLOSE: Ctrl+W → X window gone + both journal lines ────────────
-  focus_win "$MAIN"
-  xdotool key --clearmodifiers ctrl+w
-  if ! wait_win_gone '^Axis Tab$'; then
-    echo "FAILED: 'Axis Tab' window still on the X server after Ctrl+W (${TIMEOUT}s)"
+  # Same focus-race lesson as the drive phase: on a real desktop the WM may
+  # hand focus to the freshly-mapped tab window (or another window snipes
+  # it), so a single Ctrl+W can land in the tab's own webview — which has no
+  # Ctrl+W handler — while the shell never sees it. Retry with re-focus;
+  # Xvfb never needs the second attempt.
+  CLOSED=0
+  for attempt in 1 2 3; do
+    focus_win "$MAIN"
+    xdotool key --clearmodifiers ctrl+w
+    if wait_win_gone '^Axis Tab$'; then
+      CLOSED=1
+      break
+    fi
+    echo "close: window persisted after Ctrl+W — refocusing shell (attempt $attempt/3)"
+  done
+  if [ "$CLOSED" != 1 ]; then
+    echo "FAILED: 'Axis Tab' window still on the X server after Ctrl+W (3 attempts × ${TIMEOUT}s)"
     return 1
   fi
   sleep 1
