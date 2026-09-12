@@ -242,6 +242,9 @@ drive() { # runs inside the chosen display session
     echo "FAILED: 'Axis Tab' WebviewWindow never appeared (${TIMEOUT}s)"
     grep "axis:tabwin" "$APP_LOG" | sed 's/^/    journal: /'
     tail -15 "$APP_LOG" | sed 's/^/    /'
+    echo "    webkit procs at failure: web=$(pgrep -fc WebKitWebProcess 2>/dev/null || echo 0) net=$(pgrep -fc WebKitNetworkProcess 2>/dev/null || echo 0)"
+    dpkg -l 2>/dev/null | awk '/libwebkit2gtk-4.1/ {print "    " $2 " " $3; exit}'
+    bwrap --ro-bind / / -- true 2>&1 | head -1 | sed 's/^/    bwrap probe: /'
     return 1
   fi
   TABWIN=$(xdotool search --name '^Axis Tab$' | head -1)
