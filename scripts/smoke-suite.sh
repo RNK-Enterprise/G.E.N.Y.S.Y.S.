@@ -53,6 +53,9 @@ result() { # result <PASS|FAIL> <name> [detail]
 # WEBKIT_FORCE_SANDBOX=0: GH runners disable unprivileged user namespaces,
 # so WebKitGTK's bubblewrap sandbox aborts the process before main() prints
 # anything. Verification-only launches; this says nothing about shipped use.
+# WEBKIT_DISABLE_SANDBOX_THIS_IS_DANGEROUS=1: newer WebKitGTK ignores the
+# legacy var above and demands this one instead (verified in CI); old builds
+# ignore the new var. Setting both covers either generation.
 # WEBKIT_DISABLE_DMABUF_RENDERER=1: GPU-less runners make WebKitGTK ≥ 2.40's
 # DMABUF renderer kill the process during webview init — before Tauri's setup
 # hook (where the banner prints) ever runs, so the app dies with zero output.
@@ -62,7 +65,8 @@ launch_capture() {
   local log=$1 secs=$2 bin=$3; shift 3
   if command -v xvfb-run >/dev/null 2>&1; then
     timeout "$secs" xvfb-run -a env NO_AT_BRIDGE=1 GDK_BACKEND=x11 \
-      WEBKIT_FORCE_SANDBOX=0 WEBKIT_DISABLE_COMPOSITING_MODE=1 \
+      WEBKIT_FORCE_SANDBOX=0 WEBKIT_DISABLE_SANDBOX_THIS_IS_DANGEROUS=1 \
+      WEBKIT_DISABLE_COMPOSITING_MODE=1 \
       WEBKIT_DISABLE_DMABUF_RENDERER=1 LIBGL_ALWAYS_SOFTWARE=1 \
       "$bin" "$@" >"$log" 2>&1
   else

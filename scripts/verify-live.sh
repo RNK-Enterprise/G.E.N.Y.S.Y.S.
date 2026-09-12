@@ -184,10 +184,16 @@ drive() { # runs inside the chosen display session
   # GPU-less runners wedge webview init (DMABUF), lack user namespaces
   # (bubblewrap aborts), and have no GLX (force llvmpipe) — without these
   # the tab window's webview never realizes and the drive fails at "Axis
-  # Tab never appeared". NO_AT_BRIDGE skips the a11y-bus lookup that errors
-  # on minimal runners. Verification-only launches in a scratch profile.
+  # Tab never appeared". The sandbox-off pair covers both WebKitGTK
+  # generations: old builds honor WEBKIT_FORCE_SANDBOX=0, new builds ignore
+  # it and demand WEBKIT_DISABLE_SANDBOX_THIS_IS_DANGEROUS=1 (verified in
+  # CI: without the new var the tab's web process cannot spawn on runners,
+  # where unprivileged userns is disabled). NO_AT_BRIDGE skips the a11y-bus
+  # lookup that errors on minimal runners. Verification-only launches in a
+  # scratch profile.
   setsid env NO_AT_BRIDGE=1 GDK_BACKEND=x11 \
-    WEBKIT_FORCE_SANDBOX=0 WEBKIT_DISABLE_COMPOSITING_MODE=1 \
+    WEBKIT_FORCE_SANDBOX=0 WEBKIT_DISABLE_SANDBOX_THIS_IS_DANGEROUS=1 \
+    WEBKIT_DISABLE_COMPOSITING_MODE=1 \
     WEBKIT_DISABLE_DMABUF_RENDERER=1 LIBGL_ALWAYS_SOFTWARE=1 \
     AXIS_TEST_MODE=1 "$BIN" >"$APP_LOG" 2>&1 < /dev/null &
   APP_PID=$!

@@ -77,10 +77,23 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "${GITHUB_REF_NAME}" \
-            --repo "$GITHUB_REPOSITORY" \
-            --title "Axis ${GITHUB_REF_NAME}" \
-            --generate-notes \
-            src-tauri/target/release/bundle/deb/*.deb \
-            src-tauri/target/release/bundle/rpm/*.rpm \
-            src-tauri/target/release/bundle/appimage/*.AppImage
+          # Idempotent on tag re-push: if the release already exists (created
+          # by a previous run of this tag), update its notes and replace the
+          # assets instead of failing on the duplicate tag name.
+          if gh release view "${GITHUB_REF_NAME}" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            echo "release ${GITHUB_REF_NAME} already exists — updating assets"
+            gh release edit "${GITHUB_REF_NAME}" --repo "$GITHUB_REPOSITORY" --generate-notes
+            for f in src-tauri/target/release/bundle/deb/*.deb \
+                     src-tauri/target/release/bundle/rpm/*.rpm \
+                     src-tauri/target/release/bundle/appimage/*.AppImage; do
+              gh release upload "${GITHUB_REF_NAME}" --repo "$GITHUB_REPOSITORY" --clobber "$f"
+            done
+          else
+            gh release create "${GITHUB_REF_NAME}" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "Axis ${GITHUB_REF_NAME}" \
+              --generate-notes \
+              src-tauri/target/release/bundle/deb/*.deb \
+              src-tauri/target/release/bundle/rpm/*.rpm \
+              src-tauri/target/release/bundle/appimage/*.AppImage
+          fi
