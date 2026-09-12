@@ -190,11 +190,15 @@ drive() { # runs inside the chosen display session
   # CI: without the new var the tab's web process cannot spawn on runners,
   # where unprivileged userns is disabled). NO_AT_BRIDGE skips the a11y-bus
   # lookup that errors on minimal runners. Verification-only launches in a
-  # scratch profile.
+  # scratch profile. no_proxy covers the loopback dev server: WebKit's proxy
+  # resolution on CI (no session manager, gsettings proxy absent) has been
+  # observed to route localhost through a dead proxy and hang page loads.
   setsid env NO_AT_BRIDGE=1 GDK_BACKEND=x11 \
     WEBKIT_FORCE_SANDBOX=0 WEBKIT_DISABLE_SANDBOX_THIS_IS_DANGEROUS=1 \
     WEBKIT_DISABLE_COMPOSITING_MODE=1 \
     WEBKIT_DISABLE_DMABUF_RENDERER=1 LIBGL_ALWAYS_SOFTWARE=1 \
+    no_proxy=localhost,127.0.0.1 NO_PROXY=localhost,127.0.0.1 \
+    WEBKIT_DEBUG=Loading \
     AXIS_TEST_MODE=1 "$BIN" >"$APP_LOG" 2>&1 < /dev/null &
   APP_PID=$!
   echo "app: launched pid $APP_PID ($BIN)"
@@ -245,6 +249,9 @@ drive() { # runs inside the chosen display session
     echo "    webkit procs at failure: web=$(pgrep -fc WebKitWebProcess 2>/dev/null || echo 0) net=$(pgrep -fc WebKitNetworkProcess 2>/dev/null || echo 0)"
     dpkg -l 2>/dev/null | awk '/libwebkit2gtk-4.1/ {print "    " $2 " " $3; exit}'
     bwrap --ro-bind / / -- true 2>&1 | head -1 | sed 's/^/    bwrap probe: /'
+    echo "    all X windows: $(xdotool search --name '.*' 2>/dev/null | wc -l) ids; names: $(xdotool search --name '.*' 2>/dev/null | while read -r w; do xdotool getwindowname "$w" 2>/dev/null; done | sort -u | tr '\n' '|')"
+    echo "    page-load traces (WEBKIT_DEBUG=Loading):"
+    grep -E "Loading|load|Provisional|page load|URL" "$APP_LOG" | tail -8 | sed 's/^/      /'
     return 1
   fi
   TABWIN=$(xdotool search --name '^Axis Tab$' | head -1)
