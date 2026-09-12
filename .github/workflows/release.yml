@@ -1,0 +1,75 @@
+# Axis™ — release
+# Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
+#
+# On a v* tag push: build the real packages (deb / rpm / AppImage), run the
+# packaging smoke suite (which itself re-runs the vite build through the
+# global-wiring audit gate, cargo test, artifact integrity/freshness checks,
+# and headless launch-verification), then create the GitHub release and attach
+# the artifacts. A release only exists if its bundles survived the same gate
+# the packages job runs on every push.
+#
+# Note: the release binary embeds the frontend at build time (distDir), so
+# `generate software version` is left unset — the binary's embedded assets are
+# the version of record, enforced by the smoke suite's freshness checks.
+
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      # Same build + packaging toolchain as the package job (WebKitGTK 4.1,
+      # soup2 for wry, deb/rpm/AppImage verification tools).
+      - name: Install build + packaging dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq \
+            libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev \
+            librsvg2-dev libsoup2.4-dev patchelf dpkg-dev desktop-file-utils \
+            file cpio rpm xvfb
+
+      - run: npm ci
+
+      # Builds deb + rpm + AppImage with the frontend embedded at build time
+      # (beforeBuildCommand → npm run build:vite → audit gate first).
+      - name: Build packages (deb / rpm / AppImage)
+        run: bash scripts/build-appimage.sh /tmp/appimagetool.AppImage
+
+      # Release gate: freshness (embedded binary == current build), deb
+      # dependency sanity, .desktop validation, AppImage magic, headless
+      # boot + fail-closed HOLD verification.
+      - name: Run packaging smoke suite
+        run: bash scripts/smoke-suite.sh --skip-build
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "Axis ${GITHUB_REF_NAME}" \
+            --generate-notes \
+            src-tauri/target/release/bundle/deb/*.deb \
+            src-tauri/target/release/bundle/rpm/*.rpm \
+            src-tauri/target/release/bundle/appimage/*.AppImage

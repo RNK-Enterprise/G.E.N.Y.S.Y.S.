@@ -43,15 +43,18 @@ result() { # result <PASS|FAIL> <name> [detail]
   fi
 }
 
-# Launch a binary headlessly and capture output.
+# Launch a binary headlessly and capture output. Budget is generous: a cold
+# 2-core CI runner needs xvfb startup + GTK + WebKitGTK init before the app
+# prints its banner (8s was fine on desktops, silent-death on runners).
+# NO_AT_BRIDGE skips the a11y-bus lookup that errors on minimal runners.
 # usage: launch_capture <logfile> <secs> <binary> [args...]
 launch_capture() {
   local log=$1 secs=$2 bin=$3; shift 3
   if command -v xvfb-run >/dev/null 2>&1; then
-    timeout "$secs" xvfb-run -a "$bin" "$@" >"$log" 2>&1
+    timeout "$secs" xvfb-run -a env NO_AT_BRIDGE=1 GDK_BACKEND=x11 "$bin" "$@" >"$log" 2>&1
   else
     echo "(no xvfb-run on PATH — launching without X; GTK will fail fast)" >&2
-    env -u DISPLAY -u WAYLAND_DISPLAY timeout "$secs" "$bin" "$@" >"$log" 2>&1
+    env -u DISPLAY -u WAYLAND_DISPLAY NO_AT_BRIDGE=1 timeout "$secs" "$bin" "$@" >"$log" 2>&1
   fi
   return 0
 }
@@ -142,11 +145,15 @@ else
   result PASS "rpm exists"
   if command -v rpm2cpio >/dev/null 2>&1; then
     W=$(mktemp -d)
-    if rpm2cpio "$RPM" | (cd "$W" && cpio -idm --quiet ./usr/bin/axis 2>/dev/null) \
+    # Extract without a name filter: rpm payload paths are stored without a
+    # leading ./, so a `./usr/bin/axis` pattern matches nothing (found on CI,
+    # where rpm2cpio exists — local dev often only has the header fallback).
+    if rpm2cpio "$RPM" | (cd "$W" && cpio -idm --quiet 2>/dev/null) \
+       && [ -f "$W/usr/bin/axis" ] \
        && [ "$(md5sum "$W/usr/bin/axis" | cut -d' ' -f1)" = "$(md5sum "$BIN" | cut -d' ' -f1)" ]; then
       result PASS "rpm binary is fresh (md5 match)"
     else
-      result FAIL "rpm binary is fresh (md5 match)"
+      result FAIL "rpm binary is fresh (md5 match)" "extracted=$([ -f "$W/usr/bin/axis" ] && echo yes || echo no)"
     fi
     rm -rf "$W"
   else
@@ -170,25 +177,44 @@ if [ -f "$APPIMAGE" ]; then
   else
     result FAIL "AppImage type-1 magic (ELF)" "$magic"
   fi
-  # ISO9660 signature at offset 0x8001 (type-1 AppImage = ELF + appended ISO).
+  # ISO9660 signature at offset 0x8001 (type-1 AppImage = ELF + appended ISO);
+  # type-2 (modern appimagetool) is ELF + compressed squashfs (hsqs magic).
   sig=$(dd if="$APPIMAGE" bs=1 skip=32769 count=5 2>/dev/null)
   if [ "$sig" = "CD001" ]; then
-    result PASS "AppImage squashfs/ISO signature (CD001)"
+    result PASS "AppImage payload signature (CD001 ISO)"
+  elif grep -aqs "hsqs" "$APPIMAGE"; then
+    result PASS "AppImage payload signature (squashfs, type-2)"
   else
-    result FAIL "AppImage squashfs/ISO signature (CD001)" "got '$sig'"
+    result FAIL "AppImage payload signature" "neither CD001 nor squashfs magic"
   fi
-  # Directory listing through the ISO without full extraction.
-  if command -v isoinfo >/dev/null 2>&1; then
-    if isoinfo -i "$APPIMAGE" -R 2>/dev/null | grep -q "axis.AppDir/usr/bin/axis"; then
-      result PASS "AppImage payload lists usr/bin/axis"
+  # Directory listing: type-1 images have a plain ISO filesystem (isoinfo);
+  # type-2 (modern appimagetool) embeds a compressed squashfs, so strings are
+  # invisible to grep — extract via the runtime instead (no FUSE needed).
+  if [ -f "$APPIMAGE" ]; then
+    chmod +x "$APPIMAGE"
+    sig=$(dd if="$APPIMAGE" bs=1 skip=32769 count=5 2>/dev/null)
+    if [ "$sig" = "CD001" ]; then
+      result PASS "AppImage payload signature (CD001 ISO)"
+    elif grep -aqs "hsqs" "$APPIMAGE"; then
+      result PASS "AppImage payload signature (squashfs, type-2)"
     else
-      result FAIL "AppImage payload lists usr/bin/axis"
+      result FAIL "AppImage payload signature" "neither CD001 nor squashfs magic"
     fi
-  else
-    if grep -aq "axis.AppDir" "$APPIMAGE" 2>/dev/null; then
-      result PASS "AppImage payload references AppDir" "(isoinfo absent — string check)"
+    if command -v isoinfo >/dev/null 2>&1 && [ "$sig" = "CD001" ]; then
+      if isoinfo -i "$APPIMAGE" -R 2>/dev/null | grep -q "axis.AppDir/usr/bin/axis"; then
+        result PASS "AppImage payload lists usr/bin/axis"
+      else
+        result FAIL "AppImage payload lists usr/bin/axis"
+      fi
     else
-      result FAIL "AppImage payload references AppDir"
+      W=$(mktemp -d)
+      if (cd "$W" && HOME="$W" timeout 60 "$APPIMAGE" --appimage-extract >/dev/null 2>&1) \
+         && [ -f "$W/squashfs-root/usr/bin/axis" ]; then
+        result PASS "AppImage payload lists usr/bin/axis" "(type-2 squashfs — runtime extraction)"
+      else
+        result FAIL "AppImage payload lists usr/bin/axis"
+      fi
+      rm -rf "$W"
     fi
   fi
 fi
