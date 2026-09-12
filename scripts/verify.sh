@@ -136,6 +136,14 @@ stage_preflight() {
       ;;
     rust)
       command -v cargo >/dev/null 2>&1 || { echo "cargo not on PATH" >&2; return 1; }
+      # Tauri's generate_context! proc macro validates distDir (`../dist`)
+      # at COMPILE time. Without a frontend build, cargo test dies in a
+      # cryptic proc-macro panic — fail fast with the remedy instead.
+      if [ ! -f "$ROOT/dist/index.html" ]; then
+        echo "dist/ missing — Tauri's generate_context! validates distDir at compile time." >&2
+        echo "  Run 'npm run build:vite' first (or 'npm run verify -- audit unit e2e live' — CI's ci-verify.sh does this automatically)." >&2
+        return 1
+      fi
       ;;
     live)
       for t in xdotool xvfb-run; do

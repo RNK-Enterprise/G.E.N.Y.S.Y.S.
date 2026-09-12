@@ -30,5 +30,12 @@ cd "$ROOT"
 [ -d node_modules ] || npm ci
 npx playwright install chromium
 
+# Tauri's generate_context! proc macro validates distDir (`../dist`) at
+# COMPILE time, so `cargo test` needs a frontend build to exist first. On
+# dev machines dist/ usually exists from earlier builds; a fresh CI clone
+# has none and would die in a proc-macro panic minutes into cargo test.
+echo "ci-verify: npm run build:vite (dist/ for Tauri's compile-time distDir check)"
+npm run build:vite
+
 echo "ci-verify: npm run verify"
 exec npm run verify
