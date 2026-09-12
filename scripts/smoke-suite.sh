@@ -28,7 +28,10 @@ APPDIR="$BUNDLE/appimage/axis.AppDir"
 APPIMAGE="$BUNDLE/appimage/axis_0.1.0_amd64.AppImage"
 BIN="$ROOT/src-tauri/target/release/axis"
 LOGDIR=$(mktemp -d)
-trap 'rm -rf "$LOGDIR"' EXIT
+# Keep logs for CI diagnostics when the suite fails (dumped inline below and
+# by the workflow's log-dump step); cleaned up on success.
+cleanup_logs() { [ "$FAIL" -eq 0 ] && rm -rf "$LOGDIR" || true; }
+trap cleanup_logs EXIT
 
 PASS=0
 FAIL=0
@@ -50,11 +53,18 @@ result() { # result <PASS|FAIL> <name> [detail]
 # WEBKIT_FORCE_SANDBOX=0: GH runners disable unprivileged user namespaces,
 # so WebKitGTK's bubblewrap sandbox aborts the process before main() prints
 # anything. Verification-only launches; this says nothing about shipped use.
+# WEBKIT_DISABLE_DMABUF_RENDERER=1: GPU-less runners make WebKitGTK ≥ 2.40's
+# DMABUF renderer kill the process during webview init — before Tauri's setup
+# hook (where the banner prints) ever runs, so the app dies with zero output.
+# LIBGL_ALWAYS_SOFTWARE: xvfb has no GLX; force Mesa llvmpipe.
 # usage: launch_capture <logfile> <secs> <binary> [args...]
 launch_capture() {
   local log=$1 secs=$2 bin=$3; shift 3
   if command -v xvfb-run >/dev/null 2>&1; then
-    timeout "$secs" xvfb-run -a env NO_AT_BRIDGE=1 GDK_BACKEND=x11 WEBKIT_FORCE_SANDBOX=0 WEBKIT_DISABLE_COMPOSITING_MODE=1 "$bin" "$@" >"$log" 2>&1
+    timeout "$secs" xvfb-run -a env NO_AT_BRIDGE=1 GDK_BACKEND=x11 \
+      WEBKIT_FORCE_SANDBOX=0 WEBKIT_DISABLE_COMPOSITING_MODE=1 \
+      WEBKIT_DISABLE_DMABUF_RENDERER=1 LIBGL_ALWAYS_SOFTWARE=1 \
+      "$bin" "$@" >"$log" 2>&1
   else
     echo "(no xvfb-run on PATH — launching without X; GTK will fail fast)" >&2
     env -u DISPLAY -u WAYLAND_DISPLAY NO_AT_BRIDGE=1 timeout "$secs" "$bin" "$@" >"$log" 2>&1
@@ -75,6 +85,12 @@ check_banner_and_hold() { # <logfile> <expect_hold:0|1>
 }
 
 banner() { printf '\n== %s ==\n' "$1"; }
+
+# FAIL detail from a launch log — with an explicit hint when the log is empty
+# (process killed during GTK/WebKit init, before the banner could print).
+loghead() {
+  if [ -s "$1" ]; then head -2 "$1" | tr '\n' ' '; else echo "(no output — died before banner; see launch log dumps)"; fi
+}
 
 # ── Phase 1: frontend build + no-dev-bypass in the prod bundle ────────────────
 banner "Phase 1: frontend build"
@@ -322,7 +338,7 @@ if [ -f "$APPIMAGE" ]; then
     if check_banner_and_hold "$LOGDIR/appimage.log" 1; then
       result PASS "AppImage boots and holds fail-closed gate"
     else
-      result FAIL "AppImage boots and holds fail-closed gate" "$(head -2 "$LOGDIR/appimage.log" | tr '\n' ' ')"
+      result FAIL "AppImage boots and holds fail-closed gate" "$(loghead "$LOGDIR/appimage.log")"
     fi
   else
     result FAIL "AppImage boots and holds fail-closed gate" "no output captured"
@@ -337,7 +353,7 @@ if [ -x "$BIN" ]; then
   if check_banner_and_hold "$LOGDIR/bin.log" 1; then
     result PASS "release binary boots and holds fail-closed gate"
   else
-    result FAIL "release binary boots and holds fail-closed gate" "$(head -2 "$LOGDIR/bin.log" | tr '\n' ' ')"
+    result FAIL "release binary boots and holds fail-closed gate" "$(loghead "$LOGDIR/bin.log")"
   fi
   # Gate flip: with AXIS_TEST_MODE=1 the HOLD must be absent.
   launch_capture "$LOGDIR/bin-bench.log" 20 env AXIS_TEST_MODE=1 "$BIN"
@@ -356,11 +372,22 @@ if [ -x /usr/bin/axis ]; then
   if check_banner_and_hold "$LOGDIR/installed.log" 1; then
     result PASS "installed /usr/bin/axis boots and holds fail-closed gate"
   else
-    result FAIL "installed /usr/bin/axis boots and holds fail-closed gate" "$(head -2 "$LOGDIR/installed.log" | tr '\n' ' ')"
+    result FAIL "installed /usr/bin/axis boots and holds fail-closed gate" "$(loghead "$LOGDIR/installed.log")"
   fi
 fi
 
 # ── Report ────────────────────────────────────────────────────────────────────
+# On failure, dump the launch logs inline — the workflow-level log-dump step
+# runs after the suite, so any trap-based cleanup must not have eaten them.
+if [ "$FAIL" -ne 0 ]; then
+  banner "LAUNCH LOG DUMPS (failure diagnostics)"
+  for f in "$LOGDIR"/*.log; do
+    [ -f "$f" ] || continue
+    echo "--- $f ($(wc -c <"$f") bytes) ---"
+    tail -20 "$f"
+  done
+fi
+
 banner "SMOKE RESULTS"
 for line in "${RESULTS[@]}"; do echo "  $line"; done
 echo
