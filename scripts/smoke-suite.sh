@@ -47,11 +47,14 @@ result() { # result <PASS|FAIL> <name> [detail]
 # 2-core CI runner needs xvfb startup + GTK + WebKitGTK init before the app
 # prints its banner (8s was fine on desktops, silent-death on runners).
 # NO_AT_BRIDGE skips the a11y-bus lookup that errors on minimal runners.
+# WEBKIT_FORCE_SANDBOX=0: GH runners disable unprivileged user namespaces,
+# so WebKitGTK's bubblewrap sandbox aborts the process before main() prints
+# anything. Verification-only launches; this says nothing about shipped use.
 # usage: launch_capture <logfile> <secs> <binary> [args...]
 launch_capture() {
   local log=$1 secs=$2 bin=$3; shift 3
   if command -v xvfb-run >/dev/null 2>&1; then
-    timeout "$secs" xvfb-run -a env NO_AT_BRIDGE=1 GDK_BACKEND=x11 "$bin" "$@" >"$log" 2>&1
+    timeout "$secs" xvfb-run -a env NO_AT_BRIDGE=1 GDK_BACKEND=x11 WEBKIT_FORCE_SANDBOX=0 WEBKIT_DISABLE_COMPOSITING_MODE=1 "$bin" "$@" >"$log" 2>&1
   else
     echo "(no xvfb-run on PATH — launching without X; GTK will fail fast)" >&2
     env -u DISPLAY -u WAYLAND_DISPLAY NO_AT_BRIDGE=1 timeout "$secs" "$bin" "$@" >"$log" 2>&1
@@ -143,7 +146,46 @@ if [ ! -f "$RPM" ]; then
   result FAIL "rpm exists"
 else
   result PASS "rpm exists"
-  if command -v rpm2cpio >/dev/null 2>&1; then
+  # Prefer the pure-python extraction (no rpm tooling at all — the same
+  # code path on every runner); fall back to rpm2cpio when python3 is
+  # absent. Both verify the embedded binary's md5 against the fresh build.
+  if command -v python3 >/dev/null 2>&1; then
+    if RPM="$RPM" BIN="$BIN" python3 - << 'PYEOF'
+import os, sys, zlib, lzma, hashlib
+rpm, binpath = os.environ["RPM"], os.environ["BIN"]
+data = open(rpm, "rb").read()
+assert data[:4] == b"\xed\xab\xee\xdb", "not an rpm"
+xs, gs = data.find(b"\xfd7zXZ\x00", 96), data.find(b"\x1f\x8b", 96)
+start = min(o for o in (xs, gs) if o != -1)
+comp = data[start:]
+raw = (lzma.LZMADecompressor().decompress(comp) if start == xs
+       else zlib.decompress(comp, 16 + zlib.MAX_WBITS))
+i, found = 0, None
+while i + 110 <= len(raw):
+    if raw[i:i+6] != b"070701": break
+    f = [int(raw[i+6+j*8:i+14+j*8], 16) for j in range(13)]
+    fsize, namesize = f[6], f[11]
+    name = raw[i+110:i+110+namesize-1].decode(errors="replace")
+    he = (i + 110 + namesize + 3) & ~3
+    if name in ("usr/bin/axis", "./usr/bin/axis"):
+        found = raw[he:he+fsize]
+    i = (he + fsize + 3) & ~3
+    if name == "TRAILER!!!": break
+if found is None:
+    sys.exit(3)
+sys.exit(0 if hashlib.md5(found).hexdigest() == hashlib.md5(open(binpath, "rb").read()).hexdigest() else 2)
+PYEOF
+    then
+      result PASS "rpm binary is fresh (md5 match)" "(python payload extraction)"
+    else
+      rc=$?
+      case $rc in
+        2) result FAIL "rpm binary is fresh (md5 match)" "embedded md5 != built $BIN" ;;
+        3) result FAIL "rpm binary is fresh (md5 match)" "usr/bin/axis not found in payload" ;;
+        *) result FAIL "rpm binary is fresh (md5 match)" "payload decode failed (rc=$rc)" ;;
+      esac
+    fi
+  elif command -v rpm2cpio >/dev/null 2>&1; then
     W=$(mktemp -d)
     # Extract everything, keep cpio's stderr: rpm payload paths are stored
     # WITHOUT a leading ./ on some bundlers and WITH it (./usr/bin/axis) on

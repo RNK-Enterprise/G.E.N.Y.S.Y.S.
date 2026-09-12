@@ -95,6 +95,17 @@ jobs:
       - name: Run packaging smoke suite
         run: bash scripts/smoke-suite.sh --skip-build
 
+      # The suite's own launch logs die with the job (mktemp dir); dump them
+      # inline so a CI-only boot failure names itself instead of a bare FAIL.
+      - name: Dump smoke-suite launch logs (on failure)
+        if: failure()
+        run: |
+          for f in /tmp/axis-smoke-*/appimage.log /tmp/axis-smoke-*/bin.log /tmp/axis-smoke-*/installed.log; do
+            [ -f "$f" ] || continue
+            echo "=== $f ==="
+            tail -25 "$f"
+          done
+
       # The compositor-level proof, headlessly: builds the debug binary (cached),
       # launches Axis under Xvfb, drives a real tab open/close, and asserts the
       # [axis:tabwin] create → close → destroyed journal lines + X-window teardown.
