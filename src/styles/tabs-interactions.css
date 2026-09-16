@@ -62,12 +62,12 @@
 
 .tab.drop-left {
     border-left: 3px solid var(--toxic-green);
-    box-shadow: -4px 0 10px rgba(212, 168, 67, 0.4);
+    box-shadow: -4px 0 10px rgba(138, 180, 248, 0.4);
 }
 
 .tab.drop-right {
     border-right: 3px solid var(--toxic-green);
-    box-shadow: 4px 0 10px rgba(212, 168, 67, 0.4);
+    box-shadow: 4px 0 10px rgba(138, 180, 248, 0.4);
 }
 
 .tab {
@@ -75,7 +75,7 @@
     transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
 }
 
-.axis-sidebar-pinned-item:active,
+.veil-sidebar-pinned-item:active,
 .tab:active {
     cursor: grabbing;
 }
@@ -102,7 +102,7 @@
 .tab-search:focus {
     outline: none;
     border-color: var(--toxic-green);
-    box-shadow: 0 0 8px rgba(212, 168, 67, 0.3);
+    box-shadow: 0 0 8px rgba(138, 180, 248, 0.3);
     width: 250px;
 }
 
@@ -278,7 +278,7 @@
 
 .modal-list-item:hover {
     border-color: var(--toxic-green);
-    box-shadow: 0 0 10px rgba(212, 168, 67, 0.2);
+    box-shadow: 0 0 10px rgba(138, 180, 248, 0.2);
 }
 
 .modal-item-title {
@@ -344,7 +344,7 @@
 
 .modal-item-action:hover {
     background: var(--toxic-green-dark);
-    box-shadow: 0 0 12px rgba(212, 168, 67, 0.4);
+    box-shadow: 0 0 12px rgba(138, 180, 248, 0.4);
 }
 
 .modal-item-action.danger {

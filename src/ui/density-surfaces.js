@@ -1,5 +1,5 @@
 /**
- * Axis™ — extracted from main.js
+ * VEIL™ — extracted from main.js
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -160,7 +160,7 @@ function renderSettingsDensityControls() {
         <div class="setting-item">
             <label>${label}</label>
             <div class="settings-density-controls">
-                <span id="${stateId}" class="axis-summary">${stateLabel}</span>
+                <span id="${stateId}" class="veil-summary">${stateLabel}</span>
                 <div class="settings-density-buttons">
                     ${buttons.map(({ id, label: buttonLabel }) => `<button id="${id}" class="action-btn" type="button">${buttonLabel}</button>`).join('')}
                 </div>

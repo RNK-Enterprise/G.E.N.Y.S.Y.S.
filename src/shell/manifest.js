@@ -1,28 +1,28 @@
 /**
- * Axis™ — extracted from main.js
+ * VEIL™ — extracted from main.js
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
-import { loadAxisManifest as loadAxisManifestFromCatalog } from '../engines/catalog-loader.js';
+import { loadVEILManifest as loadVEILManifestFromCatalog } from '../engines/catalog-loader.js';
 import './fallback-manifest.js';
 
-console.log('Axis v0.1.0 - Initializing...');
+console.log('VEIL v0.1.0 - Initializing...');
 
-window.AXIS_MANIFEST_URL = './axis-manifest.json';
-window.axisRuntime = {
+window.VEIL_MANIFEST_URL = './veil-manifest.json';
+window.veilRuntime = {
     manifest: null,
     capabilities: new Map()
 };
 
-window.loadAxisManifest = async function loadAxisManifest() {
-    // NOTE: window.axisRuntime may later hold the AxisEngineRuntime instance;
+window.loadVEILManifest = async function loadVEILManifest() {
+    // NOTE: window.veilRuntime may later hold the VEILEngineRuntime instance;
     // this loader works against whatever object currently sits there.
-    const runtime = window.axisRuntime;
-    const AXIS_MANIFEST_URL = window.AXIS_MANIFEST_URL;
+    const runtime = window.veilRuntime;
+    const VEIL_MANIFEST_URL = window.VEIL_MANIFEST_URL;
     try {
-        let manifest = await loadAxisManifestFromCatalog();
+        let manifest = await loadVEILManifestFromCatalog();
         if (!manifest?.capabilities?.length && !manifest?.engines?.length) {
-            const response = await fetch(AXIS_MANIFEST_URL, { cache: 'no-store' });
+            const response = await fetch(VEIL_MANIFEST_URL, { cache: 'no-store' });
             if (!response.ok) {
                 throw new Error(`Manifest request failed: ${response.status}`);
             }
@@ -31,13 +31,13 @@ window.loadAxisManifest = async function loadAxisManifest() {
 
         runtime.manifest = manifest;
         runtime.capabilities = new Map((manifest.capabilities || []).map(capability => [capability.id, capability]));
-        window.axisManifest = manifest;
+        window.veilManifest = manifest;
         return manifest;
     } catch (error) {
-        console.warn('Axis manifest could not be loaded:', error);
-        runtime.manifest = window.FALLBACK_AXIS_MANIFEST;
+        console.warn('VEIL manifest could not be loaded:', error);
+        runtime.manifest = window.FALLBACK_VEIL_MANIFEST;
         runtime.capabilities = new Map();
-        window.axisManifest = runtime.manifest;
+        window.veilManifest = runtime.manifest;
         return runtime.manifest;
     }
 };

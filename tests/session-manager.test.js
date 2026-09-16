@@ -1,5 +1,5 @@
 /**
- * Axis™ — SessionManager unit tests
+ * VEIL™ — SessionManager unit tests
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -60,7 +60,7 @@ describe('SessionManager', () => {
   });
 
   test('corrupt stored sessions fall back to an empty object', () => {
-    store.set('rnk-axis-sessions', '{broken');
+    store.set('rnk-veil-sessions', '{broken');
     expect(new SessionManager().listSessions()).toEqual([]);
   });
 });

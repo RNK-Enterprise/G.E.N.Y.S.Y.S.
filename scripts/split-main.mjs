@@ -1,5 +1,5 @@
 /**
- * Axis™ — main.js split recipes (module manifest).
+ * VEIL™ — main.js split recipes (module manifest).
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * The AST engine (parse, external-rewrite, module builder) lives in
@@ -112,12 +112,12 @@ buildModule('src/shell/bind-helpers.js', HEADER, slice(2232, 2331));
 writeFile(
   'src/shell/manifest.js',
   `${HEADER}
-import { loadAxisManifest as loadAxisManifestFromCatalog } from '../engines/catalog-loader.js';
+import { loadVEILManifest as loadVEILManifestFromCatalog } from '../engines/catalog-loader.js';
 import './fallback-manifest.js';
 
-console.log('Axis v0.1.0 - Initializing...');
+console.log('VEIL v0.1.0 - Initializing...');
 
-window.ATLAS_MANIFEST_URL = './axis-manifest.json';
+window.ATLAS_MANIFEST_URL = './veil-manifest.json';
 window.atlasRuntime = {
     manifest: null,
     capabilities: new Map()
@@ -127,7 +127,7 @@ window.loadAtlasManifest = async function loadAtlasManifest() {
     const atlasRuntime = window.atlasRuntime;
     const ATLAS_MANIFEST_URL = window.ATLAS_MANIFEST_URL;
     try {
-        let manifest = await loadAxisManifestFromCatalog();
+        let manifest = await loadVEILManifestFromCatalog();
         if (!manifest?.capabilities?.length && !manifest?.engines?.length) {
             const response = await fetch(ATLAS_MANIFEST_URL, { cache: 'no-store' });
             if (!response.ok) {
@@ -139,11 +139,11 @@ window.loadAtlasManifest = async function loadAtlasManifest() {
         atlasRuntime.manifest = manifest;
         atlasRuntime.capabilities = new Map((manifest.capabilities || []).map(capability => [capability.id, capability]));
         window.atlasRuntime = atlasRuntime;
-        window.axisManifest = manifest;
+        window.veilManifest = manifest;
         window.atlasManifest = manifest;
         return manifest;
     } catch (error) {
-        console.warn('Axis manifest could not be loaded:', error);
+        console.warn('VEIL manifest could not be loaded:', error);
         atlasRuntime.manifest = window.FALLBACK_ATLAS_MANIFEST;
         atlasRuntime.capabilities = new Map();
         window.atlasRuntime = atlasRuntime;
@@ -191,7 +191,7 @@ window.recentlyClosedManager = new RecentlyClosedManager();
 buildModule(
   'src/shell/section-nav.js',
   `${HEADER}
-import { mountServerControl, unmountServerControl } from '../axis-server-control.js';
+import { mountServerControl, unmountServerControl } from '../veil-server-control.js';
 `,
   slice(5028, 5063) + '\n' + slice(5006, 5022),
 );
@@ -224,7 +224,7 @@ buildModule(
 import ToastManager from '../ui/toast.js';
 import LoadingManager from '../ui/loading.js';
 import PerformanceMonitor from '../perf/performance-monitor.js';
-import { axisRuntime } from '../engines/runtime.js';
+import { veilRuntime } from '../engines/runtime.js';
 import TabManager from '../browser/tab-manager.js';
 `,
   [
@@ -240,9 +240,9 @@ const loadingManager = window.loadingManager;
     slice(6075, 6291),
     slice(6293, 6460),
     slice(6462, 6571),
-    `window.atlasBridge = axisRuntime;
-window.axisRuntime = axisRuntime;
-const atlasBridge = axisRuntime;
+    `window.atlasBridge = veilRuntime;
+window.veilRuntime = veilRuntime;
+const atlasBridge = veilRuntime;
 `,
     slice(6580, 6599),
     `window.perfMonitor = new PerformanceMonitor();

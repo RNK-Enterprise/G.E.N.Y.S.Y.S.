@@ -1,31 +1,31 @@
 /**
- * Axis™ — extracted from main.js
+ * VEIL™ — extracted from main.js
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
-function getAxisCapability(capabilityId) {
-    return window.axisRuntime.capabilities.get(capabilityId) || null;
+function getVEILCapability(capabilityId) {
+    return window.veilRuntime.capabilities.get(capabilityId) || null;
 }
 
-window.isAxisCapabilityAvailable = function isAxisCapabilityAvailable(capabilityId) {
-    const capability = getAxisCapability(capabilityId);
+window.isVEILCapabilityAvailable = function isVEILCapabilityAvailable(capabilityId) {
+    const capability = getVEILCapability(capabilityId);
     return Boolean(capability && capability.status !== 'experimental');
 }
 
-window.getAxisCapability = getAxisCapability;
+window.getVEILCapability = getVEILCapability;
 
-function createAxisChip(label, tone = 'neutral') {
+function createVEILChip(label, tone = 'neutral') {
     const chip = document.createElement('span');
-    chip.className = `axis-chip axis-chip-${tone}`;
+    chip.className = `veil-chip veil-chip-${tone}`;
     chip.textContent = label;
     return chip;
 }
 
-function renderAxisCapabilities(manifest) {
-    const summary = document.getElementById('axis-manifest-summary');
-    const categoryList = document.getElementById('axis-category-list');
-    const surfaceList = document.getElementById('axis-surface-list');
-    const capabilityList = document.getElementById('axis-capability-list');
+function renderVEILCapabilities(manifest) {
+    const summary = document.getElementById('veil-manifest-summary');
+    const categoryList = document.getElementById('veil-category-list');
+    const surfaceList = document.getElementById('veil-surface-list');
+    const capabilityList = document.getElementById('veil-capability-list');
 
     if (!summary || !categoryList || !surfaceList || !capabilityList) return;
 
@@ -36,16 +36,16 @@ function renderAxisCapabilities(manifest) {
         ...capabilities.map(capability => capability.surface).filter(Boolean)
     ])].sort();
 
-    summary.textContent = `${capabilities.length} capabilities loaded from ${manifest.product || 'Axis'} (${manifest.catalog_summary?.engines || 'unknown'} engines, ${manifest.catalog_summary?.turbos || 'unknown'} turbos)`;
+    summary.textContent = `${capabilities.length} capabilities loaded from ${manifest.product || 'VEIL'} (${manifest.catalog_summary?.engines || 'unknown'} engines, ${manifest.catalog_summary?.turbos || 'unknown'} turbos)`;
 
     categoryList.innerHTML = '';
     categories.forEach(category => {
-        categoryList.appendChild(createAxisChip(category, 'category'));
+        categoryList.appendChild(createVEILChip(category, 'category'));
     });
 
     surfaceList.innerHTML = '';
     surfaces.forEach(surface => {
-        surfaceList.appendChild(createAxisChip(surface, 'surface'));
+        surfaceList.appendChild(createVEILChip(surface, 'surface'));
     });
 
     capabilityList.innerHTML = '';
@@ -56,13 +56,13 @@ function renderAxisCapabilities(manifest) {
 
     sortedCapabilities.forEach(capability => {
         const item = document.createElement('div');
-        item.className = 'axis-capability-item';
+        item.className = 'veil-capability-item';
         item.innerHTML = `
-            <div class="axis-capability-meta">
+            <div class="veil-capability-meta">
                 <strong>${capability.name}</strong>
                 <span>${capability.id}</span>
             </div>
-            <div class="axis-capability-details">
+            <div class="veil-capability-details">
                 <span>${capability.category}</span>
                 <span>${capability.surface}</span>
                 <span>${capability.status}</span>
@@ -74,8 +74,8 @@ function renderAxisCapabilities(manifest) {
     });
 }
 
-// Single export block — createSidebarCapabilityCard was removed with the AXIS
+// Single export block — createSidebarCapabilityCard was removed with the VEIL
 // SHELL sidebar DOM (it was its only consumer).
-window.getAxisCapability = getAxisCapability;
-window.createAxisChip = createAxisChip;
-window.renderAxisCapabilities = renderAxisCapabilities;
+window.getVEILCapability = getVEILCapability;
+window.createVEILChip = createVEILChip;
+window.renderVEILCapabilities = renderVEILCapabilities;

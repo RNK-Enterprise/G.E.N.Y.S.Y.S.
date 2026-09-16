@@ -1,4 +1,4 @@
-# Axis shell modules
+# VEIL shell modules
 
 Chrome bindings, section navigation, sidebar rendering, spotlight, and DOM helpers extracted from the original main.js. Bound by ID via `bindClickHandlers` (silent-skip on missing elements — markup must exist before these run).
 

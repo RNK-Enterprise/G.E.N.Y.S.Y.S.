@@ -1,4 +1,4 @@
-//! Axis tab window commands — the shell's IPC surface for window-mode tabs,
+//! VEIL tab window commands — the shell's IPC surface for window-mode tabs,
 //! plus the title/URL watcher that keeps the tab bar in sync with real
 //! WebviewWindows (remote pages have no IPC channel, so the Rust side polls
 //! and emits events instead).
@@ -67,7 +67,7 @@ pub fn tab_window_history(tab_id: u32, action: String, app: AppHandle) -> Result
 /// URLs are refused — they must go through navigate_tab's policy gate.
 #[tauri::command]
 pub fn tab_window_internal_load(tab_id: u32, path: String, app: AppHandle) -> Result<(), String> {
-    let url = if path == "axis://newtab" {
+    let url = if path == "veil://newtab" {
         tab_windows::newtab_url()
     } else {
         format!("{}{}", tab_windows::app_origin(), path)
@@ -104,7 +104,7 @@ pub fn tab_window_status(app: AppHandle) -> Result<serde_json::Value, String> {
 }
 
 /// Spawn the background watcher that mirrors child-window titles/URLs into
-/// the shell (`axis:tab-meta` events) and removes bookkeeping for windows
+/// the shell (`veil:tab-meta` events) and removes bookkeeping for windows
 /// that died outside our control. Started once from setup.
 pub fn spawn_meta_watcher(app: AppHandle) {
     tauri::async_runtime::spawn(async move {
@@ -134,7 +134,7 @@ pub fn spawn_meta_watcher(app: AppHandle) {
                 }
                 let title = window.title().unwrap_or_default();
                 let _ = window.emit(
-                    "axis:tab-meta",
+                    "veil:tab-meta",
                     json!({ "tabId": id, "url": url, "title": title, "privileged": privileged }),
                 );
             }

@@ -8,14 +8,14 @@ export function networkIdle() {
   function markActive() {
     if (idle) {
       idle = false;
-      document.documentElement.classList.remove('axis-network-idle');
-      window.dispatchEvent(new CustomEvent('axis:network-idle', { detail: { idle: false } }));
+      document.documentElement.classList.remove('veil-network-idle');
+      window.dispatchEvent(new CustomEvent('veil:network-idle', { detail: { idle: false } }));
     }
     clearTimeout(timer);
     timer = setTimeout(() => {
       idle = true;
-      document.documentElement.classList.add('axis-network-idle');
-      window.dispatchEvent(new CustomEvent('axis:network-idle', { detail: { idle: true } }));
+      document.documentElement.classList.add('veil-network-idle');
+      window.dispatchEvent(new CustomEvent('veil:network-idle', { detail: { idle: true } }));
     }, IDLE_MS);
   }
 
@@ -29,7 +29,7 @@ export function networkIdle() {
     stop() {
       events.forEach((e) => window.removeEventListener(e, markActive));
       clearTimeout(timer);
-      document.documentElement.classList.remove('axis-network-idle');
+      document.documentElement.classList.remove('veil-network-idle');
     },
   };
 }

@@ -1,4 +1,4 @@
-//! Axis misc commands — health probes, Raven access requests, DNS lookup.
+//! VEIL misc commands — health probes, Raven access requests, DNS lookup.
 //! Extracted from main.rs (LOC bar).
 
 use crate::AppState;
@@ -71,16 +71,16 @@ pub async fn request_site_access(
         .build()
         .map_err(|e| e.to_string())?;
 
-    // Axis attests its own calls too — Raven's /api/axis/* gate refuses
-    // requests without the X-Axis-Client / X-Axis-Session headers.
+    // VEIL attests its own calls too — Raven's /api/veil/* gate refuses
+    // requests without the X-VEIL-Client / X-VEIL-Session headers.
     let token = session.session_token.clone().unwrap_or_default();
     let resp = client
-        .post(format!("{}/api/axis/access-request", raven_url))
+        .post(format!("{}/api/veil/access-request", raven_url))
         .header("Content-Type", "application/json")
         .header("Authorization", format!("Bearer {}", token))
-        .header("X-Axis-Client", "1")
-        .header("X-Axis-Session", &token)
-        .header("X-Axis-Tier", &session.access_tier)
+        .header("X-VEIL-Client", "1")
+        .header("X-VEIL-Session", &token)
+        .header("X-VEIL-Tier", &session.access_tier)
         .json(&json!({
             "domain": domain,
             "accessTier": session.access_tier,

@@ -1,5 +1,5 @@
 /**
- * Axis™ — SettingsManager unit tests
+ * VEIL™ — SettingsManager unit tests
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -18,19 +18,19 @@ const { SettingsManager } = await import('../src/settings-manager.js');
 describe('SettingsManager', () => {
   test('defaults: homepage, search engine, theme, engines enabled', () => {
     const s = new SettingsManager();
-    expect(s.get('general', 'homepage')).toBe('axis://newtab');
+    expect(s.get('general', 'homepage')).toBe('veil://newtab');
     expect(s.get('general', 'searchEngine')).toBe('duckduckgo');
     expect(s.get('appearance', 'theme')).toBe('dark-neutral');
-    expect(s.get('performance', 'enableAxisEngines')).toBe(true);
+    expect(s.get('performance', 'enableVEILEngines')).toBe(true);
     expect(s.get('privacy', 'savePasswords')).toBe(false);
   });
 
   test('set persists through localStorage and get reads it back', () => {
     const s = new SettingsManager();
-    s.set('general', 'homepage', 'axis://start');
-    expect(s.get('general', 'homepage')).toBe('axis://start');
+    s.set('general', 'homepage', 'veil://start');
+    expect(s.get('general', 'homepage')).toBe('veil://start');
     const reloaded = new SettingsManager();
-    expect(reloaded.get('general', 'homepage')).toBe('axis://start');
+    expect(reloaded.get('general', 'homepage')).toBe('veil://start');
   });
 
   test('set on unknown category is a no-op', () => {
@@ -59,37 +59,37 @@ describe('SettingsManager', () => {
     s.importSettings('{"appearance":{"theme":"light"}}');
     expect(s.get('appearance', 'theme')).toBe('light');
     expect(s.get('appearance', 'fontSize')).toBe('medium');
-    expect(s.get('general', 'homepage')).toBe('axis://newtab');
+    expect(s.get('general', 'homepage')).toBe('veil://newtab');
   });
 
   test('reset restores defaults and persists them', () => {
     const s = new SettingsManager();
     s.set('general', 'homepage', 'https://changed.example');
     s.reset();
-    expect(s.get('general', 'homepage')).toBe('axis://newtab');
-    expect(JSON.parse(store.get('rnk-axis-settings')).general.homepage).toBe('axis://newtab');
+    expect(s.get('general', 'homepage')).toBe('veil://newtab');
+    expect(JSON.parse(store.get('rnk-veil-settings')).general.homepage).toBe('veil://newtab');
   });
 
   test('migrates the legacy obfuscated performance key', () => {
     const legacy = new SettingsManager().getDefaultSettings();
     legacy.performance = { ...legacy.performance, enable: false };
-    delete legacy.performance.enableAxisEngines;
+    delete legacy.performance.enableVEILEngines;
     const legacyKey = ['enable', 'V', 'Q', 'Engines'].join('');
     legacy.performance[legacyKey] = false;
-    store.set('rnk-axis-settings', JSON.stringify(legacy));
+    store.set('rnk-veil-settings', JSON.stringify(legacy));
 
     const s = new SettingsManager();
-    expect(s.get('performance', 'enableAxisEngines')).toBe(false);
+    expect(s.get('performance', 'enableVEILEngines')).toBe(false);
     expect(s.getAll().performance[legacyKey]).toBeUndefined();
   });
 
   test('corrupt saved JSON falls back to defaults', () => {
-    store.set('rnk-axis-settings', '{broken');
+    store.set('rnk-veil-settings', '{broken');
     const s = new SettingsManager();
-    expect(s.get('general', 'homepage')).toBe('axis://newtab');
+    expect(s.get('general', 'homepage')).toBe('veil://newtab');
   });
 
-  test('falls back to the atlas settings key when axis key is absent', () => {
+  test('falls back to the atlas settings key when veil key is absent', () => {
     store.clear();
     const atlas = new SettingsManager().getDefaultSettings();
     atlas.general.homepage = 'https://atlas.example';

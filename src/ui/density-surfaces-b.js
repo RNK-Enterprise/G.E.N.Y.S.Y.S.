@@ -1,5 +1,5 @@
 /**
- * Axis™
+ * VEIL™
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 function toggleShellDensity() {
@@ -54,7 +54,7 @@ function toggleShortcutsDense() {
 }
 
 function saveShortcutsDensityState() {
-    localStorage.setItem('rnk-axis-shortcuts-density', window.shortcutsDensityState);
+    localStorage.setItem('rnk-veil-shortcuts-density', window.shortcutsDensityState);
 }
 
 function setShortcutsDensityState(mode) {
@@ -80,7 +80,7 @@ function applyToastDensityState() {
 }
 
 function saveToastDensityState() {
-    localStorage.setItem('rnk-axis-toast-density', window.toastDensityState);
+    localStorage.setItem('rnk-veil-toast-density', window.toastDensityState);
 }
 
 function setToastDensityState(mode) {
@@ -90,7 +90,7 @@ function setToastDensityState(mode) {
 }
 
 function savePerformancePanelDensityState() {
-    localStorage.setItem('rnk-axis-performance-panel-density', window.performancePanelDensityState);
+    localStorage.setItem('rnk-veil-performance-panel-density', window.performancePanelDensityState);
 }
 
 window.applyPerformancePanelDensityState = function applyPerformancePanelDensityState() {
@@ -117,7 +117,7 @@ function setPerformancePanelDensityState(mode) {
 }
 
 function saveSearchProviderDensityState() {
-    localStorage.setItem('rnk-axis-search-provider-density', window.searchProviderDensityState);
+    localStorage.setItem('rnk-veil-search-provider-density', window.searchProviderDensityState);
 }
 
 function applySearchProviderDensityState() {
@@ -145,7 +145,7 @@ function setSearchProviderDensityState(mode) {
 }
 
 function saveSessionsDensityState() {
-    localStorage.setItem('rnk-axis-sessions-density', window.sessionsDensityState);
+    localStorage.setItem('rnk-veil-sessions-density', window.sessionsDensityState);
 }
 
 function applySessionsDensityState() {
@@ -194,7 +194,7 @@ function applyBookmarksBarVisibilityState() {
 }
 
 function saveBookmarksBarDensityState() {
-    localStorage.setItem('rnk-axis-bookmarks-bar-density', window.bookmarksBarDensityState);
+    localStorage.setItem('rnk-veil-bookmarks-bar-density', window.bookmarksBarDensityState);
 }
 
 function setBookmarksBarDensityState(mode) {
@@ -203,8 +203,8 @@ function setBookmarksBarDensityState(mode) {
     applyBookmarksBarDensityState();
 }
 
-// Axis Sidebar density controls removed with the AXIS SHELL sidebar DOM.
-// window.axisSidebarDensityState is kept (initialized in density-core.js) so
+// VEIL Sidebar density controls removed with the VEIL SHELL sidebar DOM.
+// window.veilSidebarDensityState is kept (initialized in density-core.js) so
 // saved prefs and persisted settings don't break.
 
 

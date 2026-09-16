@@ -1,5 +1,5 @@
 /**
- * Axis™ — live turbo unit tests
+ * VEIL™ — live turbo unit tests
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -53,19 +53,19 @@ describe('turbo: tab-suspend', () => {
   test('restores a retained srcdoc on resume', () => {
     const turbo = tabSuspend({});
     const tab = makeTab('about:blank', 'https://example.test/page');
-    tab.iframe.srcdoc = '<html>axis</html>';
+    tab.iframe.srcdoc = '<html>veil</html>';
     turbo.suspendTab(tab);
-    expect(tab._suspendedSrcdoc).toBe('<html>axis</html>');
+    expect(tab._suspendedSrcdoc).toBe('<html>veil</html>');
     turbo.resumeTab(tab);
-    expect(tab.iframe.srcdoc).toBe('<html>axis</html>');
+    expect(tab.iframe.srcdoc).toBe('<html>veil</html>');
     expect(tab.suspended).toBe(false);
   });
 
-  test('skips axis:// URLs, about:blank, missing iframes, and double-suspends', () => {
+  test('skips veil:// URLs, about:blank, missing iframes, and double-suspends', () => {
     const turbo = tabSuspend({});
-    const axis = makeTab('axis://newtab', 'axis://newtab');
-    turbo.suspendTab(axis);
-    expect(axis.suspended).toBeUndefined();
+    const veil = makeTab('veil://newtab', 'veil://newtab');
+    turbo.suspendTab(veil);
+    expect(veil.suspended).toBeUndefined();
 
     const blank = makeTab('about:blank', 'about:blank');
     turbo.suspendTab(blank);
@@ -95,11 +95,11 @@ describe('turbo: tab-suspend', () => {
     const turbo = tabSuspend({ getTabs: () => [tabA, tabB] });
     turbo.start();
 
-    emit('axis:tab-deactivated', { detail: { tab: tabA, activeId: 2 } });
+    emit('veil:tab-deactivated', { detail: { tab: tabA, activeId: 2 } });
     expect(tabA.suspended).toBe(true);
     expect(tabB.suspended).toBeUndefined();
 
-    emit('axis:tab-activated', { detail: { tab: tabA } });
+    emit('veil:tab-activated', { detail: { tab: tabA } });
     expect(tabA.suspended).toBe(false);
 
     turbo.stop();
@@ -113,8 +113,8 @@ describe('turbo: tab-suspend', () => {
     turbo.stop();
     expect(tabA.suspended).toBe(false);
     expect(tabA.iframe.src).toBe('https://a.test');
-    expect(listeners.get('axis:tab-deactivated') || []).toHaveLength(0);
-    expect(listeners.get('axis:tab-activated') || []).toHaveLength(0);
+    expect(listeners.get('veil:tab-deactivated') || []).toHaveLength(0);
+    expect(listeners.get('veil:tab-activated') || []).toHaveLength(0);
   });
 });
 
@@ -130,7 +130,7 @@ describe('turbo: dns-cache', () => {
     };
     const turbo = dnsCache({});
     turbo.start();
-    const { lookup } = global.window.axisDnsCache;
+    const { lookup } = global.window.veilDnsCache;
     const first = await lookup('a.test');
     const second = await lookup('a.test');
     expect(first).toMatchObject({ host: 'a.test', addrs: ['1.2.3.4'] });
@@ -144,7 +144,7 @@ describe('turbo: dns-cache', () => {
     global.window.__TAURI__ = { invoke: async () => { throw new Error('down'); } };
     const turbo = dnsCache({});
     turbo.start();
-    const { lookup } = global.window.axisDnsCache;
+    const { lookup } = global.window.veilDnsCache;
     const result = await lookup('bad.test');
     expect(result).toMatchObject({ host: 'bad.test', error: true });
     expect(await lookup('bad.test')).toBe(result);
@@ -155,7 +155,7 @@ describe('turbo: dns-cache', () => {
   test('no Tauri bridge and empty host yield null', async () => {
     const turbo = dnsCache({});
     turbo.start();
-    const { lookup } = global.window.axisDnsCache;
+    const { lookup } = global.window.veilDnsCache;
     expect(await lookup('never.test')).toBeNull();
     expect(await lookup('')).toBeNull();
     turbo.stop();
@@ -165,12 +165,12 @@ describe('turbo: dns-cache', () => {
     global.window.__TAURI__ = { invoke: async () => ({ host: 'a.test', addrs: [] }) };
     const turbo = dnsCache({});
     turbo.start();
-    expect(global.window.axisDnsCache).toBeDefined();
-    await global.window.axisDnsCache.lookup('a.test');
-    expect(global.window.axisDnsCache.cache.size).toBe(1);
+    expect(global.window.veilDnsCache).toBeDefined();
+    await global.window.veilDnsCache.lookup('a.test');
+    expect(global.window.veilDnsCache.cache.size).toBe(1);
     turbo.stop();
-    expect(global.window.axisDnsCache.cache.size).toBe(0);
-    expect(listeners.get('axis:policy-allow') || []).toHaveLength(0);
+    expect(global.window.veilDnsCache.cache.size).toBe(0);
+    expect(listeners.get('veil:policy-allow') || []).toHaveLength(0);
     delete global.window.__TAURI__;
   });
 });
@@ -191,11 +191,11 @@ describe('turbo: nav-prefetch', () => {
     const turbo = navPrefetch({});
     turbo.start();
 
-    emit('axis:policy-allow', { detail: { url: 'https://a.test' } });
-    emit('axis:policy-allow', { detail: { url: 'https://a.test' } });
-    emit('axis:policy-allow', { detail: { url: 'ftp://b.test' } });
-    emit('axis:policy-allow', { detail: {} });
-    emit('axis:policy-allow', {});
+    emit('veil:policy-allow', { detail: { url: 'https://a.test' } });
+    emit('veil:policy-allow', { detail: { url: 'https://a.test' } });
+    emit('veil:policy-allow', { detail: { url: 'ftp://b.test' } });
+    emit('veil:policy-allow', { detail: {} });
+    emit('veil:policy-allow', {});
 
     expect(appended).toHaveLength(1);
     expect(appended[0].href).toBe('https://a.test');
@@ -208,7 +208,7 @@ describe('turbo: nav-prefetch', () => {
     const turbo = navPrefetch({});
     turbo.start();
     for (let i = 0; i < 45; i += 1) {
-      emit('axis:policy-allow', { detail: { url: `https://t${i}.test` } });
+      emit('veil:policy-allow', { detail: { url: `https://t${i}.test` } });
     }
     expect(appended).toHaveLength(41);
     turbo.stop();
@@ -218,8 +218,8 @@ describe('turbo: nav-prefetch', () => {
     stubDocument();
     const turbo = navPrefetch({});
     turbo.start();
-    expect(listeners.get('axis:policy-allow')).toHaveLength(1);
+    expect(listeners.get('veil:policy-allow')).toHaveLength(1);
     turbo.stop();
-    expect(listeners.get('axis:policy-allow') || []).toHaveLength(0);
+    expect(listeners.get('veil:policy-allow') || []).toHaveLength(0);
   });
 });

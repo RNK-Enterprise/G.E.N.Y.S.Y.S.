@@ -1,4 +1,4 @@
-//! P.R.O.T.E.C.T.S. embedded policy for standalone Axis.
+//! P.R.O.T.E.C.T.S. embedded policy for standalone VEIL.
 //! (Formerly "Lisa policy" — the mind is P.R.O.T.E.C.T.S.; Resolute is the handshake organ.)
 //!
 //! Fail-closed: any undecidable / error path returns block. Never fail open.
@@ -6,11 +6,11 @@
 use crate::{PolicyResult, Session};
 use url::Url;
 
-const INTERNAL_SCHEMES: &[&str] = &["axis", "about", "data", "blob"];
+const INTERNAL_SCHEMES: &[&str] = &["veil", "about", "data", "blob"];
 
-/// RNK product surfaces. Authenticated Axis sessions may open these; a normal
+/// RNK product surfaces. Authenticated VEIL sessions may open these; a normal
 /// browser must be refused by the products' own attestation checks (see
-/// docs/AXIS_ATTESTATION.md). `sec.` is the private pentest surface — it is
+/// docs/VEIL_ATTESTATION.md). `sec.` is the private pentest surface — it is
 /// NOT part of the default agent chrome and is excluded here.
 const RNK_PRODUCT_HOSTS: &[&str] = &[
     "rnk-enterprise.us",
@@ -22,7 +22,7 @@ const RNK_PRODUCT_HOSTS: &[&str] = &[
 ];
 
 /// Loopback/metadata destinations that must never load in a webview
-/// (SSRF / internal service reachability through Axis).
+/// (SSRF / internal service reachability through VEIL).
 const BLOCKED_HOSTS: &[&str] = &[
     "localhost",
     "127.0.0.1",
@@ -42,9 +42,9 @@ fn extract_domain(url: &str) -> String {
             }
         }
     }
-    // Bare host or axis:// without standard parse
-    if url.starts_with("axis://") {
-        return "axis://".into();
+    // Bare host or veil:// without standard parse
+    if url.starts_with("veil://") {
+        return "veil://".into();
     }
     url.to_string()
 }
@@ -71,7 +71,7 @@ pub fn evaluate_local(url: &str, session: &Session) -> PolicyResult {
     if is_internal(url) {
         return PolicyResult {
             decision: "allow".into(),
-            reason: "internal_axis_surface".into(),
+            reason: "internal_veil_surface".into(),
             audit: false,
             notify: false,
             chain: false,
@@ -188,7 +188,7 @@ pub fn evaluate_local(url: &str, session: &Session) -> PolicyResult {
     }
 
     // Chain semantics: `chain` means Ghost Comms chain routing. Ghost routing
-    // is NOT wired into the Axis shell yet, so the private pentest surface
+    // is NOT wired into the VEIL shell yet, so the private pentest surface
     // (sec.rnk-enterprise.us) is fail-closed. Returning chain:true here would
     // load the URL directly and leak the request — an honest block instead.
     let chain_requested = host_matches(&host, &["sec.rnk-enterprise.us"]);

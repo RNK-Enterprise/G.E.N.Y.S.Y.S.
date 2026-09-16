@@ -169,7 +169,7 @@
    COOKIES BAR
    =================================================================== */
 
-#axis-cookies-bar {
+#veil-cookies-bar {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -180,23 +180,23 @@
     justify-content: space-between;
     gap: 16px;
     padding: 10px 20px;
-    background: #1a1a2e;
+    background: #10192b;
     border-top: 1px solid #2a2a4a;
     font-size: 12px;
     color: #a0a0c0;
     transition: opacity 0.3s ease;
 }
 
-#axis-cookies-bar a {
+#veil-cookies-bar a {
     color: var(--brand-gold);
     text-decoration: none;
 }
 
-#axis-cookies-bar a:hover {
+#veil-cookies-bar a:hover {
     text-decoration: underline;
 }
 
-#axis-cookies-accept {
+#veil-cookies-accept {
     flex-shrink: 0;
     padding: 6px 16px;
     background: var(--brand-gold);
@@ -208,11 +208,11 @@
     cursor: pointer;
 }
 
-#axis-cookies-accept:hover {
+#veil-cookies-accept:hover {
     background: var(--brand-gold-dark);
 }
 
-.axis-cookies-hidden {
+.veil-cookies-hidden {
     opacity: 0;
     pointer-events: none;
 }
@@ -233,9 +233,9 @@
 }
 
 #lisa-status-indicator.lisa-status-active {
-    color: var(--brand-gold, #d4a843);
-    border-color: rgba(212, 168, 67, 0.25);
-    background: rgba(212, 168, 67, 0.08);
+    color: var(--brand-gold, #8ab4f8);
+    border-color: rgba(138, 180, 248, 0.25);
+    background: rgba(138, 180, 248, 0.08);
 }
 
 #lisa-status-indicator.lisa-status-active::before {
@@ -243,7 +243,7 @@
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--brand-gold, #d4a843);
+    background: var(--brand-gold, #8ab4f8);
     animation: lisaPulse 2s ease-in-out infinite;
 }
 
@@ -306,8 +306,8 @@
 .lisa-auth-inner {
     width: 360px;
     background: rgba(26, 26, 46, 0.95);
-    border: 1px solid rgba(212, 168, 67, 0.35);
-    border-top: 3px solid var(--brand-gold, #d4a843);
+    border: 1px solid rgba(138, 180, 248, 0.35);
+    border-top: 3px solid var(--brand-gold, #8ab4f8);
     border-radius: 12px;
     padding: 28px 24px 24px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
@@ -318,7 +318,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--brand-gold, #d4a843);
+    color: var(--brand-gold, #8ab4f8);
     margin-bottom: 16px;
 }
 
@@ -326,7 +326,7 @@
     width: 100%;
     height: 38px;
     background: rgba(18, 18, 31, 0.8);
-    border: 1px solid rgba(212, 168, 67, 0.2);
+    border: 1px solid rgba(138, 180, 248, 0.2);
     border-radius: 6px;
     padding: 0 12px;
     color: #e8e8f0;
@@ -337,17 +337,17 @@
 }
 
 .lisa-auth-input:focus {
-    border-color: rgba(212, 168, 67, 0.5);
-    box-shadow: 0 0 0 2px rgba(212, 168, 67, 0.1);
+    border-color: rgba(138, 180, 248, 0.5);
+    box-shadow: 0 0 0 2px rgba(138, 180, 248, 0.1);
 }
 
 .lisa-auth-submit {
     width: 100%;
     height: 38px;
-    background: linear-gradient(135deg, #d4a843, #b8902e);
+    background: linear-gradient(135deg, #8ab4f8, #6d9ae0);
     border: none;
     border-radius: 6px;
-    color: #12121f;
+    color: #0a1120;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;

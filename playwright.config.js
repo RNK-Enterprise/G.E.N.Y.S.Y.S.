@@ -1,5 +1,5 @@
 /**
- * Axis™ — Playwright E2E configuration
+ * VEIL™ — Playwright E2E configuration
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * Browser-mode E2E against the Vite dev server (port 1420, strictPort in

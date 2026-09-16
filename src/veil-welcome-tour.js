@@ -1,5 +1,5 @@
 /**
- * Axis™ — Welcome Tour + Daily Lisa Message
+ * VEIL™ — Welcome Tour + Daily Lisa Message
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * First sign-in: guided tour + profile setup.
@@ -7,14 +7,33 @@
  * Message stored with today's date key — never canned, changes every day.
  */
 
-const PROFILE_KEY   = 'axis-user-profile';
-const TOUR_DONE_KEY = 'axis-tour-complete';
-const MSG_KEY_PREFIX = 'axis-daily-msg-';
+const PROFILE_KEY   = 'veil-user-profile';
+const TOUR_DONE_KEY = 'veil-tour-complete';
+const MSG_KEY_PREFIX = 'veil-daily-msg-';
 
 // ── Profile helpers ───────────────────────────────────────────────────
 
+function migrateLegacyProfileKeys() {
+    // The 2026-09 rename (Axis → VEIL) left user state under `axis-*` keys.
+    // Lift it once so profiles, tour completion, and the daily message
+    // survive the rename.
+    const legacyProfile = localStorage.getItem('axis-user-profile');
+    if (legacyProfile && !localStorage.getItem(PROFILE_KEY)) {
+        localStorage.setItem(PROFILE_KEY, legacyProfile);
+        localStorage.removeItem('axis-user-profile');
+    }
+    const legacyTour = localStorage.getItem('axis-tour-complete');
+    if (legacyTour && !localStorage.getItem(TOUR_DONE_KEY)) {
+        localStorage.setItem(TOUR_DONE_KEY, legacyTour);
+        localStorage.removeItem('axis-tour-complete');
+    }
+}
+
 export function getProfile() {
-    try { return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null'); } catch { return null; }
+    try {
+        migrateLegacyProfileKeys();
+        return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null');
+    } catch { return null; }
 }
 
 export function saveProfile(profile) {
@@ -50,18 +69,18 @@ function buildStubMessage(profile) {
 
 function showDailyMessage(msg) {
     const banner = document.createElement('div');
-    banner.id = 'axis-daily-message';
+    banner.id = 'veil-daily-message';
     banner.innerHTML = `
-        <span class="axis-daily-msg-icon">✦</span>
-        <span class="axis-daily-msg-text">${msg.text}</span>
-        <button class="axis-daily-msg-close" type="button" title="Dismiss">×</button>
+        <span class="veil-daily-msg-icon">✦</span>
+        <span class="veil-daily-msg-text">${msg.text}</span>
+        <button class="veil-daily-msg-close" type="button" title="Dismiss">×</button>
     `;
     document.body.appendChild(banner);
-    banner.querySelector('.axis-daily-msg-close').addEventListener('click', () => {
-        banner.classList.add('axis-daily-msg-out');
+    banner.querySelector('.veil-daily-msg-close').addEventListener('click', () => {
+        banner.classList.add('veil-daily-msg-out');
         setTimeout(() => banner.remove(), 300);
     });
-    setTimeout(() => banner.classList.add('axis-daily-msg-visible'), 50);
+    setTimeout(() => banner.classList.add('veil-daily-msg-visible'), 50);
 }
 
 // ── Welcome tour ──────────────────────────────────────────────────────
@@ -69,8 +88,8 @@ function showDailyMessage(msg) {
 const TOUR_STEPS = [
     {
         id: 'welcome',
-        title: 'Welcome to Axis',
-        body: 'Axis is your private workspace — built around Lisa, secured by the chain. Let\'s set up your profile so Lisa knows you.',
+        title: 'Welcome to VEIL',
+        body: 'VEIL is your private workspace — built around Lisa, secured by the chain. Let\'s set up your profile so Lisa knows you.',
         action: 'Begin',
     },
     {
@@ -102,21 +121,21 @@ const TOUR_STEPS = [
         id: 'finish',
         title: 'You\'re set.',
         body: 'Lisa has your profile. Every session she\'ll greet you with something specific to your day. You can update your profile anytime in Settings.',
-        action: 'Enter Axis',
+        action: 'Enter VEIL',
     },
 ];
 
 function buildTourOverlay() {
     const overlay = document.createElement('div');
-    overlay.id = 'axis-tour-overlay';
+    overlay.id = 'veil-tour-overlay';
     overlay.innerHTML = `
-        <div id="axis-tour-card">
-            <div class="axis-tour-progress"><div class="axis-tour-progress-bar" id="axis-tour-bar"></div></div>
-            <div id="axis-tour-title"></div>
-            <div id="axis-tour-body"></div>
-            <div id="axis-tour-field"></div>
-            <div id="axis-tour-choices"></div>
-            <button id="axis-tour-action" type="button"></button>
+        <div id="veil-tour-card">
+            <div class="veil-tour-progress"><div class="veil-tour-progress-bar" id="veil-tour-bar"></div></div>
+            <div id="veil-tour-title"></div>
+            <div id="veil-tour-body"></div>
+            <div id="veil-tour-field"></div>
+            <div id="veil-tour-choices"></div>
+            <button id="veil-tour-action" type="button"></button>
         </div>
     `;
     document.body.appendChild(overlay);
@@ -125,11 +144,11 @@ function buildTourOverlay() {
 
 function renderStep(step, index, total, profile, overlay) {
     const pct = Math.round(((index + 1) / total) * 100);
-    overlay.querySelector('#axis-tour-bar').style.width = `${pct}%`;
-    overlay.querySelector('#axis-tour-title').textContent = step.title;
-    overlay.querySelector('#axis-tour-body').textContent = step.body || '';
+    overlay.querySelector('#veil-tour-bar').style.width = `${pct}%`;
+    overlay.querySelector('#veil-tour-title').textContent = step.title;
+    overlay.querySelector('#veil-tour-body').textContent = step.body || '';
 
-    const fieldEl = overlay.querySelector('#axis-tour-field');
+    const fieldEl = overlay.querySelector('#veil-tour-field');
     fieldEl.innerHTML = '';
     if (step.field) {
         fieldEl.innerHTML = `
@@ -138,21 +157,21 @@ function renderStep(step, index, total, profile, overlay) {
         `;
     }
 
-    const choicesEl = overlay.querySelector('#axis-tour-choices');
+    const choicesEl = overlay.querySelector('#veil-tour-choices');
     choicesEl.innerHTML = '';
     if (step.choices) {
         choicesEl.innerHTML = step.choices.map(c => `
-            <button class="axis-tour-choice${profile.style === c.id ? ' selected' : ''}" data-choice="${c.id}" type="button">${c.label}</button>
+            <button class="veil-tour-choice${profile.style === c.id ? ' selected' : ''}" data-choice="${c.id}" type="button">${c.label}</button>
         `).join('');
-        choicesEl.querySelectorAll('.axis-tour-choice').forEach(btn => {
+        choicesEl.querySelectorAll('.veil-tour-choice').forEach(btn => {
             btn.addEventListener('click', () => {
-                choicesEl.querySelectorAll('.axis-tour-choice').forEach(b => b.classList.remove('selected'));
+                choicesEl.querySelectorAll('.veil-tour-choice').forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
             });
         });
     }
 
-    overlay.querySelector('#axis-tour-action').textContent = step.action;
+    overlay.querySelector('#veil-tour-action').textContent = step.action;
 }
 
 function collectStep(step, overlay, profile) {
@@ -161,7 +180,7 @@ function collectStep(step, overlay, profile) {
         if (input) profile[step.id] = input.value.trim();
     }
     if (step.choices) {
-        const selected = overlay.querySelector('.axis-tour-choice.selected');
+        const selected = overlay.querySelector('.veil-tour-choice.selected');
         if (selected) profile.style = selected.dataset.choice;
     }
 }
@@ -177,7 +196,7 @@ export function startTour(onComplete) {
         if (index >= TOUR_STEPS.length) {
             saveProfile(profile);
             localStorage.setItem(TOUR_DONE_KEY, '1');
-            overlay.classList.add('axis-tour-out');
+            overlay.classList.add('veil-tour-out');
             setTimeout(() => {
                 overlay.remove();
                 if (typeof onComplete === 'function') onComplete(profile);
@@ -188,12 +207,13 @@ export function startTour(onComplete) {
     }
 
     renderStep(TOUR_STEPS[0], 0, TOUR_STEPS.length, profile, overlay);
-    overlay.querySelector('#axis-tour-action').addEventListener('click', advance);
+    overlay.querySelector('#veil-tour-action').addEventListener('click', advance);
 }
 
 // ── Entry point ───────────────────────────────────────────────────────
 
 export function initWelcomeSystem(authResult) {
+    migrateLegacyProfileKeys();
     const tourDone = localStorage.getItem(TOUR_DONE_KEY);
     const profile = getProfile();
 

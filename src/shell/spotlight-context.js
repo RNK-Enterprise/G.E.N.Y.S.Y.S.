@@ -1,9 +1,9 @@
 /**
- * Axis™ — extracted from main.js
+ * VEIL™ — extracted from main.js
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
-function getAxisSpotlightContext(host, title, url) {
+function getVEILSpotlightContext(host, title, url) {
     const lowerHost = String(host || '').toLowerCase();
     const lowerTitle = String(title || '').toLowerCase();
     const lowerUrl = String(url || '').toLowerCase();
@@ -149,6 +149,6 @@ function getAxisSpotlightContext(host, title, url) {
 
     return 'general';
 }
-window.getAxisSpotlightContext = getAxisSpotlightContext;
+window.getVEILSpotlightContext = getVEILSpotlightContext;
 
-window.getAxisSpotlightContext = getAxisSpotlightContext;
+window.getVEILSpotlightContext = getVEILSpotlightContext;

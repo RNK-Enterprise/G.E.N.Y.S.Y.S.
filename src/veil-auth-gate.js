@@ -1,5 +1,5 @@
 /**
- * Axis™ — Startup Auth Gate (standalone)
+ * VEIL™ — Startup Auth Gate (standalone)
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * Auth doctrine (2026-09-06):
@@ -7,27 +7,28 @@
  *     Authentication Core. The native shell enforces this; shortcodes are
  *     refused in production builds.
  *  2. Local shortcodes are DEV/bootstrap only, labeled as such.
- *  3. Dev bypass only when import.meta.env.DEV && axis_dev_bypass=true.
+ *  3. Dev bypass only when import.meta.env.DEV && veil_dev_bypass=true.
  *  4. Mother Lisa / biosig / FIDO are stubs (never fake success).
  *  5. If a production build starts without COMMAND_URL/RESOLUTE_URL, the
  *     shell reports a fail-closed HOLD and this gate shows it.
  */
 
-const SESSION_KEY = 'rnk-axis-auth-session';
-const DEV_BYPASS_KEY = 'axis_dev_bypass';
+const SESSION_KEY = 'rnk-veil-auth-session';
+const DEV_BYPASS_KEY = 'veil_dev_bypass';
 
-const gate = document.getElementById('axis-auth-gate');
-const card = document.getElementById('axis-auth-card');
-const form = document.getElementById('axis-auth-form');
-const input = document.getElementById('axis-auth-input');
-const visBtn = document.getElementById('axis-auth-vis-btn');
-const errorEl = document.getElementById('axis-auth-error');
-const submitBtn = document.getElementById('axis-auth-submit');
+const gate = document.getElementById('veil-auth-gate');
+const card = document.getElementById('veil-auth-card');
+const form = document.getElementById('veil-auth-form');
+const input = document.getElementById('veil-auth-input');
+const visBtn = document.getElementById('veil-auth-vis-btn');
+const errorEl = document.getElementById('veil-auth-error');
+const submitBtn = document.getElementById('veil-auth-submit');
 
 function isDevBypassEnabled() {
     try {
         // Use import.meta.env.DEV (no optional chaining) so Vite can replace it.
-        return Boolean(import.meta.env.DEV) && localStorage.getItem(DEV_BYPASS_KEY) === 'true';
+        if (Boolean(import.meta.env.DEV) && localStorage.getItem(DEV_BYPASS_KEY) === 'true') return true;
+        return false;
     } catch {
         return false;
     }
@@ -55,9 +56,9 @@ function persistSession(authResult) {
             expires,
         }),
     );
-    // Publish for module code that reads window.axisAuthSession
+    // Publish for module code that reads window.veilAuthSession
     // (e.g. section-nav tier gating). Falls back to sessionStorage there.
-    window.axisAuthSession = {
+    window.veilAuthSession = {
         token: authResult.token,
         tier: authResult.tier,
         agentId: authResult.agentId,
@@ -69,7 +70,7 @@ async function tauriInvoke(command, args = {}) {
     if (window.__TAURI__?.invoke) {
         return window.__TAURI__.invoke(command, args);
     }
-    throw new Error('Axis native shell required for authentication');
+    throw new Error('VEIL native shell required for authentication');
 }
 
 async function resolveCode(code) {
@@ -82,8 +83,8 @@ function dismissGate(authResult) {
     gate.style.transition = 'opacity 0.4s ease';
     gate.style.opacity = '0';
     gate.setAttribute('aria-hidden', 'true');
-    window.__axisAuthenticated = authResult;
-    document.dispatchEvent(new CustomEvent('axis:authenticated', { detail: authResult }));
+    window.__veilAuthenticated = authResult;
+    document.dispatchEvent(new CustomEvent('veil:authenticated', { detail: authResult }));
 }
 
 function showError(msg) {
@@ -120,7 +121,7 @@ async function handleCommandExchange() {
     submitBtn.textContent = 'Exchanging with Resolute…';
     try {
         // The grant is produced by the C.O.M.M.A.N.D. app (Mother handshake).
-        // Axis forwards it verbatim; B1 judges every layer.
+        // VEIL forwards it verbatim; B1 judges every layer.
         let grant = null;
         try { grant = JSON.parse(input.value); } catch { grant = null; }
         if (!grant || typeof grant !== 'object') {
@@ -158,21 +159,21 @@ function startCommandHeartbeat() {
                 clearInterval(_heartbeatTimer);
                 _heartbeatTimer = null;
                 sessionStorage.removeItem(SESSION_KEY);
-            delete window.axisAuthSession;
-                delete window.axisAuthSession;
+            delete window.veilAuthSession;
+                delete window.veilAuthSession;
                 gate.classList.remove('hidden');
                 gate.setAttribute('aria-hidden', 'false');
-                showError('C.O.M.M.A.N.D. session dropped — Axis re-locked.');
+                showError('C.O.M.M.A.N.D. session dropped — VEIL re-locked.');
             }
         } catch {
             // command_heartbeat errors on link drop (fail closed) — re-lock.
             clearInterval(_heartbeatTimer);
             _heartbeatTimer = null;
             sessionStorage.removeItem(SESSION_KEY);
-            delete window.axisAuthSession;
+            delete window.veilAuthSession;
             gate.classList.remove('hidden');
             gate.setAttribute('aria-hidden', 'false');
-            showError('Heartbeat link drop — Axis re-locked (fail closed).');
+            showError('Heartbeat link drop — VEIL re-locked (fail closed).');
         }
     }, 5000);
 }
@@ -234,14 +235,14 @@ async function applyCommandGateState() {
             if (errorEl) {
                 errorEl.textContent =
                     'FAIL-CLOSED HOLD — C.O.M.M.A.N.D. / Resolute not configured. ' +
-                    'Production Axis opens only on a C.O.M.M.A.N.D. session.';
+                    'Production VEIL opens only on a C.O.M.M.A.N.D. session.';
             }
             if (submitBtn) submitBtn.textContent = 'Holding';
             return true;
         }
         if (status && status.mode === 'command' && submitBtn) {
             // Resolute wired: gate the exchange behind the owner's C.O.M.M.A.N.D.
-            // session on the phone. The grant bundle is minted there; Axis
+            // session on the phone. The grant bundle is minted there; VEIL
             // submits it to B1 for judging (booleans carry no authority).
             submitBtn.textContent = 'Exchange C.O.M.M.A.N.D. grant';
             return 'command';
@@ -254,7 +255,7 @@ async function applyCommandGateState() {
 }
 
 function setLisaConnectState(health) {
-    const subtitle = document.querySelector('.axis-auth-subtitle');
+    const subtitle = document.querySelector('.veil-auth-subtitle');
     if (!subtitle || !submitBtn) return;
 
     const mode = health?.mode || 'local';
@@ -262,19 +263,19 @@ function setLisaConnectState(health) {
         subtitle.textContent = mode === 'remote' && health.connected
             ? 'Lisa ready (local + remote)'
             : 'Lisa ready (local policy)';
-        subtitle.classList.add('axis-auth-subtitle--live');
+        subtitle.classList.add('veil-auth-subtitle--live');
     } else {
         subtitle.textContent = 'Secure Access Required';
     }
     submitBtn.textContent = 'Authenticate';
 
     // Mother Lisa affordance — stub only
-    let mother = document.getElementById('axis-mother-lisa-btn');
+    let mother = document.getElementById('veil-mother-lisa-btn');
     if (!mother && card) {
         mother = document.createElement('button');
         mother.type = 'button';
-        mother.id = 'axis-mother-lisa-btn';
-        mother.className = 'axis-auth-mother';
+        mother.id = 'veil-mother-lisa-btn';
+        mother.className = 'veil-auth-mother';
         mother.textContent = 'Mother Lisa (not wired)';
         mother.title = 'Biosig / FIDO path ships with Mother Lisa';
         mother.style.cssText = 'margin-top:0.75rem;width:100%;opacity:0.7;font-size:0.8rem;';
@@ -286,8 +287,8 @@ function setLisaConnectState(health) {
 }
 
 function bindWindowControls() {
-    if (window.__axisWindowControlsBound) return;
-    window.__axisWindowControlsBound = true;
+    if (window.__veilWindowControlsBound) return;
+    window.__veilWindowControlsBound = true;
     const run = (cmd) => {
         if (window.__TAURI__?.invoke) return window.__TAURI__.invoke(cmd);
         if (typeof window.invoke === 'function') return window.invoke(cmd);
@@ -331,7 +332,7 @@ async function init() {
         gate.classList.add('hidden');
         Promise.resolve().then(() => {
             document.dispatchEvent(
-                new CustomEvent('axis:authenticated', {
+                new CustomEvent('veil:authenticated', {
                     detail: JSON.parse(sessionStorage.getItem(SESSION_KEY) || '{}'),
                 }),
             );

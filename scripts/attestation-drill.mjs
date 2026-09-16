@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 /**
- * Axis Attestation End-to-End Drill.
+ * VEIL Attestation End-to-End Drill.
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
- * Simulates an Axis session (minting attestations exactly the way the native
+ * Simulates an VEIL session (minting attestations exactly the way the native
  * `attestation_bootstrap` command does — `axb_<expiry>_<token>` cookie plus
  * the three documented headers), then hits gated RNK product APIs with and
  * without attestation and reports which refuse correctly.
  *
- * Classification (docs/AXIS_ATTESTATION.md):
- *   REFUSED  = 401 with axis_attestation_missing / _expired, or 403 _forbidden
+ * Classification (docs/VEIL_ATTESTATION.md):
+ *   REFUSED  = 401 with veil_attestation_missing / _expired, or 403 _forbidden
  *   ALLOWED  = anything else (auth failure with a different shape still counts
  *              as passing the gate, but is labeled to spot sloppy refusals)
  *
@@ -35,19 +35,19 @@ function headersFor(kind) {
       return {};
     case 'headers':
       return {
-        'x-axis-client': '1',
-        'x-axis-session': TOKEN,
-        'x-axis-tier': 'agent',
+        'x-veil-client': '1',
+        'x-veil-session': TOKEN,
+        'x-veil-tier': 'agent',
       };
     case 'cookie':
-      return { cookie: `axis_attest=${VALID}` };
+      return { cookie: `veil_attest=${VALID}` };
     case 'expired':
-      return { cookie: `axis_attest=${EXPIRED}` };
+      return { cookie: `veil_attest=${EXPIRED}` };
     case 'badtier':
       return {
-        'x-axis-client': '1',
-        'x-axis-session': TOKEN,
-        'x-axis-tier': 'agency', // not allowed
+        'x-veil-client': '1',
+        'x-veil-session': TOKEN,
+        'x-veil-tier': 'agency', // not allowed
       };
     default:
       throw new Error(`unknown kind ${kind}`);
@@ -82,16 +82,16 @@ function hit(port, path, method = 'GET', extraHeaders = {}, body = null) {
   });
 }
 
-const CONTRACT_REASONS = ['axis_attestation_missing', 'axis_attestation_expired', 'axis_attestation_forbidden'];
+const CONTRACT_REASONS = ['veil_attestation_missing', 'veil_attestation_expired', 'veil_attestation_forbidden'];
 
 function gateRefused(r) {
   return (r.status === 401 || r.status === 403) && CONTRACT_REASONS.includes(r.reason);
 }
 
 function classify(r) {
-  if (r.status === 401 && r.reason === 'axis_attestation_missing') return 'GATE REFUSED (missing)';
-  if (r.status === 401 && r.reason === 'axis_attestation_expired') return 'GATE REFUSED (expired)';
-  if (r.status === 403 && r.reason === 'axis_attestation_forbidden') return 'GATE REFUSED (forbidden tier)';
+  if (r.status === 401 && r.reason === 'veil_attestation_missing') return 'GATE REFUSED (missing)';
+  if (r.status === 401 && r.reason === 'veil_attestation_expired') return 'GATE REFUSED (expired)';
+  if (r.status === 403 && r.reason === 'veil_attestation_forbidden') return 'GATE REFUSED (forbidden tier)';
   if (gateRefused(r)) return `GATE REFUSED (${r.reason})`;
   if (r.status === 401 || r.status === 403) return `gate passed → downstream auth (${r.status})`;
   return `gate passed → handler (${r.status})`;
@@ -111,9 +111,9 @@ const DRILLS = [
   ['Demo log-only', 3021, 'GET', '/api/counter', null, false],
   ['Demo enforce', 3022, 'GET', '/api/counter', null, true],
   ['Demo enforce', 3022, 'POST', '/api/orgs', { name: 'x' }, true],
-  ['Raven', 3002, 'GET', '/api/axis/access-request', null, true],
-  ['Raven', 3002, 'POST', '/api/axis/access-request', { domain: 'x' }, true],
-  ['Raven', 3002, 'GET', '/api/axis/auth-list', null, true],
+  ['Raven', 3002, 'GET', '/api/veil/access-request', null, true],
+  ['Raven', 3002, 'POST', '/api/veil/access-request', { domain: 'x' }, true],
+  ['Raven', 3002, 'GET', '/api/veil/auth-list', null, true],
 ];
 
 const KINDS = ['none', 'headers', 'cookie', 'expired', 'badtier'];
@@ -128,7 +128,7 @@ for (const [product, port, method, path, body, expectGate] of DRILLS) {
 
 // ── Report ──────────────────────────────────────────────────────────────────
 let pass = 0, fail = 0;
-console.log('\n=== Axis Attestation End-to-End Drill ===\n');
+console.log('\n=== VEIL Attestation End-to-End Drill ===\n');
 for (const product of [...new Set(results.map((r) => r.product))]) {
   console.log(`\n## ${product}`);
   for (const r of results.filter((x) => x.product === product)) {

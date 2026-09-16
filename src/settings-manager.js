@@ -1,5 +1,5 @@
 /**
- * RNK Axis™
+ * RNK VEIL™
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * PROPRIETARY AND CONFIDENTIAL
@@ -32,13 +32,15 @@ export class SettingsManager {
 
     loadSettings() {
         try {
-            const saved = localStorage.getItem('rnk-axis-settings') ?? localStorage.getItem('rnk-atlas-settings');
+            const saved = localStorage.getItem('rnk-veil-settings')
+                ?? localStorage.getItem('rnk-axis-settings')
+                ?? localStorage.getItem('rnk-atlas-settings');
             const settings = saved ? JSON.parse(saved) : this.getDefaultSettings();
 
             if (settings.performance) {
                 const legacyPerformanceKey = ['enable', 'V', 'Q', 'Engines'].join('');
-                if (settings.performance.enableAxisEngines === undefined && settings.performance[legacyPerformanceKey] !== undefined) {
-                    settings.performance.enableAxisEngines = settings.performance[legacyPerformanceKey];
+                if (settings.performance.enableVEILEngines === undefined && settings.performance[legacyPerformanceKey] !== undefined) {
+                    settings.performance.enableVEILEngines = settings.performance[legacyPerformanceKey];
                 }
                 delete settings.performance[legacyPerformanceKey];
             }
@@ -52,7 +54,7 @@ export class SettingsManager {
     getDefaultSettings() {
         return {
             general: {
-                homepage: 'axis://newtab',
+                homepage: 'veil://newtab',
                 searchEngine: 'duckduckgo',
                 newTabBehavior: 'homepage',
                 showBookmarksBar: true
@@ -62,7 +64,7 @@ export class SettingsManager {
                 fontSize: 'medium',
                 showStatusBar: true,
                 enableAnimations: true,
-                accentColor: '#39ff14'
+                accentColor: '#8ab4f8'
             },
             privacy: {
                 enableTracking: false,
@@ -73,7 +75,7 @@ export class SettingsManager {
             },
             performance: {
                 enableHardwareAcceleration: true,
-                enableAxisEngines: true,
+                enableVEILEngines: true,
                 preloadPages: false,
                 maxCacheSize: 500
             },
@@ -88,7 +90,7 @@ export class SettingsManager {
 
     saveSettings() {
         try {
-            localStorage.setItem('rnk-axis-settings', JSON.stringify(this.settings));
+            localStorage.setItem('rnk-veil-settings', JSON.stringify(this.settings));
             this.emitEvent('settings-changed', this.settings);
         } catch (error) {
             console.error('Failed to save settings:', error);

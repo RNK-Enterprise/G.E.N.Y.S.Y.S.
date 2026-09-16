@@ -1,5 +1,5 @@
 /**
- * Axis™ — final branch completion round.
+ * VEIL™ — final branch completion round.
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -37,7 +37,7 @@ const { imageLazyShell } = await import('../src/turbos/image-lazy-shell.js');
 const { memoryReclaim } = await import('../src/turbos/memory-reclaim.js');
 const { tabSuspend } = await import('../src/turbos/tab-suspend.js');
 const loader = await import('../src/engines/catalog-loader.js');
-const { AxisEngineRuntime } = await import('../src/engines/runtime.js');
+const { VEILEngineRuntime } = await import('../src/engines/runtime.js');
 
 beforeEach(() => {
   dispatched.length = 0;
@@ -65,23 +65,23 @@ describe('history default-branch combos', () => {
 describe('settings legacy-key branch combos', () => {
   test('legacy key ignored when the modern key is already present', () => {
     const defaults = new SettingsManager().getDefaultSettings();
-    defaults.performance.enableAxisEngines = true;
+    defaults.performance.enableVEILEngines = true;
     defaults.performance.enableVQEngines = false;
-    global.localStorage.setItem('rnk-axis-settings', JSON.stringify(defaults));
+    global.localStorage.setItem('rnk-veil-settings', JSON.stringify(defaults));
     const sm = new SettingsManager();
-    expect(sm.get('performance', 'enableAxisEngines')).toBe(true);
+    expect(sm.get('performance', 'enableVEILEngines')).toBe(true);
     expect(sm.getAll().performance.enableVQEngines).toBeUndefined();
   });
 
   test('performance block without legacy keys deletes nothing and loads fine', () => {
     const defaults = new SettingsManager().getDefaultSettings();
-    global.localStorage.setItem('rnk-axis-settings', JSON.stringify(defaults));
+    global.localStorage.setItem('rnk-veil-settings', JSON.stringify(defaults));
     const sm = new SettingsManager();
     expect(sm.get('performance', 'maxCacheSize')).toBe(500);
   });
 
   test('saved payload without a performance block is handled', () => {
-    global.localStorage.setItem('rnk-axis-settings', JSON.stringify({ general: { homepage: 'https://x.test' } }));
+    global.localStorage.setItem('rnk-veil-settings', JSON.stringify({ general: { homepage: 'https://x.test' } }));
     const sm = new SettingsManager();
     expect(sm.get('general', 'homepage')).toBe('https://x.test');
     expect(sm.getAll().performance).toBeUndefined();
@@ -137,7 +137,7 @@ describe('memory-reclaim fallbacks', () => {
     const turbo = memoryReclaim();
     turbo.start();
     jest.advanceTimersByTime(30000);
-    expect(dispatched).toContain('axis:memory-reclaim');
+    expect(dispatched).toContain('veil:memory-reclaim');
     turbo.stop();
     jest.useRealTimers();
   });
@@ -171,7 +171,7 @@ describe('tab-suspend remaining branches', () => {
     const tab = { id: 1, iframe, url: 'https://z.test' };
     const turbo = tabSuspend({ getTabs: () => [tab] });
     turbo.start();
-    for (const fn of winListeners.get('axis:tab-deactivated') || []) {
+    for (const fn of winListeners.get('veil:tab-deactivated') || []) {
       fn({ detail: { tab: null, activeId: undefined } });
     }
     expect(tab.suspended).toBe(true);
@@ -182,7 +182,7 @@ describe('tab-suspend remaining branches', () => {
     const turbo = tabSuspend();
     turbo.start();
     expect(() => {
-      for (const fn of winListeners.get('axis:tab-deactivated') || []) {
+      for (const fn of winListeners.get('veil:tab-deactivated') || []) {
         fn({ detail: {} });
         fn({});
       }
@@ -195,7 +195,7 @@ describe('tab-suspend remaining branches', () => {
     const turbo = tabSuspend({ getTabs: () => undefined });
     turbo.start();
     expect(() => {
-      for (const fn of winListeners.get('axis:tab-deactivated') || []) {
+      for (const fn of winListeners.get('veil:tab-deactivated') || []) {
         fn({ detail: {} });
       }
     }).not.toThrow();
@@ -209,7 +209,7 @@ describe('tab-suspend remaining branches', () => {
     global.window.tabManager = { tabs: [tab] };
     const turbo = tabSuspend({});
     turbo.start();
-    for (const fn of winListeners.get('axis:tab-deactivated') || []) {
+    for (const fn of winListeners.get('veil:tab-deactivated') || []) {
       fn({ detail: { tab: null, activeId: 9 } });
     }
     expect(tab.suspended).toBe(true);
@@ -221,7 +221,7 @@ describe('tab-suspend remaining branches', () => {
     const turbo = tabSuspend({});
     turbo.start();
     expect(() => {
-      for (const fn of winListeners.get('axis:tab-activated') || []) {
+      for (const fn of winListeners.get('veil:tab-activated') || []) {
         fn({ detail: {} });
         fn({});
       }
@@ -233,7 +233,7 @@ describe('tab-suspend remaining branches', () => {
 describe('runtime unregistered-turbo toggle', () => {
   test('setTurboEnabled for an unregistered turbo persists without starting anything', () => {
     global.fetch = async () => { throw new Error('offline'); };
-    const rt = new AxisEngineRuntime();
+    const rt = new VEILEngineRuntime();
     expect(() => rt.setTurboEnabled('ghost-turbo', false)).not.toThrow();
     expect(rt.isTurboEnabled('ghost-turbo')).toBe(false);
     void loader;
@@ -241,7 +241,7 @@ describe('runtime unregistered-turbo toggle', () => {
 
   test('a registered turbo without start/stop hooks toggles cleanly', async () => {
     global.fetch = async () => ({ ok: true, json: async () => ({ turbos: [{ id: 'turbo-dns-cache', status: 'live' }] }) });
-    const rt = new AxisEngineRuntime();
+    const rt = new VEILEngineRuntime();
     await rt.start({});
     expect(() => rt.setTurboEnabled('turbo-dns-cache', false)).not.toThrow();
     expect(() => rt.setTurboEnabled('turbo-dns-cache', true)).not.toThrow();

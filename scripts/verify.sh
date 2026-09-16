@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Axis™ — one-command verification gate
+# VEIL™ — one-command verification gate
 # Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
 #
 # Chains the independent checks that guard this codebase:
@@ -10,13 +10,13 @@
 #              file may exceed the cap; lockfiles/generated catalog are exempt.
 #   3. unit  — Jest unit suite (tests/ and src/**/*.test.js), native ESM.
 #   3. e2e   — Playwright specs in e2e/ against the Vite dev server; each spec
-#              boots Axis and fails on any console error or uncaught throw.
+#              boots VEIL and fails on any console error or uncaught throw.
 #   4. rust  — cargo test in src-tauri/ through the WebKitGTK pkg-config
 #              wrapper (Ubuntu 24.04 ships 4.1; Tauri 1 looks for 4.0 names).
 #   5. live  — the compositor-level tab-window proof (scripts/verify-live.sh
-#              forced under Xvfb for determinism): launches Axis, drives a real
+#              forced under Xvfb for determinism): launches VEIL, drives a real
 #              tab open/close, asserts OS-level WebviewWindow destruction via
-#              the [axis:tabwin] journal lines. NOT in the default set: opt in
+#              the [veil:tabwin] journal lines. NOT in the default set: opt in
 #              via `npm run verify -- live` (needs xdotool + xvfb). Direct
 #              scripts/verify-live.sh runs accept more flags (real display,
 #              release binary, etc.).
@@ -33,11 +33,11 @@
 #
 # Exit codes: 0 = every selected stage passed, 1 = at least one failed,
 #             2 = bad usage / missing prerequisite.
-# Logs: /tmp/axis-verify/<stage>.log (override with AXIS_VERIFY_LOGDIR).
+# Logs: /tmp/veil-verify/<stage>.log (override with VEIL_VERIFY_LOGDIR).
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-LOGDIR="${AXIS_VERIFY_LOGDIR:-/tmp/axis-verify}"
+LOGDIR="${VEIL_VERIFY_LOGDIR:-/tmp/veil-verify}"
 ORDER=(audit loc unit e2e rust live)
 DEFAULT_STAGES=(audit loc unit e2e rust)
 
@@ -230,7 +230,7 @@ run_stage() { # <stage>
 }
 
 # ── Run ──────────────────────────────────────────────────────────────────────
-echo "Axis verify — $ROOT"
+echo "VEIL verify — $ROOT"
 echo "stages: ${SELECTED[*]}  |  logs: $LOGDIR"
 
 for key in "${ORDER[@]}"; do

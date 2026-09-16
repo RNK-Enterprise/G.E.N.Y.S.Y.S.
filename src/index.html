@@ -3,44 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Axis</title>
+    <title>VEIL</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <!-- Startup Auth Gate — shown before browser loads -->
-    <div id="axis-auth-gate">
-        <div class="axis-auth-card" id="axis-auth-card">
-            <div class="axis-auth-brand">
-                <div class="axis-auth-logo">⬡</div>
-                <div class="axis-auth-title">Axis</div>
-                <div class="axis-auth-subtitle">Secure Access Required</div>
+    <div id="veil-auth-gate">
+        <div class="veil-auth-card" id="veil-auth-card">
+            <div class="veil-auth-brand">
+                <div class="veil-auth-logo"><img src="assets/logo.svg" alt="" width="28" height="28"></div>
+                <div class="veil-auth-title">VEIL</div>
+                <div class="veil-auth-subtitle">Secure Access Required</div>
             </div>
-            <form class="axis-auth-form" id="axis-auth-form" autocomplete="off">
-                <div class="axis-auth-input-wrap">
+            <form class="veil-auth-form" id="veil-auth-form" autocomplete="off">
+                <div class="veil-auth-input-wrap">
                     <input
                         type="password"
-                        id="axis-auth-input"
+                        id="veil-auth-input"
                         placeholder="Enter access code…"
                         autocomplete="new-password"
                         spellcheck="false"
                     />
-                    <button type="button" class="axis-auth-toggle-vis" id="axis-auth-vis-btn" title="Show/hide">👁</button>
+                    <button type="button" class="veil-auth-toggle-vis" id="veil-auth-vis-btn" title="Show/hide">👁</button>
                 </div>
-                <div id="axis-auth-error"></div>
-                <button type="submit" id="axis-auth-submit">Authenticate</button>
+                <div id="veil-auth-error"></div>
+                <button type="submit" id="veil-auth-submit">Authenticate</button>
             </form>
-            <div class="axis-auth-footer">Axis · Authorized Personnel Only</div>
+            <div class="veil-auth-footer">VEIL · Authorized Personnel Only</div>
         </div>
     </div>
 
     <!-- Custom Window Chrome. Drag only the left brand strip so min/max/close stay clickable. -->
     <div id="titlebar">
         <div class="titlebar-left" data-tauri-drag-region>
-            <img src="assets/logo.svg" alt="Axis" class="logo">
-            <span class="window-title">Axis</span>
+            <img src="assets/logo.svg" alt="VEIL" class="logo">
+            <span class="window-title">VEIL</span>
         </div>
         <div class="titlebar-center">
-            <nav id="section-nav" aria-label="Axis sections">
+            <nav id="section-nav" aria-label="VEIL sections">
                 <div class="section-nav-group">
                     <button class="section-nav-btn active" data-section="browser" title="Browser">Browser</button>
                     <button class="section-nav-btn" data-section="lisa" title="Lisa">Lisa</button>
@@ -62,7 +62,7 @@
                         <input type="text" id="spotlight-search" placeholder="Filter actions…" autocomplete="off" spellcheck="false" />
                         <button type="button" id="spotlight-close" class="spotlight-close" title="Close" aria-label="Close">×</button>
                     </div>
-                    <p id="spotlight-context-line" class="spotlight-context-line">Axis watches the active tab and suggests the best next action.</p>
+                    <p id="spotlight-context-line" class="spotlight-context-line">VEIL watches the active tab and suggests the best next action.</p>
                     <div id="spotlight-feed" class="spotlight-feed"></div>
                 </div>
             </div>
@@ -80,7 +80,7 @@
     </div>
 
     <!-- Section: Browser (wraps existing browser chrome) -->
-    <div id="section-browser" class="axis-section active">
+    <div id="section-browser" class="veil-section active">
 
     <!-- Tab Bar (Week 2) -->
     <div id="tab-bar">
@@ -117,7 +117,7 @@
     </div>
 
     <div id="workspace">
-        <!-- Axis Sidebar -->
+        <!-- VEIL Sidebar -->
 
         <!-- WebView Container -->
         <div id="webview-container"></div>
@@ -126,41 +126,41 @@
     </div><!-- /#section-browser -->
 
     <!-- Section: Lisa -->
-    <div id="section-lisa" class="axis-section hidden">
-        <div class="axis-section-inner" id="lisa-section-mount"></div>
+    <div id="section-lisa" class="veil-section hidden">
+        <div class="veil-section-inner" id="lisa-section-mount"></div>
     </div>
 
-    <!-- Section: Operations (Raven CRM inside Axis) -->
-    <div id="section-operations" class="axis-section hidden">
-        <div class="axis-section-inner">
+    <!-- Section: Operations (Raven CRM inside VEIL) -->
+    <div id="section-operations" class="veil-section hidden">
+        <div class="veil-section-inner">
             <div id="rnk-webview-operations"></div>
         </div>
     </div>
 
-    <!-- Section: People (Raven HR inside Axis) -->
-    <div id="section-people" class="axis-section hidden">
-        <div class="axis-section-inner">
+    <!-- Section: People (Raven HR inside VEIL) -->
+    <div id="section-people" class="veil-section hidden">
+        <div class="veil-section-inner">
             <div id="rnk-webview-people"></div>
         </div>
     </div>
 
-    <!-- Section: Comms (Echonet inside Axis) -->
-    <div id="section-comms" class="axis-section hidden">
-        <div class="axis-section-inner">
+    <!-- Section: Comms (Echonet inside VEIL) -->
+    <div id="section-comms" class="veil-section hidden">
+        <div class="veil-section-inner">
             <div id="rnk-webview-comms"></div>
         </div>
     </div>
 
     <!-- Section: Server Control -->
-    <div id="section-server-control" class="axis-section hidden">
-        <div class="axis-section-inner" id="server-control-mount"></div>
+    <div id="section-server-control" class="veil-section hidden">
+        <div class="veil-section-inner" id="server-control-mount"></div>
     </div>
 
     <!-- Section: Admin -->
-    <div id="section-admin" class="axis-section hidden">
-        <div class="axis-section-inner" id="admin-section-mount">
-            <div class="axis-section-placeholder">
-                <span class="axis-section-icon">🔐</span>
+    <div id="section-admin" class="veil-section hidden">
+        <div class="veil-section-inner" id="admin-section-mount">
+            <div class="veil-section-placeholder">
+                <span class="veil-section-icon">🔐</span>
                 <h2>Admin</h2>
                 <p>Loading ops plane…</p>
             </div>
@@ -172,7 +172,7 @@
         <span id="status-text">Ready</span>
         <div class="statusbar-right">
             <button id="statusbar-minimal-toggle" class="statusbar-button" type="button" title="Minimal Status Bar">Mini</button>
-            <span id="axis-status" class="status-indicator">Axis: Disconnected</span>
+            <span id="veil-status" class="status-indicator">VEIL: Disconnected</span>
             <span id="fps-counter">0 FPS</span>
         </div>
     </div>
@@ -255,13 +255,13 @@
                 <span id="perf-network" class="perf-value">Idle</span>
             </div>
             <div class="perf-metric">
-                <span class="perf-label">Axis Connection:</span>
-                <span id="perf-axis" class="perf-value">Disconnected</span>
+                <span class="perf-label">VEIL Connection:</span>
+                <span id="perf-veil" class="perf-value">Disconnected</span>
             </div>
         </div>
         <div class="perf-summary">
             <span id="perf-summary-state" class="perf-summary-state">Ready</span>
-            <span id="perf-summary-text" class="perf-summary-text">Axis performance is standing by.</span>
+            <span id="perf-summary-text" class="perf-summary-text">VEIL performance is standing by.</span>
         </div>
         <div class="perf-chart">
             <canvas id="perf-canvas" width="400" height="150"></canvas>
@@ -301,7 +301,7 @@
                         <kbd>Ctrl+F</kbd><span>Search Tabs</span>
                     </div>
                     <div class="shortcut-item">
-                        <kbd>Ctrl+K</kbd><span>Open Axis Launcher</span>
+                        <kbd>Ctrl+K</kbd><span>Open VEIL Launcher</span>
                     </div>
                     <div class="shortcut-item">
                         <kbd>Alt+Enter</kbd><span>Pin or unpin launcher result</span>
@@ -340,15 +340,15 @@
 
     <script type="module">
         // Inline initialization to ensure it loads
-        console.log('Axis initializing...');
+        console.log('VEIL initializing...');
         // CI diagnostics: report the shell's own JS execution to the native log.
         if (window.__TAURI__?.invoke) {
             window.__TAURI__.invoke('log_boot', { marker: 'inline module' })
                 .catch(() => {});
         }
     </script>
-    <script type="module" src="./axis-auth-gate.js"></script>
-    <script type="module" src="./axis-cookies-bar.js"></script>
+    <script type="module" src="./veil-auth-gate.js"></script>
+    <script type="module" src="./veil-cookies-bar.js"></script>
     <script type="module" src="./main.js"></script>
 </body>
 </html>

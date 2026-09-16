@@ -1,5 +1,5 @@
 /**
- * Axis™ — HistoryManager unit tests
+ * VEIL™ — HistoryManager unit tests
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -31,7 +31,7 @@ describe('HistoryManager', () => {
     expect(recent).toHaveLength(1);
     expect(recent[0]).toMatchObject({ url: 'https://a.test', title: 'A', visitCount: 1 });
     expect(events).toContain('history-updated');
-    expect(JSON.parse(store.get('rnk-axis-history'))).toHaveLength(1);
+    expect(JSON.parse(store.get('rnk-veil-history'))).toHaveLength(1);
   });
 
   test('title defaults to the URL when omitted', () => {
@@ -103,7 +103,7 @@ describe('HistoryManager', () => {
   });
 
   test('survives corrupt stored history', () => {
-    store.set('rnk-axis-history', 'not json');
+    store.set('rnk-veil-history', 'not json');
     expect(new HistoryManager().getRecent()).toEqual([]);
   });
 });

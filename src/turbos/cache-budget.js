@@ -5,7 +5,7 @@ export function cacheBudget() {
 
   function maxMb() {
     const el = document.getElementById('setting-cache-size');
-    const n = Number(el?.value || localStorage.getItem('rnk-axis-cache-mb') || 500);
+    const n = Number(el?.value || localStorage.getItem('rnk-veil-cache-mb') || 500);
     return Number.isFinite(n) ? n : 500;
   }
 
@@ -14,14 +14,14 @@ export function cacheBudget() {
       const keys = [];
       for (let i = 0; i < localStorage.length; i++) {
         const k = localStorage.key(i);
-        if (k && (k.startsWith('rnk-axis-') || k.startsWith('rnk-axis-'))) keys.push(k);
+        if (k && (k.startsWith('rnk-veil-') || k.startsWith('rnk-axis-'))) keys.push(k);
       }
-      // Soft budget: if too many axis keys, drop oldest session-ish blobs
+      // Soft budget: if too many veil keys, drop oldest session-ish blobs
       if (keys.length > 80) {
         const drop = keys.filter((k) => k.includes('session') || k.includes('history-cache')).slice(0, 10);
         drop.forEach((k) => localStorage.removeItem(k));
       }
-      localStorage.setItem('rnk-axis-cache-mb', String(maxMb()));
+      localStorage.setItem('rnk-veil-cache-mb', String(maxMb()));
     } catch { /* quota */ }
   }
 

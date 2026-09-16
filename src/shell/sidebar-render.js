@@ -1,18 +1,18 @@
 /**
- * Axis™ — extracted from main.js
+ * VEIL™ — extracted from main.js
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
-window.setAxisSidebarStateBadge = function setAxisSidebarStateBadge(element, label, state = 'offline') {
+window.setVEILSidebarStateBadge = function setVEILSidebarStateBadge(element, label, state = 'offline') {
     if (!element) return;
     element.textContent = label;
     element.dataset.state = state;
 }
 
-window.setAxisSidebarStateBadgeFromCapability = function setAxisSidebarStateBadgeFromCapability(element, capabilityId, availableLabel = null, availableState = null, unavailableLabel = 'Offline') {
+window.setVEILSidebarStateBadgeFromCapability = function setVEILSidebarStateBadgeFromCapability(element, capabilityId, availableLabel = null, availableState = null, unavailableLabel = 'Offline') {
     if (!element) return;
-    const available = window.isAxisCapabilityAvailable(capabilityId);
-    setAxisSidebarStateBadge(
+    const available = window.isVEILCapabilityAvailable(capabilityId);
+    setVEILSidebarStateBadge(
         element,
         available
             ? (availableLabel ?? 'Ready')
@@ -28,26 +28,26 @@ window.SETTINGS_SECTION_RULES = {
     appearance: ['productivity', 'extensions'],
     privacy: ['security', 'privacy'],
     performance: ['performance'],
-    axis: [],
+    veil: [],
     advanced: ['developer', 'automation', 'accessibility']
 };
 
-window.AXIS_SURFACE_RULES = [
-    { selector: '#search-provider-btn', capability: 'axis-search', mode: 'hide' },
-    { selector: '#search-provider-modal', capability: 'axis-search', mode: 'hide' },
-    { selector: '#bookmarks-bar', capability: 'axis-bookmarks', mode: 'hide' },
-    { selector: '#bookmark-btn', capability: 'axis-bookmarks', mode: 'hide' },
-    { selector: '#sessions-btn', capability: 'axis-browser-core', mode: 'hide' },
-    { selector: '#performance-panel', capability: 'axis-performance-stack', mode: 'hide' },
-    { selector: '#fps-counter', capability: 'axis-performance-stack', mode: 'hide' },
-    { selector: '#clear-history-btn', capability: 'axis-history', mode: 'disable' },
-    { selector: '#setting-clear-history', capability: 'axis-history', mode: 'disable' },
-    { selector: '#setting-show-bookmarks-bar', capability: 'axis-bookmarks', mode: 'disable' },
-    { selector: '#new-tab-btn', capability: 'axis-browser-core', mode: 'hide' },
-    { selector: '#tab-bar', capability: 'axis-browser-core', mode: 'hide' }
+window.VEIL_SURFACE_RULES = [
+    { selector: '#search-provider-btn', capability: 'veil-search', mode: 'hide' },
+    { selector: '#search-provider-modal', capability: 'veil-search', mode: 'hide' },
+    { selector: '#bookmarks-bar', capability: 'veil-bookmarks', mode: 'hide' },
+    { selector: '#bookmark-btn', capability: 'veil-bookmarks', mode: 'hide' },
+    { selector: '#sessions-btn', capability: 'veil-browser-core', mode: 'hide' },
+    { selector: '#performance-panel', capability: 'veil-performance-stack', mode: 'hide' },
+    { selector: '#fps-counter', capability: 'veil-performance-stack', mode: 'hide' },
+    { selector: '#clear-history-btn', capability: 'veil-history', mode: 'disable' },
+    { selector: '#setting-clear-history', capability: 'veil-history', mode: 'disable' },
+    { selector: '#setting-show-bookmarks-bar', capability: 'veil-bookmarks', mode: 'disable' },
+    { selector: '#new-tab-btn', capability: 'veil-browser-core', mode: 'hide' },
+    { selector: '#tab-bar', capability: 'veil-browser-core', mode: 'hide' }
 ];
 
-function setAxisElementAvailability(element, available, mode = 'hide') {
+function setVEILElementAvailability(element, available, mode = 'hide') {
     if (!element) return;
 
     const supportsDisabled = 'disabled' in element;
@@ -79,8 +79,8 @@ function setAxisElementAvailability(element, available, mode = 'hide') {
     }
 }
 
-function hasAnyAxisCapability(capabilityIds = []) {
-    return capabilityIds.some(capabilityId => window.isAxisCapabilityAvailable(capabilityId));
+function hasAnyVEILCapability(capabilityIds = []) {
+    return capabilityIds.some(capabilityId => window.isVEILCapabilityAvailable(capabilityId));
 }
 
 function updateSettingsSectionAvailability(manifest) {
@@ -118,25 +118,25 @@ function updateSettingsSectionAvailability(manifest) {
     }
 }
 
-function updateAxisSurfaceAvailability(manifest) {
-    window.AXIS_SURFACE_RULES.forEach(({ selector, capability, anyOf, mode }) => {
+function updateVEILSurfaceAvailability(manifest) {
+    window.VEIL_SURFACE_RULES.forEach(({ selector, capability, anyOf, mode }) => {
         const element = document.querySelector(selector);
-        const available = anyOf ? hasAnyAxisCapability(anyOf) : window.isAxisCapabilityAvailable(capability);
-        setAxisElementAvailability(element, available, mode);
+        const available = anyOf ? hasAnyVEILCapability(anyOf) : window.isVEILCapabilityAvailable(capability);
+        setVEILElementAvailability(element, available, mode);
     });
 }
 
-window.hasAnyAxisCapability = hasAnyAxisCapability;
-window.updateAxisSurfaceAvailability = updateAxisSurfaceAvailability;
+window.hasAnyVEILCapability = hasAnyVEILCapability;
+window.updateVEILSurfaceAvailability = updateVEILSurfaceAvailability;
 
-// AXIS SHELL sidebar removed — the removed sidebar DOM's refresh fan-out
+// VEIL SHELL sidebar removed — the removed sidebar DOM's refresh fan-out
 // (state badges, per-section surfaces, feeds) no longer has targets.
 // Live consumers keep working:
-//   refreshAxisSidebarConnectionState → no-op (perf + status surfaces are
+//   refreshVEILSidebarConnectionState → no-op (perf + status surfaces are
 //     updated directly by performance-monitor / chrome-bindings-c now)
-//   refreshAxisSidebarFeeds → tab-manager create/close/activate fan-out,
+//   refreshVEILSidebarFeeds → tab-manager create/close/activate fan-out,
 //     kept as a stable extension point
-window.refreshAxisSidebarConnectionState = function refreshAxisSidebarConnectionState() {};
-window.refreshAxisSidebarFeeds = function refreshAxisSidebarFeeds() {};
+window.refreshVEILSidebarConnectionState = function refreshVEILSidebarConnectionState() {};
+window.refreshVEILSidebarFeeds = function refreshVEILSidebarFeeds() {};
 window.updateSettingsSectionAvailability = updateSettingsSectionAvailability;
-window.updateAxisSurfaceAvailability = updateAxisSurfaceAvailability;
+window.updateVEILSurfaceAvailability = updateVEILSurfaceAvailability;

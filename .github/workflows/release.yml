@@ -1,4 +1,4 @@
-# Axis™ — release
+# VEIL™ — release
 # Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
 #
 # On a v* tag push: build the real packages (deb / rpm / AppImage), run the
@@ -71,7 +71,7 @@ jobs:
       - name: Dump smoke-suite launch logs (on failure)
         if: failure()
         run: |
-          for f in /tmp/axis-smoke-*/appimage.log /tmp/axis-smoke-*/bin.log /tmp/axis-smoke-*/installed.log; do
+          for f in /tmp/veil-smoke-*/appimage.log /tmp/veil-smoke-*/bin.log /tmp/veil-smoke-*/installed.log; do
             [ -f "$f" ] || continue
             echo "=== $f ==="
             tail -25 "$f"
@@ -89,7 +89,7 @@ jobs:
             gh api "repos/$GITHUB_REPOSITORY/releases/generate-notes" \
               -f tag_name="${GITHUB_REF_NAME}" --jq .body > /tmp/release-notes.md
             gh release edit "${GITHUB_REF_NAME}" --repo "$GITHUB_REPOSITORY" \
-              --title "Axis ${GITHUB_REF_NAME}" --notes-file /tmp/release-notes.md
+              --title "VEIL ${GITHUB_REF_NAME}" --notes-file /tmp/release-notes.md
             for f in src-tauri/target/release/bundle/deb/*.deb \
                      src-tauri/target/release/bundle/rpm/*.rpm \
                      src-tauri/target/release/bundle/appimage/*.AppImage; do
@@ -98,7 +98,7 @@ jobs:
           else
             gh release create "${GITHUB_REF_NAME}" \
               --repo "$GITHUB_REPOSITORY" \
-              --title "Axis ${GITHUB_REF_NAME}" \
+              --title "VEIL ${GITHUB_REF_NAME}" \
               --generate-notes \
               src-tauri/target/release/bundle/deb/*.deb \
               src-tauri/target/release/bundle/rpm/*.rpm \

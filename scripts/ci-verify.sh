@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Axis™ — CI verification recipe
+# VEIL™ — CI verification recipe
 # Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
 #
 # What a fresh Linux box needs to run `npm run verify` for this repo. The

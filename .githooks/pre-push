@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Axis™ — pre-push gate
+# VEIL™ — pre-push gate
 # Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
 #
 # Runs `npm run verify` (fail-fast) before any push leaves this machine: global
@@ -11,5 +11,5 @@ set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
-echo "axis pre-push: verifying (audit → unit → e2e → rust, stop at first failure)…"
+echo "veil pre-push: verifying (audit → unit → e2e → rust, stop at first failure)…"
 exec bash "$ROOT/scripts/verify.sh" --fail-fast

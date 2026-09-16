@@ -8,9 +8,9 @@ export function renderThrottle() {
     start() {
       onVis = () => {
         hidden = document.hidden;
-        document.documentElement.classList.toggle('axis-render-throttled', hidden);
+        document.documentElement.classList.toggle('veil-render-throttled', hidden);
         window.dispatchEvent(
-          new CustomEvent('axis:render-throttle', { detail: { hidden } }),
+          new CustomEvent('veil:render-throttle', { detail: { hidden } }),
         );
       };
       document.addEventListener('visibilitychange', onVis);
@@ -18,7 +18,7 @@ export function renderThrottle() {
     },
     stop() {
       if (onVis) document.removeEventListener('visibilitychange', onVis);
-      document.documentElement.classList.remove('axis-render-throttled');
+      document.documentElement.classList.remove('veil-render-throttled');
     },
   };
 }

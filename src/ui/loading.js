@@ -1,4 +1,4 @@
-/** Axis LoadingManager */
+/** VEIL LoadingManager */
 class LoadingManager {
     constructor() {
         this.overlay = null;

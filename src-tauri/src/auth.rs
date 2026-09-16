@@ -1,4 +1,4 @@
-//! Local shortcode auth for standalone Axis.
+//! Local shortcode auth for standalone VEIL.
 //! Mother Lisa / biosig / FIDO remain stubs until that product ships.
 //!
 //! 2026-09-06 doctrine: production auth = C.O.M.M.A.N.D. / Resolute session.
@@ -16,11 +16,11 @@ pub struct AccessEntry {
     pub agent_id: String,
 }
 
-/// Parse AXIS_ACCESS_CODES="code:tier:agentId,code2:tier:agentId"
-/// Defaults enable standalone bootstrap (documented in README / AXIS.md).
+/// Parse VEIL_ACCESS_CODES="code:tier:agentId,code2:tier:agentId"
+/// Defaults enable standalone bootstrap (documented in README / VEIL.md).
 pub fn load_access_map() -> HashMap<String, AccessEntry> {
-    let raw = std::env::var("AXIS_ACCESS_CODES").unwrap_or_else(|_| {
-        "axis-odinn:full:creator,axis-agent:agent:agent".into()
+    let raw = std::env::var("VEIL_ACCESS_CODES").unwrap_or_else(|_| {
+        "veil-odinn:full:creator,veil-agent:agent:agent".into()
     });
     let mut map = HashMap::new();
     for part in raw.split(',') {
@@ -55,7 +55,7 @@ fn new_session_token() -> String {
         .duration_since(UNIX_EPOCH)
         .map(|d| d.as_nanos())
         .unwrap_or(0);
-    format!("axis-{}-{}", std::process::id(), nanos)
+    format!("veil-{}-{}", std::process::id(), nanos)
 }
 
 #[tauri::command]
@@ -74,11 +74,11 @@ pub fn auth_resolve_code(code: String, state: State<'_, AppState>) -> Result<ser
         return Err("Mother Lisa / biosig not wired yet — use an access code".into());
     }
 
-    // Production gate: shortcodes are DEV/bootstrap only. Production Axis
+    // Production gate: shortcodes are DEV/bootstrap only. Production VEIL
     // opens on a C.O.M.M.A.N.D. / Resolute session or holds fail-closed.
     if crate::command_gate::is_command_mode() {
         return Err(
-            "Shortcode auth disabled in production — Axis opens via C.O.M.M.A.N.D. / Resolute".into(),
+            "Shortcode auth disabled in production — VEIL opens via C.O.M.M.A.N.D. / Resolute".into(),
         );
     }
 
@@ -107,7 +107,7 @@ pub fn auth_resolve_code(code: String, state: State<'_, AppState>) -> Result<ser
     }))
 }
 
-/// Mirror a verified C.O.M.M.A.N.D./Resolute session into the Axis policy
+/// Mirror a verified C.O.M.M.A.N.D./Resolute session into the VEIL policy
 /// engine. Called by command_session after B1 says ok:true. Never called with
 /// fabricated evidence — the grant was judged by B1.
 pub fn apply_command_session(state: &State<'_, AppState>, tier: String, owner_id: Option<String>, token: String) {
@@ -122,7 +122,7 @@ pub fn apply_command_session(state: &State<'_, AppState>, tier: String, owner_id
     }
 }
 
-/// Internal: clear the Axis session (heartbeat drop / explicit end).
+/// Internal: clear the VEIL session (heartbeat drop / explicit end).
 pub fn auth_clear_session(state: &State<'_, AppState>) {
     if let Ok(mut session) = state.session.lock() {
         *session = Session::default();

@@ -112,8 +112,8 @@
     align-self: flex-start;
     padding: 2px 8px;
     border-radius: 999px;
-    border: 1px solid rgba(212, 168, 67, 0.22);
-    background: rgba(212, 168, 67, 0.12);
+    border: 1px solid rgba(138, 180, 248, 0.22);
+    background: rgba(138, 180, 248, 0.12);
     color: var(--text-primary);
     font-size: 10px;
     text-transform: uppercase;
@@ -152,14 +152,14 @@
     color: var(--toxic-green);
 }
 
-#axis-status {
+#veil-status {
     cursor: pointer;
     transition: all var(--transition-fast);
 }
 
-#axis-status:hover {
+#veil-status:hover {
     color: var(--toxic-green);
-    text-shadow: 0 0 8px rgba(212, 168, 67, 0.5);
+    text-shadow: 0 0 8px rgba(138, 180, 248, 0.5);
 }
 
 /* ============================================ */

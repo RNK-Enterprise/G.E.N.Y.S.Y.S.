@@ -1,5 +1,5 @@
 /**
- * Axis™ — boot smoke test
+ * VEIL™ — boot smoke test
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * The cheap, broad net: boot the real shell in browser mode and fail on *any*
@@ -11,13 +11,13 @@
  */
 
 import { test, expect } from 'playwright/test';
-import { bootAxis, problemReport } from './axis-boot.js';
+import { bootVEIL, problemReport } from './veil-boot.js';
 
 test('shell boots clean: one tab, no exceptions, no console errors', async ({ page }) => {
-  const problems = await bootAxis(page);
+  const problems = await bootVEIL(page);
 
   // The shell really came up — not just an empty document.
-  await expect(page.locator('#axis-auth-gate')).toHaveClass(/hidden/);
+  await expect(page.locator('#veil-auth-gate')).toHaveClass(/hidden/);
   await expect(page.locator('#tabs .tab')).toHaveCount(1);
   await expect(page.locator('#omnibox')).toBeVisible();
 
@@ -25,18 +25,18 @@ test('shell boots clean: one tab, no exceptions, no console errors', async ({ pa
 });
 
 test('published shell globals are wired and callable', async ({ page }) => {
-  const problems = await bootAxis(page);
+  const problems = await bootVEIL(page);
   await expect(page.locator('#tabs .tab')).toHaveCount(1);
 
   // Every probe below is a global some other module calls unguarded; when its
-  // provider module is dropped (as happened when the AXIS SHELL sidebar was
+  // provider module is dropped (as happened when the VEIL SHELL sidebar was
   // removed) the call throws at runtime. Args are inert on purpose.
   const failures = await page.evaluate(() => {
     const withArg = new Set([
       'updateStatusBar',
       'getThemeLabel',
       'applyThemeState',
-      'isAxisCapabilityAvailable',
+      'isVEILCapabilityAvailable',
       'escapeHtml',
     ]);
     const probes = [
@@ -47,9 +47,9 @@ test('published shell globals are wired and callable', async ({ page }) => {
       'updateStatusBar',
       'getThemeLabel',
       'applyThemeState',
-      'isAxisCapabilityAvailable',
+      'isVEILCapabilityAvailable',
       'escapeHtml',
-      'setAxisStatusIndicator',
+      'setVEILStatusIndicator',
       'togglePerformancePanel',
     ];
 
@@ -73,7 +73,7 @@ test('published shell globals are wired and callable', async ({ page }) => {
 });
 
 test('newtab page boots clean (the tab-window page)', async ({ page }) => {
-  const problems = await bootAxis(page, { path: '/newtab.html' });
+  const problems = await bootVEIL(page, { path: '/newtab.html' });
 
   // Tab windows and the blocked view both load this page; a 404 or a broken
   // inline script here would leave every opened tab blank.

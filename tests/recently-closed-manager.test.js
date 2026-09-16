@@ -1,5 +1,5 @@
 /**
- * Axis™ — RecentlyClosedManager unit tests
+ * VEIL™ — RecentlyClosedManager unit tests
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -25,7 +25,7 @@ describe('RecentlyClosedManager', () => {
     const closed = rcm.getRecentlyClosed();
     expect(closed.map((t) => t.url)).toEqual(['https://second.test', 'https://first.test']);
     expect(closed[0].timestamp).toBeGreaterThan(0);
-    expect(JSON.parse(store.get('rnk-axis-closed-tabs'))).toHaveLength(2);
+    expect(JSON.parse(store.get('rnk-veil-closed-tabs'))).toHaveLength(2);
   });
 
   test('caps the history at maxHistory (20)', () => {
@@ -45,7 +45,7 @@ describe('RecentlyClosedManager', () => {
   });
 
   test('corrupt stored history falls back to empty', () => {
-    store.set('rnk-axis-closed-tabs', '[broken');
+    store.set('rnk-veil-closed-tabs', '[broken');
     expect(new RecentlyClosedManager().getRecentlyClosed()).toEqual([]);
   });
 });

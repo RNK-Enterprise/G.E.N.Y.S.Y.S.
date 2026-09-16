@@ -1,5 +1,5 @@
 /**
- * Axis™ — extracted from main.js
+ * VEIL™ — extracted from main.js
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 window.bindModalCloseButtons();
@@ -14,7 +14,7 @@ document.querySelectorAll('.modal').forEach(modal => {
 });
 
 function showRecentlyClosedModal() {
-    if (!window.isAxisCapabilityAvailable('axis-history')) {
+    if (!window.isVEILCapabilityAvailable('veil-history')) {
         return;
     }
 
@@ -82,7 +82,7 @@ function showRecentlyClosedModal() {
 }
 
 function showSessionsModal() {
-    if (!window.isAxisCapabilityAvailable('axis-browser-core')) {
+    if (!window.isVEILCapabilityAvailable('veil-browser-core')) {
         return;
     }
 
@@ -337,7 +337,7 @@ window.bindClickHandlers([
 window.bindClickHandlers([
     [forwardBtn, () => window.tabManager.goForward()],
     [refreshBtn, () => window.tabManager.refresh()],
-    [homeBtn, () => navigateToUrl('axis://newtab')]
+    [homeBtn, () => navigateToUrl('veil://newtab')]
 ]);
 
 // Bookmark Button

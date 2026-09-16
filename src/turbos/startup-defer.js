@@ -15,8 +15,8 @@ export function startupDefer() {
     start() {
       cancelled = false;
       deferWork(() => {
-        document.documentElement.classList.add('axis-startup-ready');
-        window.dispatchEvent(new CustomEvent('axis:startup-idle'));
+        document.documentElement.classList.add('veil-startup-ready');
+        window.dispatchEvent(new CustomEvent('veil:startup-idle'));
       });
     },
     stop() {

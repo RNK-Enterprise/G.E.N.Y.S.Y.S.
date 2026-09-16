@@ -1,4 +1,4 @@
-/** Axis ToastManager */
+/** VEIL ToastManager */
 class ToastManager {
     constructor() {
         this.container = document.getElementById('toast-container');

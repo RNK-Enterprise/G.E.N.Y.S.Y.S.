@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Axis — full production build including the AppImage step.
+# VEIL — full production build including the AppImage step.
 #
 # Why this exists: appimagetool cannot resolve RELATIVE AppDir paths in this
-# environment ("no such file or directory: axis.AppDir"), and Tauri 1.6.3
+# environment ("no such file or directory: veil.AppDir"), and Tauri 1.6.3
 # passes it one relatively, so the plugin's final step fails. Everything else
 # (compile, linuxdeploy, AppDir population, deb/rpm) succeeds. We therefore
 # run the standard tauri build first, then invoke upstream appimagetool with
@@ -14,8 +14,8 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BUNDLE="$ROOT/src-tauri/target/release/bundle"
-APPDIR="$BUNDLE/appimage/axis.AppDir"
-OUT="$BUNDLE/appimage/axis_0.1.0_amd64.AppImage"
+APPDIR="$BUNDLE/appimage/veil.AppDir"
+OUT="$BUNDLE/appimage/veil_0.1.0_amd64.AppImage"
 TOOL="${1:-/tmp/appimagetool.AppImage}"
 
 cd "$ROOT"
@@ -25,7 +25,7 @@ cd "$ROOT"
 # non-zero exit is expected at that point — verify the rest really succeeded
 # before continuing, otherwise bail honestly.
 if ! npm run build; then
-  test -f "$BUNDLE/deb/axis_0.1.0_amd64.deb" && test -d "$APPDIR/usr/bin" || {
+  test -f "$BUNDLE/deb/veil_0.1.0_amd64.deb" && test -d "$APPDIR/usr/bin" || {
     echo "FATAL: build failed before the AppImage step (no deb/AppDir)" >&2
     exit 1
   }
@@ -41,13 +41,13 @@ if [ ! -x "$TOOL" ]; then
 fi
 
 rm -f "$OUT"
-chmod +x "$APPDIR/AppRun" "$APPDIR/usr/bin/axis"
+chmod +x "$APPDIR/AppRun" "$APPDIR/usr/bin/veil"
 APPIMAGE_EXTRACT_AND_RUN=1 "$TOOL" "$APPDIR" "$OUT"
 
 # 3. deb Depends repair: tauri 1.6.3 hardcodes libwebkit2gtk-4.0-37, which no
 # longer exists on Ubuntu 24.04+ (WebKitGTK 4.1 is the real package, and that
 # is what the binary links). Rewrite the control file with installable deps.
-DEB="$BUNDLE/deb/axis_0.1.0_amd64.deb"
+DEB="$BUNDLE/deb/veil_0.1.0_amd64.deb"
 if [ -f "$DEB" ]; then
   WORK=$(mktemp -d)
   dpkg-deb -R "$DEB" "$WORK/pkg"

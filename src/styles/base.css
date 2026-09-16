@@ -1,27 +1,35 @@
 ﻿/**
- * Axis™
+ * VEIL™
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * PROPRIETARY AND CONFIDENTIAL
  */
 
 :root {
-    /* Axis Theme */
-    --brand-gold: #d4a843; --toxic-green: #d4a843;
-    --brand-gold-dark: #b8902e; --toxic-green-dark: #b8902e;
-    --brand-gold-glow: rgba(212, 168, 67, 0.35); --toxic-green-glow: rgba(212, 168, 67, 0.35);
-    --dark-bg: #1a1a2e;
-    --darker-bg: #12121f;
-    --steel-bg: #22223a;
-    --text-primary: #e8e8f0;
-    --text-secondary: #7a7a9a;
-    --border-color: #2e2e4a;
+    /* VEIL Theme — midnight blue surfaces, ice-blue accent */
+    --accent: #8ab4f8; --brand-gold: #8ab4f8; --toxic-green: #8ab4f8;
+    --accent-dark: #6d9ae0; --brand-gold-dark: #6d9ae0; --toxic-green-dark: #6d9ae0;
+    --accent-glow: rgba(138, 180, 248, 0.35); --brand-gold-glow: rgba(138, 180, 248, 0.35); --toxic-green-glow: rgba(138, 180, 248, 0.35);
+    --accent-bg: rgba(138, 180, 248, 0.12);
+    --hover-bg: rgba(148, 178, 224, 0.10);
+    --dark-bg: #10192b;
+    --darker-bg: #0a1120;
+    --steel-bg: #16223a;
+    --text-primary: #e6ecf7;
+    --text-secondary: #8294b4;
+    --border-color: #233350;
+    --border-toxic: rgba(138, 180, 248, 0.45);
+    --shadow-toxic: 0 0 18px rgba(138, 180, 248, 0.22);
+    --shadow-deep: 0 14px 40px rgba(0, 0, 0, 0.45);
+    --success: #34d399;
+    --danger: #f87171;
+    --warning: #fbbf24;
     
     /* Animation Timings */
     --transition-fast: 0.15s;
     --transition-normal: 0.25s;
     --transition-slow: 0.4s;
-    --axis-titlebar-h: 32px;
+    --veil-titlebar-h: 32px;
 }
 
 * {
@@ -42,27 +50,27 @@ body {
 }
 
 body.theme-dark {
-    --dark-bg: #14142a;
-    --darker-bg: #0e0e1e;
-    --steel-bg: #1e1e36;
-    --text-primary: #f0f0f8;
-    --text-secondary: #8888aa;
-    --border-color: #2a2a46;
-    --brand-gold: #d4a843; --toxic-green: #d4a843;
-    --brand-gold-dark: #b8902e; --toxic-green-dark: #b8902e;
-    --toxic-green-glow: rgba(212, 168, 67, 0.34);
+    --dark-bg: #0d1626;
+    --darker-bg: #080f1c;
+    --steel-bg: #131f34;
+    --text-primary: #eef3fc;
+    --text-secondary: #8a9cc0;
+    --border-color: #1f3150;
+    --accent: #8ab4f8; --brand-gold: #8ab4f8; --toxic-green: #8ab4f8;
+    --accent-dark: #6d9ae0; --brand-gold-dark: #6d9ae0; --toxic-green-dark: #6d9ae0;
+    --accent-glow: rgba(138, 180, 248, 0.34); --brand-gold-glow: rgba(138, 180, 248, 0.34); --toxic-green-glow: rgba(138, 180, 248, 0.34);
 }
 
 body.theme-light {
-    --dark-bg: #f4f4f8;
+    --dark-bg: #eef2fa;
     --darker-bg: #ffffff;
-    --steel-bg: #e8e8f2;
-    --text-primary: #12121f;
-    --text-secondary: #555570;
-    --border-color: #c0c0d8;
-    --toxic-green: #b8902e;
-    --toxic-green-dark: #9a7820;
-    --toxic-green-glow: rgba(184, 144, 46, 0.2);
+    --steel-bg: #e2e9f6;
+    --text-primary: #101b30;
+    --text-secondary: #55688c;
+    --border-color: #c2cfe6;
+    --toxic-green: #4f7dc4;
+    --toxic-green-dark: #3d64a8;
+    --toxic-green-glow: rgba(79, 125, 196, 0.2);
 }
 
 body.theme-light input,
@@ -76,18 +84,18 @@ body.theme-light #omnibox {
 }
 
 body.theme-light .sidebar-action,
-body.theme-light .axis-sidebar-mini-action,
+body.theme-light .veil-sidebar-mini-action,
 body.theme-light .titlebar-button,
 body.theme-light .statusbar-button,
 body.theme-light .bookmarks-bar-item,
-body.theme-light .axis-sidebar-result-badge,
-body.theme-light .axis-sidebar-card-activity,
-body.theme-light .axis-download-state {
+body.theme-light .veil-sidebar-result-badge,
+body.theme-light .veil-sidebar-card-activity,
+body.theme-light .veil-download-state {
     color: var(--text-primary);
 }
 
-body.theme-light .axis-sidebar-card-open-hint,
-body.theme-light .axis-sidebar-mini-action,
+body.theme-light .veil-sidebar-card-open-hint,
+body.theme-light .veil-sidebar-mini-action,
 body.theme-light .statusbar-button,
 body.theme-light .titlebar-button {
     background: rgba(255, 255, 255, 0.9);
@@ -115,7 +123,7 @@ body.theme-light .titlebar-button {
 
 /* Custom Titlebar — always above the auth gate so close/min/max stay usable */
 #titlebar {
-    height: var(--axis-titlebar-h);
+    height: var(--veil-titlebar-h);
     flex-shrink: 0;
     position: relative;
     z-index: 100000;
@@ -125,7 +133,7 @@ body.theme-light .titlebar-button {
     align-items: center;
     gap: 8px;
     padding: 0 8px;
-    border-bottom: 1px solid var(--brand-gold, #d4a843);
+    border-bottom: 1px solid var(--brand-gold, #8ab4f8);
     user-select: none;
 }
 
@@ -143,8 +151,8 @@ body.theme-light .titlebar-button {
 }
 
 #titlebar.roomy {
-    --axis-titlebar-h: 36px;
-    height: var(--axis-titlebar-h);
+    --veil-titlebar-h: 36px;
+    height: var(--veil-titlebar-h);
     padding: 0 10px;
 }
 
@@ -196,8 +204,8 @@ body.theme-light .titlebar-button {
 }
 
 .titlebar-spotlight.active {
-    color: var(--brand-gold, #d4a843);
-    background: var(--accent-bg, rgba(212, 168, 67, 0.12));
+    color: var(--brand-gold, #8ab4f8);
+    background: var(--accent-bg, rgba(138, 180, 248, 0.12));
 }
 
 #spotlight-dropdown {
@@ -241,7 +249,7 @@ body.theme-light .titlebar-button {
 
 #spotlight-search:focus {
     outline: none;
-    border-color: var(--brand-gold, #d4a843);
+    border-color: var(--brand-gold, #8ab4f8);
 }
 
 .spotlight-close {

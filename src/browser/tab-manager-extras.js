@@ -1,5 +1,5 @@
 /**
- * Axis™ — TabManager extras (window mode)
+ * VEIL™ — TabManager extras (window mode)
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * Window-mode companions to tab-manager.js: tab lifecycle through Rust
@@ -37,7 +37,7 @@ TabManager.prototype.saveTabs = function() {
         favicon: tab.favicon,
         pinned: tab.pinned
     }));
-    localStorage.setItem('rnk-axis-tabs', JSON.stringify({
+    localStorage.setItem('rnk-veil-tabs', JSON.stringify({
         tabs: tabsData,
         activeIndex: this.tabs.findIndex(t => t.id === this.activeTabId)
     }));
@@ -45,7 +45,7 @@ TabManager.prototype.saveTabs = function() {
 
 TabManager.prototype.restoreTabs = function() {
     try {
-        const saved = localStorage.getItem('rnk-axis-tabs') ?? localStorage.getItem('rnk-atlas-tabs');
+        const saved = localStorage.getItem('rnk-veil-tabs') ?? localStorage.getItem('rnk-axis-tabs') ?? localStorage.getItem('rnk-atlas-tabs');
         if (!saved) return false;
 
         const data = JSON.parse(saved);
@@ -54,12 +54,25 @@ TabManager.prototype.restoreTabs = function() {
         // Idempotent: never restore on top of an existing session
         if (this.tabs.length > 0) return true;
 
-        const MAX_RESTORE = 20;
-        const toRestore = data.tabs.slice(0, MAX_RESTORE);
+        const MVE_RESTORE = 20;
+        const toRestore = data.tabs.slice(0, MVE_RESTORE);
         toRestore.forEach((tabData) => {
             try {
                 const tab = this.createTab(tabData.url);
                 if (!tab) return;
+                // One status-bar credit per restored navigation: its async
+                // policy round-trip may not clobber the “Viewing …” status
+                // the sync activateTab already wrote (the user navigated
+                // nowhere — no transient “Loading” belongs in the status bar).
+                // The credit is kept until the navigation settles
+                // (veil:navigate / policy block), not consumed on first use.
+                if (tabData.url && tabData.url !== 'veil://newtab' && tabData.url !== 'about:blank') {
+                    this._restoreCredits.set(tab.id, true);
+                }
+                // Restore the session's memory, not a placeholder: a saved
+                // title comes back as that title (createTab stamps a
+                // 'Loading...' placeholder for non-newtab URLs).
+                if (tabData.title) tab.title = tabData.title;
                 if (tabData.favicon) tab.favicon = tabData.favicon;
                 if (tabData.pinned) tab.pinned = true;
             } catch (err) {
@@ -84,7 +97,7 @@ TabManager.prototype.pinTab = function(tabId) {
         tab.pinned = !tab.pinned;
         this.renderTabs();
         this.saveTabs();
-        window.refreshAxisSidebarFeeds();
+        window.refreshVEILSidebarFeeds();
     }
 };
 
@@ -189,11 +202,11 @@ TabManager.prototype.activateTab = function(tabId) {
         document.getElementById('omnibox').value =
             tab.blockedView ? (tab.blockedView.domain || tab.url) : tab.url;
         window.updateStatusBar(`Viewing ${tab.title}`);
-        window.dispatchEvent(new CustomEvent('axis:tab-activated', { detail: { tab } }));
+        window.dispatchEvent(new CustomEvent('veil:tab-activated', { detail: { tab } }));
     }
     this.tabs.forEach(other => {
         if (other.id !== tabId) {
-            window.dispatchEvent(new CustomEvent('axis:tab-deactivated', {
+            window.dispatchEvent(new CustomEvent('veil:tab-deactivated', {
                 detail: { tab: other, activeId: tabId },
             }));
         }
@@ -211,7 +224,7 @@ TabManager.prototype.activateTab = function(tabId) {
     this.renderTabs();
     this.saveTabs();
     this.syncContentRect(tabId);
-    window.refreshAxisSidebarFeeds();
+    window.refreshVEILSidebarFeeds();
 };
 
 TabManager.prototype.renderTabs = function() {
@@ -262,7 +275,7 @@ TabManager.prototype.updateTab = function(tabId, updates) {
     if (tab) {
         Object.assign(tab, updates);
         this.renderTabs();
-        window.refreshAxisSidebarFeeds();
+        window.refreshVEILSidebarFeeds();
     }
 };
 
@@ -271,6 +284,9 @@ TabManager.prototype.navigateActiveTab = function(url) {
 };
 
 TabManager.prototype.navigateTab = function(tabId, url) {
+    // A user-driven navigation always owns the status bar: drop any leftover
+    // restore credit for this tab before the round-trip starts.
+    this._restoreCredits?.delete(tabId);
     const normalized = window.normalizeUrl(url);
     window.navigateWithLISA(
         tabId,
@@ -305,10 +321,10 @@ TabManager.prototype.renderBlockedView = function(tab) {
     if (!tab || !tab.blockedView) return;
     const { view, reason, domain } = tab.blockedView;
     const params = new URLSearchParams({ view, reason, domain });
-    let frame = document.getElementById('axis-blocked-view');
+    let frame = document.getElementById('veil-blocked-view');
     if (!frame) {
         frame = document.createElement('iframe');
-        frame.id = 'axis-blocked-view';
+        frame.id = 'veil-blocked-view';
         frame.className = 'webview';
         frame.setAttribute('role', 'document');
         frame.setAttribute('aria-label', 'Policy notice');
@@ -320,7 +336,7 @@ TabManager.prototype.renderBlockedView = function(tab) {
 };
 
 TabManager.prototype.hideBlockedView = function() {
-    const frame = document.getElementById('axis-blocked-view');
+    const frame = document.getElementById('veil-blocked-view');
     if (frame) frame.remove();
 };
 

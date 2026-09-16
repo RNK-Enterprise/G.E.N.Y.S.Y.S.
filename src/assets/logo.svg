@@ -1,11 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="VEIL">
+  <!--
+    VEIL™ mark — Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
+    Three layered veils, each more transparent than the last — privacy in layers.
+    The star marks what is protected beneath them. Palette: midnight-blue badge,
+    ice-blue line (#8ab4f8), pale-ice star (#cfe3ff).
+  -->
   <defs>
-    <linearGradient id="axisHex" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#233247"/>
-      <stop offset="1" stop-color="#101826"/>
+    <linearGradient id="veilBadge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#26354e"/>
+      <stop offset="1" stop-color="#0f1b30"/>
     </linearGradient>
   </defs>
-  <path d="M32 4 L56 17 L56 47 L32 60 L8 47 L8 17 Z" fill="url(#axisHex)" stroke="#b8860b" stroke-width="3"/>
-  <circle cx="32" cy="32" r="9" fill="none" stroke="#39ff14" stroke-width="3"/>
-  <line x1="32" y1="14" x2="32" y2="23" stroke="#39ff14" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Badge: a pointed drape (shield-like, softer than a hexagon) -->
+  <path d="M32 3 L57 16 L57 37 C57 50 44.6 58.5 32 61 C19.4 58.5 7 50 7 37 L7 16 Z"
+        fill="url(#veilBadge)" stroke="#8ab4f8" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- The veils: three descending swags, each more transparent -->
+  <path d="M12 21 A20 20 0 0 0 52 21" fill="none" stroke="#8ab4f8" stroke-width="4.5" stroke-linecap="round"/>
+  <path d="M18 21 A14 14 0 0 0 46 21" fill="none" stroke="#8ab4f8" stroke-width="4.5" stroke-linecap="round" opacity="0.62"/>
+  <path d="M24 21 A8 8 0 0 0 40 21" fill="none" stroke="#8ab4f8" stroke-width="4.5" stroke-linecap="round" opacity="0.34"/>
+
+  <!-- The star beneath: what the veils protect -->
+  <path d="M32 45 L33.6 48.4 L37 50 L33.6 51.6 L32 55 L30.4 51.6 L27 50 L30.4 48.4 Z"
+        fill="#cfe3ff" opacity="0.95"/>
 </svg>

@@ -1,4 +1,4 @@
-# Axis native shell (Tauri)
+# VEIL native shell (Tauri)
 
 Rust backend: window/tab-window management, auth gate, Lisa policy enforcement, command sessions, attestation.
 
@@ -7,7 +7,7 @@ Rust backend: window/tab-window management, auth gate, Lisa policy enforcement, 
 - `tauri.conf.json` validates `distDir` at compile time; build the frontend (`npm run build:vite`) before `cargo build` from a fresh clone.
 
 ## Layout
-- `src/main.rs` — app setup, IPC command registration, diagnostics journal (`[axis:page]`, `[axis:boot]`, `[axis:mainwin]`)
-- `src/tab_windows.rs` + `tab_commands.rs` — the `[axis:tabwin]` lifecycle the live proof asserts
+- `src/main.rs` — app setup, IPC command registration, diagnostics journal (`[veil:page]`, `[veil:boot]`, `[veil:mainwin]`)
+- `src/tab_windows.rs` + `tab_commands.rs` — the `[veil:tabwin]` lifecycle the live proof asserts
 - `src/lisa_policy.rs`, `auth.rs`, `command_session.rs`, `attestation.rs` — the policy plane
 - `*_tests.rs` — Rust unit tests, compiled as modules of their counterparts

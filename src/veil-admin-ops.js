@@ -1,5 +1,5 @@
 /**
- * Axis™ — Super Admin Ops Plane
+ * VEIL™ — Super Admin Ops Plane
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * LISA-gated. Only visible when tier === 'super-admin' or dev bypass.
@@ -7,10 +7,10 @@
  *
  * Standalone: fleet/log sources are not wired yet. Surfaces render locally
  * with an explicit "source not wired" state instead of calling out to any
- * retired Axis endpoints. Every local action is audit-logged.
+ * retired VEIL endpoints. Every local action is audit-logged.
  */
 
-const AUDIT_KEY = 'axis-admin-audit';
+const AUDIT_KEY = 'veil-admin-audit';
 
 // ── Audit trail ───────────────────────────────────────────────────────
 
@@ -25,7 +25,7 @@ function loadAuditLog() {
     return JSON.parse(localStorage.getItem(AUDIT_KEY) || '[]');
 }
 
-// ── Log DB fetch (sources not wired in standalone Axis) ──────────────
+// ── Log DB fetch (sources not wired in standalone VEIL) ──────────────
 
 async function fetchLogs(_source, _tail = 50) {
     return [];
@@ -86,11 +86,11 @@ export function mountAdminOps(mountEl, authTier) {
 
     if (authTier !== 'super-admin' && authTier !== 'dev') {
         mountEl.innerHTML = `
-            <div class="axis-section-placeholder">
-                <span class="axis-section-icon">🔐</span>
+            <div class="veil-section-placeholder">
+                <span class="veil-section-icon">🔐</span>
                 <h2>Admin</h2>
                 <p>Audit · Settings · Admin Panel</p>
-                <p class="axis-section-coming-soon">Lisa authorization required</p>
+                <p class="veil-section-coming-soon">Lisa authorization required</p>
             </div>
         `;
         return;
@@ -106,7 +106,7 @@ export function mountAdminOps(mountEl, authTier) {
             <div class="ops-tabs">
                 <button class="ops-tab active" data-tab="chain">Chain Logs</button>
                 <button class="ops-tab" data-tab="lisa">LISA Logs</button>
-                <button class="ops-tab" data-tab="axis">Axis Logs</button>
+                <button class="ops-tab" data-tab="veil">VEIL Logs</button>
                 <button class="ops-tab" data-tab="fleet">Fleet</button>
                 <button class="ops-tab" data-tab="audit">Audit Trail</button>
             </div>
@@ -124,11 +124,11 @@ export function mountAdminOps(mountEl, authTier) {
                     </div>
                     <div class="ops-log-feed" id="ops-feed-lisa"></div>
                 </div>
-                <div class="ops-panel" id="ops-panel-axis">
+                <div class="ops-panel" id="ops-panel-veil">
                     <div class="ops-panel-toolbar">
-                        <button class="ops-refresh-btn" data-source="axis">Refresh</button>
+                        <button class="ops-refresh-btn" data-source="veil">Refresh</button>
                     </div>
-                    <div class="ops-log-feed" id="ops-feed-axis"></div>
+                    <div class="ops-log-feed" id="ops-feed-veil"></div>
                 </div>
                 <div class="ops-panel" id="ops-panel-fleet">
                     <div class="ops-panel-toolbar">

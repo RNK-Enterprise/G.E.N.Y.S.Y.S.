@@ -28,7 +28,7 @@
     max-height: 700px;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 0 30px rgba(212, 168, 67, 0.5);
+    box-shadow: 0 0 30px rgba(138, 180, 248, 0.5);
     animation: slideIn var(--transition-slow) ease;
 }
 
@@ -45,7 +45,7 @@
     margin: 0;
     color: var(--toxic-green);
     font-size: 24px;
-    text-shadow: 0 0 10px rgba(212, 168, 67, 0.5);
+    text-shadow: 0 0 10px rgba(138, 180, 248, 0.5);
 }
 
 .settings-header .close-btn {
@@ -139,19 +139,19 @@
     margin-bottom: 24px;
 }
 
-.settings-panel.dense .axis-capability-item {
+.settings-panel.dense .veil-capability-item {
     padding: 10px;
 }
 
-.settings-panel.roomy .axis-capability-item {
+.settings-panel.roomy .veil-capability-item {
     padding: 16px;
 }
 
-.settings-panel.dense .axis-capability-list {
+.settings-panel.dense .veil-capability-list {
     gap: 10px;
 }
 
-.settings-panel.roomy .axis-capability-list {
+.settings-panel.roomy .veil-capability-list {
     gap: 14px;
 }
 
@@ -171,12 +171,12 @@
     background: var(--toxic-green);
     color: var(--dark-bg);
     border-color: var(--toxic-green);
-    box-shadow: 0 0 12px rgba(212, 168, 67, 0.35);
+    box-shadow: 0 0 12px rgba(138, 180, 248, 0.35);
 }
 
 .settings-density-buttons .action-btn.active[aria-pressed="mixed"],
 .settings-density-buttons .action-btn.active:not([aria-pressed]) {
-    background: rgba(212, 168, 67, 0.12);
+    background: rgba(138, 180, 248, 0.12);
     color: var(--toxic-green);
     border-color: var(--toxic-green);
 }
@@ -208,15 +208,15 @@
 }
 
 .settings-tab:hover {
-    background: rgba(212, 168, 67, 0.1);
+    background: rgba(138, 180, 248, 0.1);
     color: var(--toxic-green);
 }
 
 .settings-tab.active {
     border-left-color: var(--toxic-green);
-    background: rgba(212, 168, 67, 0.15);
+    background: rgba(138, 180, 248, 0.15);
     color: var(--toxic-green);
-    box-shadow: inset 0 0 15px rgba(212, 168, 67, 0.2);
+    box-shadow: inset 0 0 15px rgba(138, 180, 248, 0.2);
 }
 
 .settings-tab.disabled {
@@ -256,18 +256,18 @@
     filter: grayscale(0.15);
 }
 
-.axis-summary {
+.veil-summary {
     color: var(--text-primary);
     line-height: 1.5;
 }
 
-.axis-chip-list {
+.veil-chip-list {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
 }
 
-.axis-chip {
+.veil-chip {
     display: inline-flex;
     align-items: center;
     padding: 6px 10px;
@@ -279,45 +279,45 @@
     text-transform: capitalize;
 }
 
-.axis-chip-category {
-    background: rgba(212, 168, 67, 0.08);
+.veil-chip-category {
+    background: rgba(138, 180, 248, 0.08);
 }
 
-.axis-chip-surface {
+.veil-chip-surface {
     background: rgba(255, 107, 0, 0.08);
 }
 
-.axis-capability-list {
+.veil-capability-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 12px;
 }
 
-.axis-capability-item {
+.veil-capability-item {
     padding: 14px;
     border: 1px solid var(--border-rusted);
     border-radius: 8px;
     background: rgba(0, 0, 0, 0.2);
 }
 
-.axis-capability-meta {
+.veil-capability-meta {
     display: flex;
     justify-content: space-between;
     gap: 12px;
     margin-bottom: 8px;
 }
 
-.axis-capability-meta strong {
+.veil-capability-meta strong {
     color: var(--text-primary);
 }
 
-.axis-capability-meta span,
-.axis-capability-details {
+.veil-capability-meta span,
+.veil-capability-details {
     color: var(--text-secondary);
     font-size: 12px;
 }
 
-.axis-capability-details {
+.veil-capability-details {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
@@ -326,7 +326,7 @@
     letter-spacing: 0.04em;
 }
 
-.axis-capability-item p {
+.veil-capability-item p {
     margin: 0;
     color: var(--text-primary);
     font-size: 13px;
@@ -348,7 +348,7 @@
     width: 100%;
 }
 
-.settings-section-heading .axis-sidebar-mini-action {
+.settings-section-heading .veil-sidebar-mini-action {
     margin-left: auto;
     padding: 4px 8px;
     font-size: 9px;
@@ -383,7 +383,7 @@
 .setting-item select:focus {
     outline: none;
     border-color: var(--toxic-green);
-    box-shadow: 0 0 10px rgba(212, 168, 67, 0.3);
+    box-shadow: 0 0 10px rgba(138, 180, 248, 0.3);
 }
 
 .setting-item input[type="checkbox"] {
@@ -404,12 +404,12 @@
     cursor: pointer;
     font-weight: bold;
     transition: all 0.2s;
-    box-shadow: 0 4px 15px rgba(212, 168, 67, 0.3);
+    box-shadow: 0 4px 15px rgba(138, 180, 248, 0.3);
 }
 
 .action-btn:hover {
     background: var(--toxic-green);
-    box-shadow: 0 6px 20px rgba(212, 168, 67, 0.5);
+    box-shadow: 0 6px 20px rgba(138, 180, 248, 0.5);
     transform: translateY(-2px);
 }
 

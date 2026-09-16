@@ -42,11 +42,11 @@ export function dnsCache() {
 
   return {
     start() {
-      window.addEventListener('axis:policy-allow', onNav);
-      window.axisDnsCache = { lookup, cache };
+      window.addEventListener('veil:policy-allow', onNav);
+      window.veilDnsCache = { lookup, cache };
     },
     stop() {
-      window.removeEventListener('axis:policy-allow', onNav);
+      window.removeEventListener('veil:policy-allow', onNav);
       cache.clear();
     },
   };

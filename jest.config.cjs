@@ -1,5 +1,5 @@
 /**
- * Axis™ — Jest config (unit tests)
+ * VEIL™ — Jest config (unit tests)
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * Scope is the point: `roots` keeps Jest's crawl inside the unit-test dirs, so
@@ -18,34 +18,25 @@ module.exports = {
   // `.js` is inferred as ESM from the package's "type": "module" — Jest
   // rejects extensionsToTreatAsEsm for it, and needs no transform (babel-jest
   // is not installed). Run with `--experimental-vm-modules`, as the script does.
-  transform: {},
+  // HTML/CSS are only ever imported via `?raw` — the transformer turns the
+  // file text into its default export so Vite's `?raw` semantics hold in Jest.
+  // The two auth-gate modules get Vite-parity env emulation so the dev-bypass
+  // branches (import.meta.env.DEV) are test-controllable.
+  transform: {
+    '^.+\\.(html|css)$': '<rootDir>/tests/helpers/raw-transform.cjs',
+    'src/(lisa-bridge|veil-auth-gate)\\.js$': '<rootDir>/tests/helpers/env-transform.cjs',
+  },
+  moduleNameMapper: {
+    '^(.*)\\?raw$': '$1',
+  },
   roots: ['<rootDir>/tests', '<rootDir>/src'],
   testMatch: ['**/*.test.js'],
   testPathIgnorePatterns: ['/node_modules/', '/src-tauri/', '/dist/', '/e2e/'],
-  // Build Rule 16: 100/100/100/100/100/100 — statements, branches, functions,
-  // lines (x2), statements-per-file. The gate scopes to the logic modules that
-  // run without a browser; DOM-coupled surfaces (shell, tab manager, bridge)
-  // are covered by the Playwright e2e suite instead.
-  collectCoverageFrom: [
-    'src/bookmark-manager.js',
-    'src/download-manager.js',
-    'src/history-manager.js',
-    'src/settings-manager.js',
-    'src/engines/catalog-loader.js',
-    'src/engines/runtime.js',
-    'src/session/session-manager.js',
-    'src/session/recently-closed-manager.js',
-    'src/turbos/cache-budget.js',
-    'src/turbos/dns-cache.js',
-    'src/turbos/image-lazy-shell.js',
-    'src/turbos/index.js',
-    'src/turbos/memory-reclaim.js',
-    'src/turbos/nav-prefetch.js',
-    'src/turbos/network-idle.js',
-    'src/turbos/render-throttle.js',
-    'src/turbos/startup-defer.js',
-    'src/turbos/tab-suspend.js',
-  ],
+  // Build Rule 16: 100/100/100/100/100/100 — every first-party source file,
+  // every line. DOM-coupled surfaces (shell, tab manager, bridge, gate) are
+  // covered through the jsdom shell harness suites in tests/, which boot the
+  // real index.html and import the module graph in main.js order.
+  collectCoverageFrom: ['src/**/*.js', '!src/**/*.test.js'],
   coverageThreshold: {
     global: {
       statements: 100,

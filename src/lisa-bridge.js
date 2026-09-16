@@ -1,7 +1,7 @@
 import { initAuthPanel, showAuthPanel, hideAuthPanel } from './lisa/lisa-bridge-auth-ui.js';
 
 /**
- * RNK Axis™ — LISA Bridge
+ * RNK VEIL™ — LISA Bridge
  *
  * Intercepts all navigation in the frontend and routes through the Rust
  * navigate_tab command, which enforces LISA policy before allowing any
@@ -14,8 +14,8 @@ import { initAuthPanel, showAuthPanel, hideAuthPanel } from './lisa/lisa-bridge-
  *   flag      → iframe loads, subtle indicator shown in status bar
  *   quarantine → iframe does not load, quarantine notice shown
  *   block     → iframe does not load, block page shown
- *   chain     → NOT loadable in Axis. Ghost chain routing is not wired in the
- *               shell; policy fail-closes chain requests. Axis never loads a
+ *   chain     → NOT loadable in VEIL. Ghost chain routing is not wired in the
+ *               shell; policy fail-closes chain requests. VEIL never loads a
  *               "chained" URL directly — that would leak the request.
  *
  * Also handles:
@@ -55,7 +55,8 @@ function tauriListen(event, handler) {
 function isDevBypassEnabled() {
   try {
     // No optional chaining — Vite must see import.meta.env.DEV to replace it.
-    return Boolean(import.meta.env.DEV) && localStorage.getItem('axis_dev_bypass') === 'true'
+    return Boolean(import.meta.env.DEV)
+      && localStorage.getItem('veil_dev_bypass') === 'true'
   } catch {
     return false
   }
@@ -67,11 +68,11 @@ function _devFallback(command, args) {
   switch (command) {
     case 'navigate_tab': {
       const url = args?.url ?? ''
-      const internal = /^(axis|about|data|blob):/i.test(url)
+      const internal = /^(veil|about|data|blob):/i.test(url)
       if (bypass || internal) {
         return {
           decision: 'allow',
-          reason: bypass ? 'dev_bypass_allow' : 'internal_axis_surface',
+          reason: bypass ? 'dev_bypass_allow' : 'internal_veil_surface',
           audit: true,
           notify: false,
           chain: false,
@@ -92,7 +93,7 @@ function _devFallback(command, args) {
     case 'create_tab':
       return {
         id: Date.now(),
-        url: args.url ?? 'axis://newtab',
+        url: args.url ?? 'veil://newtab',
         title: 'New Tab',
         context: 'normal',
         loading: false,
@@ -105,10 +106,10 @@ function _devFallback(command, args) {
     case 'auth_session_info':
       return { accessTier: 'locked', shortcode: null, deviceVerified: false, authenticated: false }
     case 'auth_resolve_code':
-      if (!bypass) return Promise.reject(new Error('Auth requires Axis native shell'))
+      if (!bypass) return Promise.reject(new Error('Auth requires VEIL native shell'))
       return { token: 'dev-bypass', tier: 'dev', agentId: 'local', source: 'dev' }
     case 'check_lisa_health':
-    case 'check_axis_health':
+    case 'check_veil_health':
       return { connected: true, mode: 'local', localPolicy: true, lisaUrl: '' }
     case 'request_site_access':
       return { submitted: true, requestId: 'dev-' + Date.now() }
@@ -222,17 +223,17 @@ export async function navigateWithLISA(tabId, url, onAllow, onBlock) {
   switch (decision) {
     case 'allow':
       onAllow?.(normalized, false)
-      window.dispatchEvent(new CustomEvent('axis:policy-allow', { detail: { url: normalized, chain: false } }))
+      window.dispatchEvent(new CustomEvent('veil:policy-allow', { detail: { url: normalized, chain: false } }))
       break
 
     case 'flag':
       onAllow?.(normalized, false)
-      window.dispatchEvent(new CustomEvent('axis:policy-allow', { detail: { url: normalized, chain: false } }))
+      window.dispatchEvent(new CustomEvent('veil:policy-allow', { detail: { url: normalized, chain: false } }))
       showLisaFlag(policy)
       break
 
     case 'chain':
-      // Ghost chain routing is not wired in the Axis shell. Loading the URL
+      // Ghost chain routing is not wired in the VEIL shell. Loading the URL
       // directly would silently bypass the chain — fail closed instead.
       setTabLoading(tabId, false)
       onBlock?.(policy)
@@ -258,14 +259,14 @@ export async function navigateWithLISA(tabId, url, onAllow, onBlock) {
   return policy
 }
 
-// ── Tauri event listener: axis:navigate ───────────────────────────────────────
+// ── Tauri event listener: veil:navigate ───────────────────────────────────────
 // Rust emits this after LISA approves — frontend should drive the WebView here
 
 let _navigateHandler = null
 
-export function onAxisNavigate(handler) {
+export function onVEILNavigate(handler) {
   _navigateHandler = handler
-  tauriListen('axis:navigate', (event) => {
+  tauriListen('veil:navigate', (event) => {
     handler?.(event.payload)
   })
 }
@@ -274,7 +275,7 @@ export function onAxisNavigate(handler) {
 
 function setTabLoading(tabId, loading) {
   // Signal to the main TabManager via custom event
-  window.dispatchEvent(new CustomEvent('axis:tab-loading', { detail: { tabId, loading } }))
+  window.dispatchEvent(new CustomEvent('veil:tab-loading', { detail: { tabId, loading } }))
 }
 
 function showLisaFlag(policy) {
@@ -304,13 +305,13 @@ export async function submitAccessRequest(domain, reason) {
 // ── URL normalization ─────────────────────────────────────────────────────────
 
 export function normalizeUrl(input) {
-  if (!input || typeof input !== 'string') return 'axis://newtab'
+  if (!input || typeof input !== 'string') return 'veil://newtab'
   const trimmed = input.trim()
-  if (!trimmed) return 'axis://newtab'
+  if (!trimmed) return 'veil://newtab'
 
   // Already a full URL
   if (/^https?:\/\//i.test(trimmed)) return trimmed
-  if (/^axis:\/\//i.test(trimmed)) return trimmed
+  if (/^veil:\/\//i.test(trimmed)) return trimmed
 
   // Looks like a domain (has dot, no spaces)
   if (/^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}/.test(trimmed) && !trimmed.includes(' ')) {
@@ -328,13 +329,13 @@ export function initMessageListener(tabManager) {
   window.addEventListener('message', async (event) => {
     const { type, domain, reason } = event.data ?? {}
 
-    if (type === 'axis:access-request') {
+    if (type === 'veil:access-request') {
       try {
         await submitAccessRequest(domain, reason)
       } catch { /* submission errors shown in iframe */ }
     }
 
-    if (type === 'axis:proceed-anyway') {
+    if (type === 'veil:proceed-anyway') {
       // User explicitly overrode quarantine — load with audit flag
       console.warn(`[LISA Bridge] User overrode quarantine for ${domain}`)
       tabManager?.navigateActiveTab(domain)
@@ -351,21 +352,21 @@ export async function initLISABridge(tabManager) {
   // Init message bridge for iframe postMessages
   initMessageListener(tabManager)
 
-  // Listen for Tauri axis:navigate events (Rust fires these after policy
+  // Listen for Tauri veil:navigate events (Rust fires these after policy
   // approval AND after creating the tab window).
-  onAxisNavigate((payload) => {
+  onVEILNavigate((payload) => {
     const { tabId, url, context, chain } = payload
     tabManager?.onTauriNavigate?.(tabId, url, context, chain)
   })
 
   // Tab-window metadata (title/URL) mirrored from Rust — the single source
   // of truth for what a tab actually shows.
-  tauriListen('axis:tab-meta', (event) => {
+  tauriListen('veil:tab-meta', (event) => {
     tabManager?.onTabMeta?.(event.payload?.tabId, event.payload || {})
   })
 
   // Listen for tab loading state changes from navigate calls
-  window.addEventListener('axis:tab-loading', (e) => {
+  window.addEventListener('veil:tab-loading', (e) => {
     const { tabId, loading } = e.detail
     tabManager?.setTabLoading?.(tabId, loading)
   })
@@ -391,7 +392,7 @@ export async function initLISABridge(tabManager) {
   // Add LISA status indicator to titlebar
   injectLisaStatusIndicator()
 
-  // Axis engine runtime owns the status indicator; nothing external to poll.
+  // VEIL engine runtime owns the status indicator; nothing external to poll.
   console.log('[LISA Bridge] Initialized')
 }
 
@@ -407,9 +408,11 @@ function injectLisaStatusIndicator() {
   indicator.title = 'Click to authenticate'
   indicator.addEventListener('click', () => {
     if (!_session.authenticated) showAuthPanel()
-  })
+  })    // Insert before minimize button
+    const minimizeBtn = titlebarRight.querySelector('#minimize-btn')
+    titlebarRight.insertBefore(indicator, minimizeBtn)
 
-  // Insert before minimize button
-  const minimizeBtn = titlebarRight.querySelector('#minimize-btn')
-  titlebarRight.insertBefore(indicator, minimizeBtn)
+    // Session may already be resolved (refreshSession ran before injection) —
+    // sync immediately instead of showing "initializing" until the next poll.
+    updateLisaStatusIndicator()
 }

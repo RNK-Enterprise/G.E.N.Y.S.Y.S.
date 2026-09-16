@@ -1,13 +1,13 @@
 /**
- * Axis Engine Runtime — local registry; replaces Axis Bridge.
+ * VEIL Engine Runtime — local registry; replaces VEIL Bridge.
  */
 
-import { loadAxisManifest, listLiveTurbos, catalogSummary } from './catalog-loader.js';
+import { loadVEILManifest, listLiveTurbos, catalogSummary } from './catalog-loader.js';
 import { createLiveTurbos } from '../turbos/index.js';
 
-const STORAGE_KEY = 'rnk-axis-turbo-enabled';
+const STORAGE_KEY = 'rnk-veil-turbo-enabled';
 
-export class AxisEngineRuntime {
+export class VEILEngineRuntime {
   constructor() {
     this.connected = false;
     this.manifest = null;
@@ -44,12 +44,12 @@ export class AxisEngineRuntime {
       else turbo.stop?.(this);
     }
     window.dispatchEvent(
-      new CustomEvent('axis:turbo-toggled', { detail: { id, enabled: on } }),
+      new CustomEvent('veil:turbo-toggled', { detail: { id, enabled: on } }),
     );
   }
 
   async start(ctx = {}) {
-    this.manifest = await loadAxisManifest();
+    this.manifest = await loadVEILManifest();
     const liveDefs = listLiveTurbos(this.manifest);
     const impls = createLiveTurbos(ctx);
     for (const def of liveDefs) {
@@ -65,7 +65,7 @@ export class AxisEngineRuntime {
     this._setStatusIndicator(true);
     const summary = catalogSummary(this.manifest);
     window.dispatchEvent(
-      new CustomEvent('axis:runtime-ready', {
+      new CustomEvent('veil:runtime-ready', {
         detail: {
           engines: summary.engines,
           turbos: summary.turbos,
@@ -85,10 +85,10 @@ export class AxisEngineRuntime {
   }
 
   _setStatusIndicator(connected) {
-    const el = document.getElementById('axis-status') || document.getElementById('axis-status');
+    const el = document.getElementById('veil-status') || document.getElementById('veil-status');
     if (!el) return;
-    el.textContent = connected ? 'Axis Runtime' : 'Runtime Off';
-    el.style.color = connected ? 'var(--accent, #39ff14)' : 'var(--text-secondary)';
+    el.textContent = connected ? 'VEIL Runtime' : 'Runtime Off';
+    el.style.color = connected ? 'var(--accent, #8ab4f8)' : 'var(--text-secondary)';
   }
 
   getStatus() {
@@ -112,4 +112,4 @@ export class AxisEngineRuntime {
   }
 }
 
-export const axisRuntime = new AxisEngineRuntime();
+export const veilRuntime = new VEILEngineRuntime();

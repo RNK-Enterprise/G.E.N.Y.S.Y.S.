@@ -1,18 +1,18 @@
 /**
- * Axis™ — Spotlight (header dropdown)
+ * VEIL™ — Spotlight (header dropdown)
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * Contextual actions for the active tab, surfaced from a ⚡ button in the
  * titlebar. Replaces the old sidebar Spotlight section.
  */
 
-window.getAxisSpotlightSuggestions = function getAxisSpotlightSuggestions() {
+window.getVEILSpotlightSuggestions = function getVEILSpotlightSuggestions() {
   const activeTab = window.getActiveBrowserTab?.();
-  const recentHistory = window.axisSpotlightCaps('axis-history')
+  const recentHistory = window.veilSpotlightCaps('veil-history')
     ? (window.historyManager?.getRecent?.(8) || window.historyManager?.recent || [])
     : [];
-  const downloadSummary = window.axisSpotlightCaps('axis-downloads')
-    ? (window.getAxisDownloadSummary?.() || { downloads: [] })
+  const downloadSummary = window.veilSpotlightCaps('veil-downloads')
+    ? (window.getVEILDownloadSummary?.() || { downloads: [] })
     : { downloads: [], active: [], paused: [], completed: [], failed: [] };
 
   if (!activeTab) {
@@ -37,25 +37,25 @@ window.getAxisSpotlightSuggestions = function getAxisSpotlightSuggestions() {
   const host = window.getTabHost?.(activeTab) || '';
   const title = activeTab.title || 'Untitled page';
   const url = activeTab.url || '';
-  const context = window.getAxisSpotlightContext?.(host, title, url) || 'general';
+  const context = window.getVEILSpotlightContext?.(host, title, url) || 'general';
   const suggestions = [];
   const isBookmarked = url ? window.bookmarkManager?.isBookmarked?.(url) : false;
-  const push = (cond, item) => window.axisSpotlightPush(suggestions, cond, item);
-  const cap = window.axisSpotlightCaps;
+  const push = (cond, item) => window.veilSpotlightPush(suggestions, cond, item);
+  const cap = window.veilSpotlightCaps;
 
   push(true, { title: 'Focus omnibox', meta: url || 'Type a destination', badge: 'Nav', action: () => window.focusOmniboxOnly?.() });
   push(true, { title: 'New tab', meta: 'Open another browsing surface', badge: 'Shell', action: () => window.tabManager.createTab() });
-  push(!!url && cap('axis-bookmarks'), {
+  push(!!url && cap('veil-bookmarks'), {
     title: isBookmarked ? 'Remove bookmark' : 'Bookmark this page',
     meta: host || url,
     badge: 'Bookmarks',
-    action: () => (isBookmarked ? window.bookmarkManager?.removeBookmark?.(url) : window.bookmarkManager?.add?.(url, title)),
+    action: () => (isBookmarked ? window.bookmarkManager?.removeBookmark?.((window.bookmarkManager?.getBookmark?.(url) || {}).id) : window.bookmarkManager?.addBookmark?.(title, url)),
   });
-  push(cap('axis-history'), { title: 'Recently closed', meta: 'Restore closed tabs', badge: 'History', action: () => window.showRecentlyClosedModal?.() });
-  push(cap('axis-downloads'), { title: 'Open downloads', meta: `${(downloadSummary.downloads || []).length} items`, badge: 'Downloads', action: () => window.openAxisDownloadsSection?.() });
-  push(cap('axis-performance-stack'), { title: 'Performance panel', meta: 'Live turbos and metrics', badge: 'Perf', action: () => window.togglePerformancePanel?.() });
+  push(cap('veil-history'), { title: 'Recently closed', meta: 'Restore closed tabs', badge: 'History', action: () => window.showRecentlyClosedModal?.() });
+  push(cap('veil-downloads'), { title: 'Open downloads', meta: `${(downloadSummary.downloads || []).length} items`, badge: 'Downloads', action: () => window.openVEILDownloadsSection?.() });
+  push(cap('veil-performance-stack'), { title: 'Performance panel', meta: 'Live turbos and metrics', badge: 'Perf', action: () => window.togglePerformancePanel?.() });
   push(true, { title: 'Settings', meta: 'Preferences and density', badge: 'Settings', action: () => window.openSettings?.() });
-  push(context === 'workspace' && cap('axis-history'), { title: 'Related history', meta: 'Pages on this trail', badge: 'History', action: () => window.showRecentlyClosedModal?.() });
+  push(context === 'workspace' && cap('veil-history'), { title: 'Related history', meta: 'Pages on this trail', badge: 'History', action: () => window.showRecentlyClosedModal?.() });
   push(!!url && !!navigator.clipboard?.writeText, {
     title: 'Copy page URL',
     meta: url,
@@ -65,10 +65,10 @@ window.getAxisSpotlightSuggestions = function getAxisSpotlightSuggestions() {
       catch { window.updateStatusBar?.('Clipboard failed'); }
     },
   });
-  push(cap('axis-security-stack'), { title: 'Security surface', meta: 'Policy and isolation', badge: 'Security', action: () => window.openAxisSettingsSection?.('#settings-section-privacy') });
-  push(cap('axis-extensions'), { title: 'Extensions', meta: 'Local extension hooks', badge: 'Ext', action: () => window.openAxisSettingsSection?.('#settings-section-axis') });
-  push(cap('axis-communication'), { title: 'Communications', meta: 'Comms placeholders', badge: 'Comms', action: () => window.openAxisCommunicationSection?.() });
-  push(cap('axis-ai-assistant') || cap('axis-automation'), { title: 'Automation / AI', meta: 'Local automation hooks', badge: 'Auto', action: () => window.openAxisSettingsSection?.('#settings-section-advanced') });
+  push(cap('veil-security-stack'), { title: 'Security surface', meta: 'Policy and isolation', badge: 'Security', action: () => window.openVEILSettingsSection?.('#settings-section-privacy') });
+  push(cap('veil-extensions'), { title: 'Extensions', meta: 'Local extension hooks', badge: 'Ext', action: () => window.openVEILSettingsSection?.('#settings-section-veil') });
+  push(cap('veil-communication'), { title: 'Communications', meta: 'Comms placeholders', badge: 'Comms', action: () => window.openVEILCommunicationSection?.() });
+  push(cap('veil-ai-assistant') || cap('veil-automation'), { title: 'Automation / AI', meta: 'Local automation hooks', badge: 'Auto', action: () => window.openVEILSettingsSection?.('#settings-section-advanced') });
 
   // Recent history shortcuts
   for (const item of (recentHistory || []).slice(0, 3)) {
@@ -94,7 +94,7 @@ function escapeHtmlAttr(text) {
     .replaceAll("'", '&#39;');
 }
 
-window.renderAxisSpotlight = function renderAxisSpotlight() {
+window.renderVEILSpotlight = function renderVEILSpotlight() {
   const feed = document.getElementById('spotlight-feed');
   if (!feed) return;
 
@@ -106,7 +106,7 @@ window.renderAxisSpotlight = function renderAxisSpotlight() {
       : 'No active tab yet. Open one to unlock contextual suggestions.';
   }
 
-  const suggestions = window.getAxisSpotlightSuggestions?.() || [];
+  const suggestions = window.getVEILSpotlightSuggestions?.() || [];
   feed.innerHTML = suggestions.map((s, i) => `
     <button type="button" class="spotlight-item" data-idx="${i}">
       <span class="spotlight-item-badge">${escapeHtmlAttr(s.badge || '•')}</span>
@@ -127,7 +127,7 @@ window.renderAxisSpotlight = function renderAxisSpotlight() {
 };
 
 // Back-compat alias — old sidebar refresh paths now refresh the header dropdown.
-window.renderAxisSidebarSpotlight = window.renderAxisSpotlight;
+window.renderVEILSidebarSpotlight = window.renderVEILSpotlight;
 
 // ── Open / close behavior ─────────────────────────────────────────────────────
 
@@ -142,7 +142,7 @@ function openSpotlightDropdown() {
   if (!dropdown) return;
   const search = document.getElementById('spotlight-search');
   if (search) search.value = '';
-  window.renderAxisSpotlight();
+  window.renderVEILSpotlight();
   dropdown.dataset.open = '1';
   dropdown.classList.remove('hidden');
   dropdown.removeAttribute('hidden');
@@ -167,8 +167,8 @@ function toggleSpotlightDropdown() {
   else openSpotlightDropdown();
 }
 
-window.toggleAxisSpotlight = toggleSpotlightDropdown;
-window.closeAxisSpotlight = closeSpotlightDropdown;
+window.toggleVEILSpotlight = toggleSpotlightDropdown;
+window.closeVEILSpotlight = closeSpotlightDropdown;
 
 function filterSpotlightItems(query) {
   const feed = document.getElementById('spotlight-feed');
@@ -218,8 +218,8 @@ function initSpotlightDropdown() {
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && isSpotlightOpen()) closeSpotlightDropdown();
     });
-    window.addEventListener('axis:tab-activated', () => {
-      if (isSpotlightOpen()) window.renderAxisSpotlight();
+    window.addEventListener('veil:tab-activated', () => {
+      if (isSpotlightOpen()) window.renderVEILSpotlight();
     });
   }
 

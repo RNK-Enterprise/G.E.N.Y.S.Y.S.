@@ -1,5 +1,5 @@
 /**
- * Axis™ — last uncovered branches.
+ * VEIL™ — last uncovered branches.
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -36,7 +36,7 @@ const { imageLazyShell } = await import('../src/turbos/image-lazy-shell.js');
 const { createLiveTurbos } = await import('../src/turbos/index.js');
 const { HistoryManager } = await import('../src/history-manager.js');
 const { DownloadManager } = await import('../src/download-manager.js');
-const { AxisEngineRuntime } = await import('../src/engines/runtime.js');
+const { VEILEngineRuntime } = await import('../src/engines/runtime.js');
 
 beforeEach(() => {
   dispatched.length = 0;
@@ -75,7 +75,7 @@ describe('tab-suspend cross-origin pause and resume', () => {
 });
 
 describe('dns-cache non-http scheme branch', () => {
-  test('axis:// URL does not reach the bridge; scheme-less input prefixes to a host', async () => {
+  test('veil:// URL does not reach the bridge; scheme-less input prefixes to a host', async () => {
     const lookedUp = [];
     global.window = {
       ...global.window,
@@ -83,8 +83,8 @@ describe('dns-cache non-http scheme branch', () => {
     };
     const turbo = dnsCache({});
     turbo.start();
-    const listeners = [...(winListeners.get('axis:policy-allow') || [])];
-    for (const fn of listeners) fn({ detail: { url: 'axis://newtab' } });
+    const listeners = [...(winListeners.get('veil:policy-allow') || [])];
+    for (const fn of listeners) fn({ detail: { url: 'veil://newtab' } });
     await Promise.resolve();
     expect(lookedUp).toEqual([]);
 
@@ -106,7 +106,7 @@ describe('nav-prefetch missing-input guard and remaining branches', () => {
     };
     const turbo = navPrefetch({});
     expect(() => turbo.start()).not.toThrow();
-    for (const fn of winListeners.get('axis:policy-allow') || []) {
+    for (const fn of winListeners.get('veil:policy-allow') || []) {
       fn({ detail: { url: 'https://guard.test' } });
     }
     expect(appended).toHaveLength(1);
@@ -127,7 +127,7 @@ describe('nav-prefetch missing-input guard and remaining branches', () => {
 describe('runtime unknown-implementation and cross-window defaults', () => {
   test('a live turbo with no matching implementation is skipped', async () => {
     global.fetch = async () => ({ ok: true, json: async () => ({ turbos: [{ id: 'no-impl-turbo', status: 'live' }] }) });
-    const rt = new AxisEngineRuntime();
+    const rt = new VEILEngineRuntime();
     await rt.start({});
     expect(rt.turbos.size).toBe(0);
     rt.stop();
@@ -135,21 +135,21 @@ describe('runtime unknown-implementation and cross-window defaults', () => {
 
   test('implementation-key alias resolution works', async () => {
     global.fetch = async () => ({ ok: true, json: async () => ({ turbos: [{ id: 'no-impl', implementation: 'tab-suspend', status: 'live' }] }) });
-    const rt = new AxisEngineRuntime();
+    const rt = new VEILEngineRuntime();
     await rt.start({});
     expect(rt.turbos.has('no-impl')).toBe(true);
     rt.stop();
   });
 
   test('isTurboEnabled reads defaults from another window context', () => {
-    const rt = new AxisEngineRuntime();
+    const rt = new VEILEngineRuntime();
     expect(rt.isTurboEnabled('never-seen')).toBe(true);
     expect(rt.getStatus().metrics.boots).toBe(0);
   });
 
   test('start() without a context argument uses the default empty context', async () => {
     global.fetch = async () => ({ ok: true, json: async () => ({ turbos: [] }) });
-    const rt = new AxisEngineRuntime();
+    const rt = new VEILEngineRuntime();
     await rt.start();
     expect(rt.connected).toBe(true);
     rt.stop();
@@ -194,7 +194,7 @@ describe('remaining micro-branches', () => {
     };
     const turbo = dnsCache({});
     turbo.start();
-    for (const fn of winListeners.get('axis:policy-allow') || []) {
+    for (const fn of winListeners.get('veil:policy-allow') || []) {
       fn({ detail: { url: ':' } });
     }
     await Promise.resolve();
@@ -230,7 +230,7 @@ describe('remaining micro-branches', () => {
 
   test('runtime: listTurboStates defaults status to live when def omits it', async () => {
     global.fetch = async () => ({ ok: true, json: async () => ({ turbos: [{ id: 'turbo-dns-cache', status: 'live' }] }) });
-    const rt = new AxisEngineRuntime();
+    const rt = new VEILEngineRuntime();
     await rt.start({});
     rt.turbos.get('turbo-dns-cache').def = {};
     expect(rt.listTurboStates()[0]).toMatchObject({ id: 'turbo-dns-cache', status: 'live' });

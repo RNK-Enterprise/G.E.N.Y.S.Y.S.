@@ -1,5 +1,5 @@
 /**
- * Axis™ — Vite config
+ * VEIL™ — Vite config
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * `newtab.html` is an explicit input: Rust tab windows and the locked view

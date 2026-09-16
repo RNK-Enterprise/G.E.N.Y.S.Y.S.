@@ -1,11 +1,11 @@
 /**
- * Axis™ — extracted from main.js
+ * VEIL™ — extracted from main.js
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * Window-mode TabManager: each tab's content is a real Tauri WebviewWindow
  * created by the Rust side AFTER P.R.O.T.E.C.T.S. policy allows the URL.
  * The shell keeps only the chrome (tab bar, omnibox, status). Iframes are
- * gone — webviews render better and carry the Axis attestation cookie.
+ * gone — webviews render better and carry the VEIL attestation cookie.
  *
  * The frontend can never load a URL itself: it asks `navigate_tab`, and the
  * Rust gate either creates/reuses the tab window or returns block.
@@ -18,19 +18,23 @@ class TabManager {
         this.tabs = [];
         this.activeTabId = null;
         this.nextTabId = 1;
+        // Tab ids with a pending restore-initiated navigation: their policy
+        // round-trips may not clobber the “Viewing …” status with a transient
+        // “Loading” (the user navigated nowhere at boot).
+        this._restoreCredits = new Map();
         this.webviewContainer = document.getElementById('webview-container');
         // Window-mode state (no DOM nodes per tab).
         this.blockedViews = new Map(); // tabId -> { view, reason, domain }
         this._rectRaf = null;
     }
 
-    createTab(url = 'axis://newtab') {
+    createTab(url = 'veil://newtab') {
         const tabId = this.nextTabId++;
 
         const tab = {
             id: tabId,
             url: url,
-            title: url === 'axis://newtab' ? 'New Tab' : 'Loading...',
+            title: url === 'veil://newtab' ? 'New Tab' : 'Loading...',
             favicon: null,
             pinned: false,
             blockedView: null,
@@ -39,7 +43,7 @@ class TabManager {
         this.renderTabs();
         this.saveTabs();
 
-        if (url === 'axis://newtab' || url === 'about:blank') {
+        if (url === 'veil://newtab' || url === 'about:blank') {
             this.activateTab(tabId);
         } else {
             this.activateTab(tabId);
@@ -60,13 +64,20 @@ class TabManager {
         const tab = this.tabs.find(t => t.id === tabId);
         if (!tab) return;
         tab.url = url;
-        tab.title = 'Loading...';
+        // Keep a meaningful restored title while the window loads; tab-meta
+        // replaces it with the live page title. Fresh navigations keep the
+        // 'Loading...' placeholder createTab stamped.
+        if (!tab.title || tab.title === 'New Tab') tab.title = 'Loading...';
         tab.blockedView = null;
-        this.blockedViews.delete(tabId);
         this.renderTabs();
         this.saveTabs();
-        window.refreshAxisSidebarFeeds();
-        window.updateStatusBar(`Loading ${url}...`);
+        window.refreshVEILSidebarFeeds();
+        // A restore-initiated round-trip must not clobber the “Viewing …”
+        // status the sync activateTab already wrote. Credit is kept until the
+        // navigation settles (veil:navigate / block / a real navigateTab).
+        if (!this._restoreCredits.has(tabId)) {
+            window.updateStatusBar(`Loading ${url}...`);
+        }
         this.syncContentRect(tabId);
     }
 
@@ -74,6 +85,9 @@ class TabManager {
     onPolicyBlocked(tabId, policy) {
         const tab = this.tabs.find(t => t.id === tabId);
         if (!tab) return;
+        // A blocked restored URL keeps its honest “Blocked by P.R.O.T.E.C.T.S.”
+        // status write below; settle the restore credit either way.
+        this._restoreCredits.delete(tabId);
         const reason = policy?.reason || 'policy_violation';
         const isAccessReq = reason === 'domain_not_in_auth_list' || reason === 'tier_not_authorized';
         tab.blockedView = {
@@ -82,7 +96,7 @@ class TabManager {
             domain: policy?.domain || tab.url,
         };
         this.blockedViews.set(tabId, tab.blockedView);
-        tab.url = tab.url === 'axis://newtab' ? tab.url : (policy?.domain || tab.url);
+        tab.url = tab.url === 'veil://newtab' ? tab.url : (policy?.domain || tab.url);
         tab.title = isAccessReq ? 'Access Request' : 'Blocked';
         this.renderTabs();
         this.saveTabs();
@@ -93,17 +107,22 @@ class TabManager {
     }
 
     onTauriNavigate(tabId, url, _context, _chain) {
-        // Rust emits axis:navigate after creating/reusing the tab window.
+        // Rust emits veil:navigate after creating/reusing the tab window.
         const tab = this.tabs.find(t => t.id === tabId);
         if (!tab) return;
         tab.url = url;
         if (tab.title === 'New Tab') tab.title = 'Loading...';
         tab.blockedView = null;
-        this.blockedViews.delete(tabId);
         this.renderTabs();
         this.saveTabs();
-        window.refreshAxisSidebarFeeds();
-        window.updateStatusBar(`Loading ${url}...`);
+        window.refreshVEILSidebarFeeds();
+        // Same restore rule as onPolicyAllowed; this event settles the tab's
+        // credit (the invoke callback kept it through the allow).
+        if (this._restoreCredits.has(tabId)) {
+            this._restoreCredits.delete(tabId);
+        } else {
+            window.updateStatusBar(`Loading ${url}...`);
+        }
         this.syncContentRect(tabId);
     }
 
@@ -126,7 +145,7 @@ class TabManager {
             }
             window.updateStatusBar(tab.title);
         }
-        window.refreshAxisSidebarFeeds();
+        window.refreshVEILSidebarFeeds();
     }
 
     /**
@@ -153,7 +172,9 @@ class TabManager {
     }
 
     setTabLoading(tabId, loading) {
-        if (loading) window.updateStatusBar('Loading...');
+        // Restore-initiated navigations keep the “Viewing …” status; the tab
+        // badge still reflects the loading state below.
+        if (loading && !this._restoreCredits.has(tabId)) window.updateStatusBar('Loading...');
         const tab = this.tabs.find(t => t.id === tabId);
         if (tab) {
             tab.loading = !!loading;

@@ -1,5 +1,5 @@
 /**
- * Axis™ — extracted from main.js
+ * VEIL™ — extracted from main.js
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -80,9 +80,9 @@ function hideModal(modal) {
     hideElement(modal);
 }
 
-function openAxisSettingsSection(sectionSelector) {
+function openVEILSettingsSection(sectionSelector) {
     window.openSettings();
-    document.querySelector('.settings-tab[data-tab="axis"]')?.click();
+    document.querySelector('.settings-tab[data-tab="veil"]')?.click();
     if (sectionSelector) {
         document.querySelector(sectionSelector)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -99,7 +99,7 @@ function toggleActiveTabPinnedState() {
 }
 
 // Single export block — the sidebar/command-palette helpers were removed with
-// the AXIS SHELL sidebar DOM; only helpers with live call sites are published.
+// the VEIL SHELL sidebar DOM; only helpers with live call sites are published.
 window.getActiveBrowserTab = getActiveBrowserTab;
 window.getTabHost = getTabHost;
 window.focusOmniboxAndMaybeSearchProvider = focusOmniboxAndMaybeSearchProvider;
@@ -113,6 +113,6 @@ window.openRecentlyClosedView = openRecentlyClosedView;
 window.closeSearchProviderModal = closeSearchProviderModal;
 window.setElementHidden = setElementHidden;
 window.hideModal = hideModal;
-window.openAxisSettingsSection = openAxisSettingsSection;
+window.openVEILSettingsSection = openVEILSettingsSection;
 window.focusTabSearch = focusTabSearch;
 window.toggleActiveTabPinnedState = toggleActiveTabPinnedState;

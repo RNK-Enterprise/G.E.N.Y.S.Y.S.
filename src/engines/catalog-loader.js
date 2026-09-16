@@ -1,8 +1,8 @@
 /**
- * Axis catalog loader — engines + turbos from local manifest.
+ * VEIL catalog loader — engines + turbos from local manifest.
  */
 
-const MANIFEST_URLS = ['./axis-manifest.json', './axis-manifest.json'];
+const MANIFEST_URLS = ['./veil-manifest.json', './veil-manifest.json'];
 
 let _manifest = null;
 
@@ -10,7 +10,7 @@ export function getManifest() {
   return _manifest;
 }
 
-export async function loadAxisManifest() {
+export async function loadVEILManifest() {
   for (const url of MANIFEST_URLS) {
     try {
       const response = await fetch(url, { cache: 'no-store' });
@@ -23,8 +23,8 @@ export async function loadAxisManifest() {
   }
   _manifest = {
     manifest_version: '2.0',
-    product: 'Axis',
-    catalog_summary: { engines: '0', turbos: '0', mode: 'fallback', source: 'Axis' },
+    product: 'VEIL',
+    catalog_summary: { engines: '0', turbos: '0', mode: 'fallback', source: 'VEIL' },
     capabilities: [],
     engines: [],
     turbos: [],

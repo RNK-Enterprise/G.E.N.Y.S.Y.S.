@@ -1,12 +1,12 @@
 /**
- * Axis™ — thin orchestrator (standalone trusted client)
+ * VEIL™ — thin orchestrator (standalone trusted client)
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
 import {
   initLISABridge,
 } from './lisa-bridge.js';
-import { axisRuntime } from './engines/runtime.js';
+import { veilRuntime } from './engines/runtime.js';
 
 // Boot order matters: managers → density/UI → sidebar/surfaces → tabs → bindings → init
 import './shell/tauri-api.js';
@@ -36,23 +36,23 @@ import './shell/chrome-bindings-b.js';
 import './shell/chrome-bindings-c.js';
 
 async function initializeApp() {
-  if (window.__axisBooted) return; // boot re-entry guard — never double-restore tabs
-  window.__axisBooted = true;
+  if (window.__veilBooted) return; // boot re-entry guard — never double-restore tabs
+  window.__veilBooted = true;
   const tabManager = window.tabManager;
-  const engineRuntime = window.axisRuntime || axisRuntime;
+  const engineRuntime = window.veilRuntime || veilRuntime;
 
   const manifest = await engineRuntime.start({ getTabs: () => tabManager?.tabs || [] });
   engineRuntime.manifest = manifest;
   engineRuntime.capabilities = new Map(
     (manifest.capabilities || []).map((capability) => [capability.id, capability]),
   );
-  window.axisRuntime = engineRuntime;
-  window.axisManifest = manifest;
+  window.veilRuntime = engineRuntime;
+  window.veilManifest = manifest;
 
-  window.renderAxisCapabilities?.(manifest);
+  window.renderVEILCapabilities?.(manifest);
   window.renderBookmarksBar?.();
   window.updateSettingsSectionAvailability?.(manifest);
-  window.updateAxisSurfaceAvailability?.(manifest);
+  window.updateVEILSurfaceAvailability?.(manifest);
   window.loadSettings?.();
   renderLiveTurboPanel();
 
@@ -68,13 +68,13 @@ async function initializeApp() {
     window.syncShellDensityStateFromSurfaces?.();
   }
 
-  window.applyAxisRuntimeStatus?.(true);
+  window.applyVEILRuntimeStatus?.(true);
 
   const engineCount = manifest.catalog_summary?.engines || '0';
   const turboCount = manifest.catalog_summary?.turbos || '0';
   const liveCount = manifest.catalog_summary?.live_turbos || engineRuntime.turbos.size;
   window.updateStatusBar?.(
-    `Ready - Axis v0.1.0 | ${engineCount} engines · ${turboCount} turbos (${liveCount} live)`,
+    `Ready - VEIL v0.1.0 | ${engineCount} engines · ${turboCount} turbos (${liveCount} live)`,
   );
 
   initLISABridge(tabManager);
@@ -82,22 +82,22 @@ async function initializeApp() {
   console.log('Restoring previous session...');
   if (!tabManager.restoreTabs()) {
     console.log('No saved session, creating initial tab...');
-    tabManager.createTab('axis://newtab');
+    tabManager.createTab('veil://newtab');
   }
 
-  console.log('Axis initialized successfully (standalone runtime)!');
+  console.log('VEIL initialized successfully (standalone runtime)!');
 }
 
 function renderLiveTurboPanel() {
   const inventory = document.getElementById('perf-turbo-list');
   const summaryText = document.getElementById('perf-summary-text');
-  const states = axisRuntime.listTurboStates();
+  const states = veilRuntime.listTurboStates();
   if (inventory) {
     inventory.innerHTML =
       states
         .map(
           (t) => `
-            <label class="axis-turbo-row" style="display:flex;gap:0.5rem;align-items:center;margin:0.25rem 0;">
+            <label class="veil-turbo-row" style="display:flex;gap:0.5rem;align-items:center;margin:0.25rem 0;">
                 <input type="checkbox" data-turbo-id="${t.id}" ${t.enabled ? 'checked' : ''}/>
                 <span>${t.name}</span>
                 <span class="perf-state-badge">${t.status}</span>
@@ -105,42 +105,42 @@ function renderLiveTurboPanel() {
         `,
         )
         .join('') +
-      `<p class="perf-note">${axisRuntime.manifest?.catalog_summary?.turbos || 0} turbos in catalog · ${states.length} live</p>`;
+      `<p class="perf-note">${veilRuntime.manifest?.catalog_summary?.turbos || 0} turbos in catalog · ${states.length} live</p>`;
     inventory.querySelectorAll('input[data-turbo-id]').forEach((input) => {
       input.addEventListener('change', () => {
-        axisRuntime.setTurboEnabled(input.getAttribute('data-turbo-id'), input.checked);
+        veilRuntime.setTurboEnabled(input.getAttribute('data-turbo-id'), input.checked);
       });
     });
   }
   if (summaryText) {
-    summaryText.textContent = `Axis runtime online with ${states.filter((s) => s.enabled).length} live turbos enabled.`;
+    summaryText.textContent = `VEIL runtime online with ${states.filter((s) => s.enabled).length} live turbos enabled.`;
   }
 }
 
 function startWhenAuthenticated() {
-  const gate = document.getElementById('axis-auth-gate');
+  const gate = document.getElementById('veil-auth-gate');
   const already =
     !gate ||
     gate.classList.contains('hidden') ||
-    Boolean(window.__axisAuthenticated) ||
-    Boolean(sessionStorage.getItem('rnk-axis-auth-session'));
+    Boolean(window.__veilAuthenticated) ||
+    Boolean(sessionStorage.getItem('rnk-veil-auth-session'));
 
   const boot = (detail = {}) => {
     // CI diagnostics: prove the full import graph executed and the orchestrator started.
     if (window.__TAURI__?.invoke) {
       window.__TAURI__.invoke('log_boot', { marker: 'main.js initializeApp' }).catch(() => {});
     }
-    initializeApp().catch((err) => console.error('Axis initializeApp failed:', err));
-    import('./axis-welcome-tour.js').then((m) => m.initWelcomeSystem(detail || {}));
+    initializeApp().catch((err) => console.error('VEIL initializeApp failed:', err));
+    import('./veil-welcome-tour.js').then((m) => m.initWelcomeSystem(detail || {}));
   };
 
   if (already) {
-    boot(window.__axisAuthenticated || {});
+    boot(window.__veilAuthenticated || {});
     return;
   }
 
   document.addEventListener(
-    'axis:authenticated',
+    'veil:authenticated',
     (e) => boot(e.detail || {}),
     { once: true },
   );

@@ -1,5 +1,5 @@
 /**
- * Register live Axis performance turbos.
+ * Register live VEIL performance turbos.
  */
 import { tabSuspend } from './tab-suspend.js';
 import { memoryReclaim } from './memory-reclaim.js';

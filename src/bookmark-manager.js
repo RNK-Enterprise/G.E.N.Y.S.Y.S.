@@ -1,5 +1,5 @@
 /**
- * RNK Axis™
+ * RNK VEIL™
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * PROPRIETARY AND CONFIDENTIAL
@@ -15,7 +15,7 @@ export class BookmarkManager {
 
     loadBookmarks() {
         try {
-            const saved = localStorage.getItem('rnk-axis-bookmarks') ?? localStorage.getItem('rnk-atlas-bookmarks');
+            const saved = localStorage.getItem('rnk-veil-bookmarks') ?? localStorage.getItem('rnk-axis-bookmarks') ?? localStorage.getItem('rnk-atlas-bookmarks');
             return saved ? JSON.parse(saved) : this.getDefaultBookmarks();
         } catch {
             return this.getDefaultBookmarks();
@@ -24,7 +24,7 @@ export class BookmarkManager {
 
     saveBookmarks() {
         try {
-            localStorage.setItem('rnk-axis-bookmarks', JSON.stringify(this.bookmarks));
+            localStorage.setItem('rnk-veil-bookmarks', JSON.stringify(this.bookmarks));
         } catch (error) {
             console.error('Failed to save bookmarks:', error);
         }

@@ -56,7 +56,7 @@
 
 .search-provider-icon:hover {
     transform: scale(1.1);
-    box-shadow: 0 0 12px rgba(212, 168, 67, 0.5);
+    box-shadow: 0 0 12px rgba(138, 180, 248, 0.5);
 }
 
 #omnibox {
@@ -177,7 +177,7 @@
 .bookmarks-bar-item:hover {
     border-color: var(--toxic-green);
     color: var(--toxic-green);
-    box-shadow: 0 0 8px rgba(212, 168, 67, 0.2);
+    box-shadow: 0 0 8px rgba(138, 180, 248, 0.2);
 }
 
 .bookmarks-bar.compact .bookmarks-bar-item {
@@ -353,7 +353,7 @@ mark {
 .provider-item:hover {
     border-color: var(--toxic-green);
     background: var(--darker-bg);
-    box-shadow: 0 0 10px rgba(212, 168, 67, 0.2);
+    box-shadow: 0 0 10px rgba(138, 180, 248, 0.2);
 }
 
 .search-provider-panel.search-provider-compact .provider-icon {

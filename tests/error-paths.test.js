@@ -1,5 +1,5 @@
 /**
- * Axis™ — error-path completion: exception catches and guard clauses.
+ * VEIL™ — error-path completion: exception catches and guard clauses.
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -121,7 +121,7 @@ describe('dns-cache onNav catch', () => {
     const turbo = dnsCache({});
     turbo.start();
     expect(() => {
-      for (const fn of winListeners.get('axis:policy-allow') || []) {
+      for (const fn of winListeners.get('veil:policy-allow') || []) {
         fn({ detail: { url: 42 } });
       }
     }).not.toThrow();

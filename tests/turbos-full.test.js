@@ -1,5 +1,5 @@
 /**
- * Axis™ — full turbo coverage: cache-budget, image-lazy-shell,
+ * VEIL™ — full turbo coverage: cache-budget, image-lazy-shell,
  * render-throttle, startup-defer, network-idle, memory-reclaim.
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
@@ -76,7 +76,7 @@ describe('turbo: cache-budget', () => {
     global.document = { getElementById: () => ({ value: '250' }) };
     const turbo = cacheBudget();
     turbo.start();
-    expect(global.localStorage.getItem('rnk-axis-cache-mb')).toBe('250');
+    expect(global.localStorage.getItem('rnk-veil-cache-mb')).toBe('250');
     turbo.stop();
   });
 
@@ -84,34 +84,34 @@ describe('turbo: cache-budget', () => {
     global.document = { getElementById: () => null };
     const turbo = cacheBudget();
     turbo.start();
-    expect(global.localStorage.getItem('rnk-axis-cache-mb')).toBe('500');
+    expect(global.localStorage.getItem('rnk-veil-cache-mb')).toBe('500');
     turbo.stop();
 
-    global.localStorage.setItem('rnk-axis-cache-mb', '300');
+    global.localStorage.setItem('rnk-veil-cache-mb', '300');
     const t2 = cacheBudget();
     t2.start();
-    expect(global.localStorage.getItem('rnk-axis-cache-mb')).toBe('300');
+    expect(global.localStorage.getItem('rnk-veil-cache-mb')).toBe('300');
     t2.stop();
 
-    global.localStorage.setItem('rnk-axis-cache-mb', 'abc');
+    global.localStorage.setItem('rnk-veil-cache-mb', 'abc');
     const t3 = cacheBudget();
     t3.start();
-    expect(global.localStorage.getItem('rnk-axis-cache-mb')).toBe('500');
+    expect(global.localStorage.getItem('rnk-veil-cache-mb')).toBe('500');
     t3.stop();
   });
 
-  test('drops session/history-cache blobs when axis keys exceed 80', () => {
+  test('drops session/history-cache blobs when veil keys exceed 80', () => {
     global.document = { getElementById: () => null };
-    for (let i = 0; i < 85; i += 1) global.localStorage.setItem(`rnk-axis-filler-${i}`, 'x');
-    global.localStorage.setItem('rnk-axis-session-1', 'drop-me');
-    global.localStorage.setItem('rnk-axis-history-cache-2', 'drop-me');
+    for (let i = 0; i < 85; i += 1) global.localStorage.setItem(`rnk-veil-filler-${i}`, 'x');
+    global.localStorage.setItem('rnk-veil-session-1', 'drop-me');
+    global.localStorage.setItem('rnk-veil-history-cache-2', 'drop-me');
     global.localStorage.setItem('unrelated-key', 'keep-me');
 
     const turbo = cacheBudget();
     jest.useFakeTimers();
     turbo.start();
-    expect(global.localStorage.getItem('rnk-axis-session-1')).toBeNull();
-    expect(global.localStorage.getItem('rnk-axis-history-cache-2')).toBeNull();
+    expect(global.localStorage.getItem('rnk-veil-session-1')).toBeNull();
+    expect(global.localStorage.getItem('rnk-veil-history-cache-2')).toBeNull();
     expect(global.localStorage.getItem('unrelated-key')).toBe('keep-me');
     turbo.stop();
   });
@@ -201,14 +201,14 @@ describe('turbo: render-throttle', () => {
     global.document = doc;
     const turbo = renderThrottle();
     turbo.start();
-    expect(doc.documentElement.classList.contains('axis-render-throttled')).toBe(true);
-    expect(dispatched).toContain('axis:render-throttle');
+    expect(doc.documentElement.classList.contains('veil-render-throttled')).toBe(true);
+    expect(dispatched).toContain('veil:render-throttle');
 
     doc.hidden = false;
     doc.listeners.get('visibilitychange')[0]();
-    expect(doc.documentElement.classList.contains('axis-render-throttled')).toBe(false);
+    expect(doc.documentElement.classList.contains('veil-render-throttled')).toBe(false);
     turbo.stop();
-    expect(doc.documentElement.classList.contains('axis-render-throttled')).toBe(false);
+    expect(doc.documentElement.classList.contains('veil-render-throttled')).toBe(false);
     expect(doc.listeners.get('visibilitychange') || []).toHaveLength(0);
   });
 });
@@ -223,8 +223,8 @@ describe('turbo: startup-defer', () => {
     turbo.start();
     expect(typeof idleCb).toBe('function');
     idleCb();
-    expect(global.document.documentElement.classList.contains('axis-startup-ready')).toBe(true);
-    expect(dispatched).toContain('axis:startup-idle');
+    expect(global.document.documentElement.classList.contains('veil-startup-ready')).toBe(true);
+    expect(dispatched).toContain('veil:startup-idle');
   });
 
   test('stop before the idle callback cancels the work', () => {
@@ -236,8 +236,8 @@ describe('turbo: startup-defer', () => {
     turbo.start();
     turbo.stop();
     idleCb();
-    expect(global.document.documentElement.classList.contains('axis-startup-ready')).toBe(false);
-    expect(dispatched).not.toContain('axis:startup-idle');
+    expect(global.document.documentElement.classList.contains('veil-startup-ready')).toBe(false);
+    expect(dispatched).not.toContain('veil:startup-idle');
   });
 
   test('setTimeout fallback when requestIdleCallback is unavailable', () => {
@@ -247,7 +247,7 @@ describe('turbo: startup-defer', () => {
     const turbo = startupDefer();
     turbo.start();
     jest.advanceTimersByTime(1200);
-    expect(global.document.documentElement.classList.contains('axis-startup-ready')).toBe(true);
+    expect(global.document.documentElement.classList.contains('veil-startup-ready')).toBe(true);
     turbo.stop();
   });
 });
@@ -267,11 +267,11 @@ describe('turbo: network-idle', () => {
     turbo.start();
     expect(winListeners.get('mousemove')).toHaveLength(1);
     jest.advanceTimersByTime(15000);
-    expect(doc.documentElement.classList.contains('axis-network-idle')).toBe(true);
-    expect(dispatched).toContain('axis:network-idle');
+    expect(doc.documentElement.classList.contains('veil-network-idle')).toBe(true);
+    expect(dispatched).toContain('veil:network-idle');
 
     winListeners.get('keydown')[0]();
-    expect(doc.documentElement.classList.contains('axis-network-idle')).toBe(false);
+    expect(doc.documentElement.classList.contains('veil-network-idle')).toBe(false);
     turbo.stop();
     expect(winListeners.get('mousemove') || []).toHaveLength(0);
     expect(winListeners.get('scroll') || []).toHaveLength(0);
@@ -286,7 +286,7 @@ describe('turbo: network-idle', () => {
     turbo.start();
     turbo.stop();
     jest.advanceTimersByTime(20000);
-    expect(doc.documentElement.classList.contains('axis-network-idle')).toBe(false);
+    expect(doc.documentElement.classList.contains('veil-network-idle')).toBe(false);
   });
 });
 
@@ -308,7 +308,7 @@ describe('turbo: memory-reclaim', () => {
     expect(global.window.tabManager.tabs[0]._suspendedSrcdoc).toBeNull();
     expect(global.window.tabManager.tabs[1]._suspendedSrcdoc).toBe('<html>keep</html>');
     expect(gcCalls).toBe(1);
-    expect(dispatched).toContain('axis:memory-reclaim');
+    expect(dispatched).toContain('veil:memory-reclaim');
     turbo.stop();
   });
 
@@ -320,7 +320,7 @@ describe('turbo: memory-reclaim', () => {
     turbo.start();
     turbo.start();
     jest.advanceTimersByTime(30000);
-    expect(dispatched.filter((t) => t === 'axis:memory-reclaim')).toHaveLength(1);
+    expect(dispatched.filter((t) => t === 'veil:memory-reclaim')).toHaveLength(1);
     turbo.stop();
     turbo.stop();
   });
@@ -332,7 +332,7 @@ describe('turbo: memory-reclaim', () => {
     const turbo = memoryReclaim();
     turbo.start();
     expect(() => jest.advanceTimersByTime(30000)).not.toThrow();
-    expect(dispatched).toContain('axis:memory-reclaim');
+    expect(dispatched).toContain('veil:memory-reclaim');
     turbo.stop();
   });
 });

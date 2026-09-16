@@ -1,5 +1,5 @@
 /**
- * Axis™ — Server Control Tab
+ * VEIL™ — Server Control Tab
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * Creator-only section. Talks to the Resolute Authentication Core
@@ -12,8 +12,8 @@
  */
 
 const AUTHORITY_URL = () =>
-    localStorage.getItem('axis_resolute_url') || 'http://127.0.0.1:7781';
-const SESSION_KEY = 'axis-server-control-session';
+    localStorage.getItem('veil_resolute_url') || 'http://127.0.0.1:7781';
+const SESSION_KEY = 'veil-server-control-session';
 
 // ── Session ID (stable per browser session) ───────────────────────────
 
@@ -214,7 +214,7 @@ export async function mountServerControl(mountId = 'server-control-mount') {
     mount.querySelector('#sc-lisa-url-save').addEventListener('click', () => {
         const val = mount.querySelector('#sc-lisa-url').value.trim();
         if (val) {
-            localStorage.setItem('axis_resolute_url', val);
+            localStorage.setItem('veil_resolute_url', val);
             refreshAll(mount);
         }
     });

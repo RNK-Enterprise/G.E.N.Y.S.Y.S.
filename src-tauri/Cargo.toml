@@ -1,7 +1,7 @@
 [package]
-name = "rnk-axis"
+name = "rnk-veil"
 version = "0.1.0"
-description = "Axis - RNK privacy browser with embedded Lisa policy"
+description = "VEIL - RNK privacy browser with embedded Lisa policy"
 authors = ["Asgard Innovations / RNK™"]
 license = "PROPRIETARY"
 repository = ""

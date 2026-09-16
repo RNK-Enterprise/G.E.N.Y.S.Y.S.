@@ -44,30 +44,30 @@
 }
 
 .section-nav-btn.active {
-    background: var(--accent-bg, rgba(212, 168, 67, 0.12));
+    background: var(--accent-bg, rgba(138, 180, 248, 0.12));
     color: var(--brand-gold);
 }
 
 /* Section panels */
-.axis-section {
+.veil-section {
     display: flex;
     flex-direction: column;
     flex: 1;
     overflow: hidden;
 }
 
-.axis-section.hidden {
+.veil-section.hidden {
     display: none !important;
 }
 
-.axis-section-inner {
+.veil-section-inner {
     flex: 1;
     display: flex;
     flex-direction: column;
     overflow: auto;
 }
 
-.axis-section-placeholder {
+.veil-section-placeholder {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -78,25 +78,25 @@
     padding: 40px;
 }
 
-.axis-section-icon {
+.veil-section-icon {
     font-size: 48px;
     opacity: 0.3;
 }
 
-.axis-section-placeholder h2 {
+.veil-section-placeholder h2 {
     font-size: 20px;
     font-weight: 600;
     color: var(--text-primary);
     margin: 0;
 }
 
-.axis-section-placeholder p {
+.veil-section-placeholder p {
     font-size: 13px;
     margin: 0;
     opacity: 0.7;
 }
 
-.axis-section-coming-soon {
+.veil-section-coming-soon {
     font-size: 11px !important;
     color: var(--brand-gold) !important;
     opacity: 1 !important;

@@ -1,14 +1,14 @@
-//! C.O.M.M.A.N.D. session gate for Axis.
+//! C.O.M.M.A.N.D. session gate for VEIL.
 //!
-//! Doctrine (2026-09-06): Axis is the browser and the door; C.O.M.M.A.N.D.
+//! Doctrine (2026-09-06): VEIL is the browser and the door; C.O.M.M.A.N.D.
 //! (via the Resolute Authentication Core) is the master key. A production
-//! Axis opens only on a C.O.M.M.A.N.D. session. Local shortcodes are a
+//! VEIL opens only on a C.O.M.M.A.N.D. session. Local shortcodes are a
 //! DEV/bootstrap affordance and are refused in production builds.
 //!
 //! The handshake URL is not hard-coded. Configure it with `COMMAND_URL` or
-//! `RESOLUTE_URL`. If a production build starts without one, Axis holds in
+//! `RESOLUTE_URL`. If a production build starts without one, VEIL holds in
 //! fail-closed: no session can be created until the key app is wired or
-//! `AXIS_TEST_MODE=1` marks an explicitly non-production bench run.
+//! `VEIL_TEST_MODE=1` marks an explicitly non-production bench run.
 
 use crate::attestation;
 use crate::AppState;
@@ -22,10 +22,10 @@ pub fn resolve_command_url() -> String {
         .unwrap_or_default()
 }
 
-/// Production gate mode: release builds unless AXIS_TEST_MODE=1 is set
+/// Production gate mode: release builds unless VEIL_TEST_MODE=1 is set
 /// explicitly (bench runs; still refuses to fake a handshake).
 pub fn is_command_mode() -> bool {
-    if std::env::var("AXIS_TEST_MODE").ok().as_deref() == Some("1") {
+    if std::env::var("VEIL_TEST_MODE").ok().as_deref() == Some("1") {
         return false;
     }
     !cfg!(debug_assertions)
@@ -36,10 +36,10 @@ pub fn is_command_mode() -> bool {
 pub fn enforce_command_gate() {
     if is_command_mode() && resolve_command_url().trim().is_empty() {
         eprintln!(
-            "[AXIS GATE] FAIL-CLOSED HOLD: production build without COMMAND_URL/RESOLUTE_URL.\n\
-             Axis will not create sessions (shortcodes disabled in production).\n\
+            "[VEIL GATE] FAIL-CLOSED HOLD: production build without COMMAND_URL/RESOLUTE_URL.\n\
+             VEIL will not create sessions (shortcodes disabled in production).\n\
              Point COMMAND_URL at the C.O.M.M.A.N.D. / Resolute Authentication Core,\n\
-             or run bench tests with AXIS_TEST_MODE=1."
+             or run bench tests with VEIL_TEST_MODE=1."
         );
     }
 }
@@ -57,9 +57,9 @@ pub fn cmd_gate_status(state: State<'_, AppState>) -> Result<serde_json::Value, 
     }))
 }
 
-/// Headers Axis trusts from RNK product surfaces. The session token is issued
+/// Headers VEIL trusts from RNK product surfaces. The session token is issued
 /// by the native shell; products refuse requests without these headers.
-/// Header names are documented in docs/AXIS_ATTESTATION.md (not secret).
+/// Header names are documented in docs/VEIL_ATTESTATION.md (not secret).
 #[tauri::command]
 pub fn get_policy_headers(state: State<'_, AppState>) -> Result<serde_json::Value, String> {
     let session = state.session.lock().map_err(|e| e.to_string())?;
@@ -69,9 +69,9 @@ pub fn get_policy_headers(state: State<'_, AppState>) -> Result<serde_json::Valu
     }
     Ok(json!({
         "headers": {
-            "X-Axis-Client": "1",
-            "X-Axis-Session": token,
-            "X-Axis-Tier": session.access_tier,
+            "X-VEIL-Client": "1",
+            "X-VEIL-Session": token,
+            "X-VEIL-Tier": session.access_tier,
         },
     }))
 }

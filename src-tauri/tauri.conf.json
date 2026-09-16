@@ -7,7 +7,7 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "Axis",
+    "productName": "VEIL",
     "version": "0.1.0"
   },
   "tauri": {
@@ -40,7 +40,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.rnk.axis",
+      "identifier": "com.rnk.veil",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -62,7 +62,7 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "Axis",
+        "title": "VEIL",
         "width": 1280,
         "height": 800,
         "minWidth": 800,

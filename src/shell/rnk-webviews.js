@@ -1,10 +1,10 @@
 /**
- * Axis™ — RNK Product Webviews (Ops / People / Comms sections)
+ * VEIL™ — RNK Product Webviews (Ops / People / Comms sections)
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
- * Axis is RNK's only client: Raven and Echonet open HERE, inside Axis, as
+ * VEIL is RNK's only client: Raven and Echonet open HERE, inside VEIL, as
  * privileged-tab webviews. A normal browser hitting these hosts is refused by
- * the products' attestation checks (X-Axis-Client / X-Axis-Session).
+ * the products' attestation checks (X-VEIL-Client / X-VEIL-Session).
  *
  * Native shell (Tauri): dedicated WebviewWindow per product.
  * Vite preview (no shell): an honest degraded state, not a fake success.
@@ -32,19 +32,19 @@ function productUrl(target) {
     return `https://${target.host}${target.path}`;
 }
 
-async function createAxisWindow(url, label) {
+async function createVEILWindow(url, label) {
     if (window.__TAURI__?.Window) {
         try {
             const { WebviewWindow } = await import('@tauri-apps/api/window');
-            const win = new WebviewWindow(`axis-${label}`, {
+            const win = new WebviewWindow(`veil-${label}`, {
                 url,
-                title: `Axis — ${label}`,
+                title: `VEIL — ${label}`,
                 width: 1280,
                 height: 820,
             });
             return true;
         } catch (e) {
-            console.warn(`[Axis Webviews] window create failed for ${label}:`, e);
+            console.warn(`[VEIL Webviews] window create failed for ${label}:`, e);
             return false;
         }
     }
@@ -76,14 +76,14 @@ export function mountRnkWebview(sectionId) {
             <div class="rnk-webview-bar">
                 <span class="rnk-webview-badge">Privileged — RNK product surface</span>
                 <span class="rnk-webview-url">${productUrl(target)}</span>
-                <button class="sc-btn" id="rnk-webview-open-${sectionId}">Open in Axis</button>
+                <button class="sc-btn" id="rnk-webview-open-${sectionId}">Open in VEIL</button>
             </div>
             <div class="rnk-webview-host" id="rnk-webview-host"></div>
             <div class="rnk-webview-note" id="rnk-webview-note-${sectionId}" hidden></div>
         </div>`;
 
     const open = async () => {
-        const ok = await createAxisWindow(productUrl(target), target.title);
+        const ok = await createVEILWindow(productUrl(target), target.title);
         const note = mount.querySelector(`#rnk-webview-note-${sectionId}`);
         if (note) {
             if (ok) {
@@ -91,8 +91,8 @@ export function mountRnkWebview(sectionId) {
             } else {
                 note.hidden = false;
                 note.textContent =
-                    'RNK product unreachable from this preview — open the full Axis shell. ' +
-                    'These hosts refuse non-Axis browsers by design.';
+                    'RNK product unreachable from this preview — open the full VEIL shell. ' +
+                    'These hosts refuse non-VEIL browsers by design.';
             }
         }
     };

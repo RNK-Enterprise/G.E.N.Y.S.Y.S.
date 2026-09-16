@@ -1,5 +1,5 @@
 /**
- * Axis™ — extracted from main.js
+ * VEIL™ — extracted from main.js
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -10,7 +10,7 @@ class SessionManager {
 
     loadSessions() {
         try {
-            const saved = localStorage.getItem('rnk-axis-sessions') ?? localStorage.getItem('rnk-atlas-sessions');
+            const saved = localStorage.getItem('rnk-veil-sessions') ?? localStorage.getItem('rnk-axis-sessions') ?? localStorage.getItem('rnk-atlas-sessions');
             return saved ? JSON.parse(saved) : {};
         } catch (e) {
             return {};
@@ -18,7 +18,7 @@ class SessionManager {
     }
 
     saveSessions() {
-        localStorage.setItem('rnk-axis-sessions', JSON.stringify(this.sessions));
+        localStorage.setItem('rnk-veil-sessions', JSON.stringify(this.sessions));
     }
 
     saveSession(name, tabs) {

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Axis catalog — TINY AND REAL.
+ * VEIL catalog — TINY AND REAL.
  *
  * 2026-09-06: The 800-engine / 4000-turbo stub catalog was deleted on Odinn's
  * order. The browser only runs what is listed here: the real engine surfaces
@@ -17,14 +17,14 @@ const root = join(__dirname, '..');
 
 // ── Real engine surfaces (browser jobs that actually exist in src/) ─────────
 const ENGINES = [
-  { id: 'axis-browser-core', name: 'Browser Core', category: 'browser', surface: 'browser', description: 'Windowing, tabs, omnibox, navigation, page lifecycle (src/browser).' },
-  { id: 'axis-security-stack', name: 'Security Stack', category: 'security', surface: 'policy', description: 'P.R.O.T.E.C.T.S. navigation policy, fail-closed gate (src-tauri/lisa_policy.rs).' },
-  { id: 'axis-performance-stack', name: 'Performance Stack', category: 'performance', surface: 'performance-panel', description: 'Runtime for the 9 live turbos (src/engines/runtime.js).' },
-  { id: 'axis-privacy-stack', name: 'Privacy Stack', category: 'privacy', surface: 'browser', description: 'Session hygiene, cross-origin isolation, attestation (src/lisa-bridge.js).' },
-  { id: 'axis-downloads', name: 'Downloads', category: 'browser', surface: 'sidebar', description: 'Download queue and file actions (src/download-manager.js).' },
-  { id: 'axis-bookmarks', name: 'Bookmarks', category: 'browser', surface: 'sidebar', description: 'Bookmark CRUD and bookmarks bar (src/bookmark-manager.js).' },
-  { id: 'axis-history', name: 'History', category: 'browser', surface: 'sidebar', description: 'Visited pages and clear controls (src/history-manager.js).' },
-  { id: 'axis-settings', name: 'Settings', category: 'browser', surface: 'settings', description: 'Preferences including performance turbos (src/settings-manager.js).' },
+  { id: 'veil-browser-core', name: 'Browser Core', category: 'browser', surface: 'browser', description: 'Windowing, tabs, omnibox, navigation, page lifecycle (src/browser).' },
+  { id: 'veil-security-stack', name: 'Security Stack', category: 'security', surface: 'policy', description: 'P.R.O.T.E.C.T.S. navigation policy, fail-closed gate (src-tauri/lisa_policy.rs).' },
+  { id: 'veil-performance-stack', name: 'Performance Stack', category: 'performance', surface: 'performance-panel', description: 'Runtime for the 9 live turbos (src/engines/runtime.js).' },
+  { id: 'veil-privacy-stack', name: 'Privacy Stack', category: 'privacy', surface: 'browser', description: 'Session hygiene, cross-origin isolation, attestation (src/lisa-bridge.js).' },
+  { id: 'veil-downloads', name: 'Downloads', category: 'browser', surface: 'sidebar', description: 'Download queue and file actions (src/download-manager.js).' },
+  { id: 'veil-bookmarks', name: 'Bookmarks', category: 'browser', surface: 'sidebar', description: 'Bookmark CRUD and bookmarks bar (src/bookmark-manager.js).' },
+  { id: 'veil-history', name: 'History', category: 'browser', surface: 'sidebar', description: 'Visited pages and clear controls (src/history-manager.js).' },
+  { id: 'veil-settings', name: 'Settings', category: 'browser', surface: 'settings', description: 'Preferences including performance turbos (src/settings-manager.js).' },
 ];
 
 // ── The 9 live turbos (implementations in src/turbos/) ──────────────────────
@@ -42,15 +42,15 @@ const LIVE_TURBOS = [
 
 const manifest = {
   manifest_version: '3.0',
-  product: 'Axis',
-  client: 'Axis',
+  product: 'VEIL',
+  client: 'VEIL',
   catalog_summary: {
     engines: String(ENGINES.length),
     turbos: String(LIVE_TURBOS.length),
     live_turbos: String(LIVE_TURBOS.length),
     stubs: '0',
     mode: 'real-only',
-    source: 'Axis',
+    source: 'VEIL',
   },
   surface_defaults: [
     'window', 'tabbar', 'omnibox', 'toolbar', 'sidebar',
@@ -72,9 +72,9 @@ const manifest = {
       requires_network: false,
       dependencies: [],
       fallback: 'local',
-      owner: 'axis-local',
+      owner: 'veil-local',
       version: '0.1.0',
-      tags: [e.category, 'axis'],
+      tags: [e.category, 'veil'],
     })),
     ...LIVE_TURBOS.map((t) => ({
       id: t.id,
@@ -89,9 +89,9 @@ const manifest = {
       requires_network: false,
       dependencies: [],
       fallback: 'local',
-      owner: 'axis-local',
+      owner: 'veil-local',
       version: '0.1.0',
-      tags: ['performance', 'live', 'axis'],
+      tags: ['performance', 'live', 'veil'],
     })),
   ],
   engines: ENGINES.map((e) => ({
@@ -106,7 +106,7 @@ const manifest = {
     requires_auth: false,
     requires_network: false,
     implementation: 'local',
-    tags: [e.category, 'axis'],
+    tags: [e.category, 'veil'],
   })),
   turbos: LIVE_TURBOS.map((t) => ({
     id: t.id,
@@ -119,12 +119,12 @@ const manifest = {
     requires_auth: false,
     requires_network: false,
     implementation: t.implementation,
-    tags: ['performance', 'live', 'axis'],
+    tags: ['performance', 'live', 'veil'],
   })),
 };
 
-const outPublic = join(root, 'public', 'axis-manifest.json');
-const outSrc = join(root, 'src', 'axis-manifest.json');
+const outPublic = join(root, 'public', 'veil-manifest.json');
+const outSrc = join(root, 'src', 'veil-manifest.json');
 mkdirSync(dirname(outPublic), { recursive: true });
 mkdirSync(dirname(outSrc), { recursive: true });
 const json = JSON.stringify(manifest);
@@ -132,5 +132,5 @@ writeFileSync(outPublic, json);
 writeFileSync(outSrc, json);
 
 console.log(
-  `Wrote Axis catalog: ${ENGINES.length} engines, ${LIVE_TURBOS.length} live turbos, 0 stubs`,
+  `Wrote VEIL catalog: ${ENGINES.length} engines, ${LIVE_TURBOS.length} live turbos, 0 stubs`,
 );

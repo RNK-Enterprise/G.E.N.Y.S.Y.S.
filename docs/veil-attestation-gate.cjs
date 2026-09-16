@@ -1,25 +1,25 @@
 /**
- * Axis Attestation Gate — shared, dependency-free (CJS + ESM compatible).
+ * VEIL Attestation Gate — shared, dependency-free (CJS + ESM compatible).
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
- * The ONLY check RNK products are asked to make against non-Axis clients:
- * an authenticated/login/API request must carry an Axis attestation, or it
+ * The ONLY check RNK products are asked to make against non-VEIL clients:
+ * an authenticated/login/API request must carry an VEIL attestation, or it
  * is refused. No product feature work — this is a refuse-if-missing hook.
  *
- * Wire-up (see docs/AXIS_ATTESTATION.md for the full contract):
- *   const { requireAxisAttestation } = require('<path>/axis-attestation-gate.cjs');
- *   app.use('/api', requireAxisAttestation({ gatedPrefixes: [...] }));
+ * Wire-up (see docs/VEIL_ATTESTATION.md for the full contract):
+ *   const { requireveilAttestation } = require('<path>/veil-attestation-gate.cjs');
+ *   app.use('/api', requireveilAttestation({ gatedPrefixes: [...] }));
  */
 'use strict';
 
-const CLIENT_HEADER = 'x-axis-client';
-const SESSION_HEADER = 'x-axis-session';
-const TIER_HEADER = 'x-axis-tier';
-const COOKIE_NAME = 'axis_attest';
+const CLIENT_HEADER = 'x-veil-client';
+const SESSION_HEADER = 'x-veil-session';
+const TIER_HEADER = 'x-veil-tier';
+const COOKIE_NAME = 'veil_attest';
 
-const REASON_MISSING = 'axis_attestation_missing';
-const REASON_EXPIRED = 'axis_attestation_expired';
-const REASON_FORBIDDEN = 'axis_attestation_forbidden';
+const REASON_MISSING = 'veil_attestation_missing';
+const REASON_EXPIRED = 'veil_attestation_expired';
+const REASON_FORBIDDEN = 'veil_attestation_forbidden';
 
 function readCookie(req, name) {
   const raw = req.headers && req.headers.cookie;
@@ -52,7 +52,7 @@ function extractAttestation(req) {
       const exp = Number(rest.slice(0, underscore));
       if (Number.isFinite(exp)) {
         if (!session) session = cookie;
-        if (!client) client = '1'; // cookie only travels via Axis bootstrap
+        if (!client) client = '1'; // cookie only travels via VEIL bootstrap
         if (!tier) tier = 'agent';
       }
     }
@@ -80,12 +80,12 @@ function attestationExpired(att, nowMs) {
  * opts.enforced (default true) — set false to log-only while products wire up.
  * opts.allowedTiers — array; default ['agent', 'full', 'dev'].
  */
-function requireAxisAttestation(opts = {}) {
+function requireveilAttestation(opts = {}) {
   const enforced = opts.enforced !== false;
   const allowedTiers = (opts.allowedTiers || ['agent', 'full', 'dev']).map((t) => t.toLowerCase());
   const gatedPrefixes = opts.gatedPrefixes || null; // null = all /api paths
 
-  return function axisAttestationMiddleware(req, res, next) {
+  return function veilAttestationMiddleware(req, res, next) {
     const path = req.path || (req.url || '').split('?')[0];
 
     // Explicit opt-out for surfaces that must stay public.
@@ -98,17 +98,17 @@ function requireAxisAttestation(opts = {}) {
 
     if (!att) {
       if (!enforced) return next();
-      res.status(401).json({ error: 'Axis client required', reason: REASON_MISSING });
+      res.status(401).json({ error: 'VEIL client required', reason: REASON_MISSING });
       return;
     }
     if (attestationExpired(att, now)) {
       if (!enforced) return next();
-      res.status(401).json({ error: 'Axis attestation expired', reason: REASON_EXPIRED });
+      res.status(401).json({ error: 'VEIL attestation expired', reason: REASON_EXPIRED });
       return;
     }
     if (!allowedTiers.includes(att.tier.toLowerCase())) {
       if (!enforced) return next();
-      res.status(403).json({ error: 'Axis tier not authorized', reason: REASON_FORBIDDEN });
+      res.status(403).json({ error: 'VEIL tier not authorized', reason: REASON_FORBIDDEN });
       return;
     }
     next();
@@ -116,7 +116,7 @@ function requireAxisAttestation(opts = {}) {
 }
 
 module.exports = {
-  requireAxisAttestation,
+  requireveilAttestation,
   extractAttestation,
   attestationExpired,
   CLIENT_HEADER,

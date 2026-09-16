@@ -37,13 +37,13 @@ export function navPrefetch() {
       onPolicyAllow = (e) => {
         if (e.detail?.url) prefetch(e.detail.url);
       };
-      window.addEventListener('axis:policy-allow', onPolicyAllow);
+      window.addEventListener('veil:policy-allow', onPolicyAllow);
     },
     stop() {
       clearTimeout(timer);
       const input = document.getElementById('url-input') || document.getElementById('omnibox');
       input?.removeEventListener('input', onOmnibox);
-      if (onPolicyAllow) window.removeEventListener('axis:policy-allow', onPolicyAllow);
+      if (onPolicyAllow) window.removeEventListener('veil:policy-allow', onPolicyAllow);
       onPolicyAllow = null;
     },
   };

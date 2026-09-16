@@ -1,4 +1,4 @@
-# src/ — Axis frontend
+# src/ — VEIL frontend
 
 Browser shell: HTML surfaces, JS modules, and the stylesheet manifest.
 

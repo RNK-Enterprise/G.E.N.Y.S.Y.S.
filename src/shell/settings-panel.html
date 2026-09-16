@@ -13,14 +13,14 @@
                     <button class="settings-tab" data-tab="appearance">Appearance</button>
                     <button class="settings-tab" data-tab="privacy">Privacy</button>
                     <button class="settings-tab" data-tab="performance">Performance</button>
-                    <button class="settings-tab" data-tab="axis">Axis</button>
+                    <button class="settings-tab" data-tab="veil">VEIL</button>
                     <button class="settings-tab" data-tab="advanced">Advanced</button>
                 </div>
 
                 <div class="settings-sections">
                     <!-- General Settings -->
                     <div id="settings-section-general" class="settings-section active" data-section="general">
-                        <h3 class="settings-section-heading">General Settings <button id="settings-general-toggle" class="axis-sidebar-mini-action" type="button">Collapse</button></h3>
+                        <h3 class="settings-section-heading">General Settings <button id="settings-general-toggle" class="veil-sidebar-mini-action" type="button">Collapse</button></h3>
                         <div class="setting-item">
                             <label>Homepage</label>
                             <input type="text" id="setting-homepage" placeholder="https://www.google.com">
@@ -51,7 +51,7 @@
 
                     <!-- Appearance Settings -->
                     <div id="settings-section-appearance" class="settings-section" data-section="appearance">
-                        <h3 class="settings-section-heading">Appearance <button id="settings-appearance-toggle" class="axis-sidebar-mini-action" type="button">Collapse</button></h3>
+                        <h3 class="settings-section-heading">Appearance <button id="settings-appearance-toggle" class="veil-sidebar-mini-action" type="button">Collapse</button></h3>
                         <div class="setting-item">
                             <label>Theme</label>
                             <select id="setting-theme">
@@ -85,7 +85,7 @@
 
                     <!-- Privacy Settings -->
                     <div id="settings-section-privacy" class="settings-section" data-section="privacy">
-                        <h3 class="settings-section-heading">Privacy & Security <button id="settings-privacy-toggle" class="axis-sidebar-mini-action" type="button">Collapse</button></h3>
+                        <h3 class="settings-section-heading">Privacy & Security <button id="settings-privacy-toggle" class="veil-sidebar-mini-action" type="button">Collapse</button></h3>
                         <div class="setting-item">
                             <label>
                                 <input type="checkbox" id="setting-block-cookies">
@@ -111,7 +111,7 @@
 
                     <!-- Performance Settings -->
                     <div id="settings-section-performance" class="settings-section" data-section="performance">
-                        <h3 class="settings-section-heading">Performance <button id="settings-performance-toggle" class="axis-sidebar-mini-action" type="button">Collapse</button></h3>
+                        <h3 class="settings-section-heading">Performance <button id="settings-performance-toggle" class="veil-sidebar-mini-action" type="button">Collapse</button></h3>
                         <div class="setting-item">
                             <label>
                                 <input type="checkbox" id="setting-hardware-accel">
@@ -120,8 +120,8 @@
                         </div>
                         <div class="setting-item">
                             <label>
-                                <input type="checkbox" id="setting-axis-engines">
-                                Enable Axis Engines
+                                <input type="checkbox" id="setting-veil-engines">
+                                Enable VEIL Engines
                             </label>
                         </div>
                         <div class="setting-item">
@@ -136,30 +136,30 @@
                         </div>
                     </div>
 
-                    <!-- Axis Capabilities -->
-                    <div id="settings-section-axis" class="settings-section" data-section="axis">
-                        <h3 class="settings-section-heading">Axis Capabilities <button id="settings-axis-toggle" class="axis-sidebar-mini-action" type="button">Collapse</button></h3>
+                    <!-- VEIL Capabilities -->
+                    <div id="settings-section-veil" class="settings-section" data-section="veil">
+                        <h3 class="settings-section-heading">VEIL Capabilities <button id="settings-veil-toggle" class="veil-sidebar-mini-action" type="button">Collapse</button></h3>
                         <div class="setting-item">
                             <label>Loaded Manifest</label>
-                            <div id="axis-manifest-summary" class="axis-summary">Loading Axis manifest...</div>
+                            <div id="veil-manifest-summary" class="veil-summary">Loading VEIL manifest...</div>
                         </div>
                         <div class="setting-item">
                             <label>Capability Categories</label>
-                            <div id="axis-category-list" class="axis-chip-list"></div>
+                            <div id="veil-category-list" class="veil-chip-list"></div>
                         </div>
                         <div class="setting-item">
                             <label>Available Surfaces</label>
-                            <div id="axis-surface-list" class="axis-chip-list"></div>
+                            <div id="veil-surface-list" class="veil-chip-list"></div>
                         </div>
                         <div class="setting-item">
                             <label>Enabled Capabilities</label>
-                            <div id="axis-capability-list" class="axis-capability-list"></div>
+                            <div id="veil-capability-list" class="veil-capability-list"></div>
                         </div>
                     </div>
 
                     <!-- Advanced Settings -->
                     <div id="settings-section-advanced" class="settings-section" data-section="advanced">
-                        <h3 class="settings-section-heading">Advanced Settings <button id="settings-advanced-toggle" class="axis-sidebar-mini-action" type="button">Collapse</button></h3>
+                        <h3 class="settings-section-heading">Advanced Settings <button id="settings-advanced-toggle" class="veil-sidebar-mini-action" type="button">Collapse</button></h3>
                         <div class="setting-item">
                             <label>
                                 <input type="checkbox" id="setting-dev-tools">

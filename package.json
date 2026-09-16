@@ -1,7 +1,7 @@
 {
-  "name": "rnk-axis",
+  "name": "rnk-veil",
   "version": "0.1.0",
-  "description": "Axis - RNK privacy browser built around Mother Lisa",
+  "description": "VEIL - RNK privacy browser built around Mother Lisa",
   "author": "Asgard Innovations / RNK™",
   "license": "PROPRIETARY",
   "private": true,
@@ -11,7 +11,7 @@
     "dev:vite": "vite",
     "dev:tauri": "bash scripts/with-webkit-pc.sh tauri dev",
     "dev": "vite",
-    "catalog": "node scripts/generate-axis-catalog.mjs",
+    "catalog": "node scripts/generate-veil-catalog.mjs",
     "prebuild": "npm run catalog",
     "audit:globals": "node scripts/audit-window-globals.mjs",
     "prebuild:vite": "npm run audit:globals",
@@ -38,6 +38,7 @@
     "acorn": "^8.18.0",
     "eslint": "^8.56.0",
     "jest": "^29.7.0",
+    "jest-environment-jsdom": "29.7.0",
     "playwright": "^1.62.1",
     "prettier": "^3.1.1",
     "vite": "^5.0.11"

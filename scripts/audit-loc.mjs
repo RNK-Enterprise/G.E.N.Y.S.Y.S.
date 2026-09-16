@@ -1,5 +1,5 @@
 /**
- * Axis™ — 500 LOC cap audit (Build Rule 2)
+ * VEIL™ — 500 LOC cap audit (Build Rule 2)
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * Walks the repo (skipping dependency/vendor/build trees), counts every text
@@ -24,7 +24,7 @@ const EXCLUDE_DIRS = new Set([
   'test-results', 'playwright-report', '.pkgconfig', 'coverage',
 ]);
 const BINARY_EXT = new Set(['.png', '.ico', '.icns', '.jpg', '.jpeg', '.gif', '.woff', '.woff2']);
-const AUTO_EXEMPT = new Set(['package-lock.json', 'Cargo.lock', 'axis-manifest.json']);
+const AUTO_EXEMPT = new Set(['package-lock.json', 'Cargo.lock', 'veil-manifest.json']);
 
 function* walk(dir) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -70,7 +70,7 @@ function report() {
     byDir.get(key).push(f);
   }
   const lines = [
-    '# AXIS Platform — LOC Report',
+    '# VEIL Platform — LOC Report',
     `**Generated:** ${new Date().toISOString().slice(0, 10)} (by scripts/audit-loc.mjs)`,
     `**LOC Cap:** ${CAP} lines per file (hard limit, hand-written files)`,
     `**Scope:** all text files, excluding target/, node_modules/, dist/, vendor/`,

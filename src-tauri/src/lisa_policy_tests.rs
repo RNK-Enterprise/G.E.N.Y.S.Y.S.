@@ -1,5 +1,5 @@
 //! Tests for the embedded P.R.O.T.E.C.T.S. policy.
-//! Verify bar: unauthenticated → block; authenticated internal axis:// → allow;
+//! Verify bar: unauthenticated → block; authenticated internal veil:// → allow;
 //! biosig strings can never authenticate; pentest host stays out of default chrome.
 
 use crate::lisa_policy::evaluate_local;
@@ -13,7 +13,7 @@ fn agent_session(tier: &str) -> Session {
     Session {
         access_tier: tier.into(),
         user_id: Some("agent".into()),
-        session_token: Some("axis-1-test".into()),
+        session_token: Some("veil-1-test".into()),
         shortcode: None,
         device_verified: false,
     }
@@ -34,10 +34,10 @@ fn unauthenticated_rnk_product_navigation_is_blocked() {
 }
 
 #[test]
-fn authenticated_internal_axis_is_allowed() {
-    let p = evaluate_local("axis://newtab", &agent_session("agent"));
+fn authenticated_internal_veil_is_allowed() {
+    let p = evaluate_local("veil://newtab", &agent_session("agent"));
     assert_eq!(p.decision, "allow");
-    assert_eq!(p.reason, "internal_axis_surface");
+    assert_eq!(p.reason, "internal_veil_surface");
 }
 
 #[test]
@@ -94,7 +94,7 @@ fn http_non_loopback_is_blocked() {
 
 #[test]
 fn privileged_context_never_applies_to_plain_web() {
-    let p = evaluate_local("https://duckduckgo.com/?q=axis", &agent_session("full"));
+    let p = evaluate_local("https://duckduckgo.com/?q=veil", &agent_session("full"));
     assert!(!p.request_privileged);
 }
 

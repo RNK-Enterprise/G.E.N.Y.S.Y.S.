@@ -10,7 +10,7 @@ export function tabSuspend(ctx = {}) {
   function suspendTab(tab) {
     if (!tab?.iframe || tab.suspended) return;
     const url = tab.url || tab.iframe.src;
-    if (!url || url.startsWith('axis://') || url === 'about:blank') return;
+    if (!url || url.startsWith('veil://') || url === 'about:blank') return;
     try {
       tab._suspendedUrl = url;
       tab._suspendedSrcdoc = tab.iframe.srcdoc || null;
@@ -47,12 +47,12 @@ export function tabSuspend(ctx = {}) {
         const tab = e.detail?.tab;
         if (tab) resumeTab(tab);
       };
-      window.addEventListener('axis:tab-deactivated', onDeactivate);
-      window.addEventListener('axis:tab-activated', onActivate);
+      window.addEventListener('veil:tab-deactivated', onDeactivate);
+      window.addEventListener('veil:tab-activated', onActivate);
     },
     stop() {
-      if (onDeactivate) window.removeEventListener('axis:tab-deactivated', onDeactivate);
-      if (onActivate) window.removeEventListener('axis:tab-activated', onActivate);
+      if (onDeactivate) window.removeEventListener('veil:tab-deactivated', onDeactivate);
+      if (onActivate) window.removeEventListener('veil:tab-activated', onActivate);
       const tabs = ctx.getTabs?.() || window.tabManager?.tabs || [];
       for (const t of tabs) resumeTab(t);
     },

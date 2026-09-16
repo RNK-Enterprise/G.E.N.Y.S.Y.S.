@@ -1,5 +1,5 @@
 /**
- * Axis™ — shared E2E boot helpers
+ * VEIL™ — shared E2E boot helpers
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * One boot path for every spec: the auth gate, welcome tour, and cookie bar
@@ -12,14 +12,14 @@
 
 /** Fresh-context state that gets the shell up without native auth. */
 const BOOT_STATE = {
-  axis_dev_bypass: 'true', // auth gate auto-authenticates (no native shell)
-  'axis-tour-complete': '1', // no welcome tour
-  'axis-cookies-accepted': '1', // no cookie notice
+  veil_dev_bypass: 'true', // auth gate auto-authenticates (no native shell)
+  'veil-tour-complete': '1', // no welcome tour
+  'veil-cookies-accepted': '1', // no cookie notice
 };
 
 /**
- * Attach listeners before navigation. Call this *before* `bootAxis` if you
- * need a collector, or just use the one `bootAxis` returns.
+ * Attach listeners before navigation. Call this *before* `bootVEIL` if you
+ * need a collector, or just use the one `bootVEIL` returns.
  */
 export function collectPageProblems(page) {
   const problems = { consoleErrors: [], pageErrors: [] };
@@ -39,10 +39,10 @@ export function problemReport(problems) {
 }
 
 /**
- * Boot Axis in browser mode and return the problem collector for that page.
+ * Boot VEIL in browser mode and return the problem collector for that page.
  * Each Playwright test gets a fresh context, so no stale tabs are restored.
  */
-export async function bootAxis(page, { path = '/' } = {}) {
+export async function bootVEIL(page, { path = '/' } = {}) {
   const problems = collectPageProblems(page);
   await page.addInitScript((state) => {
     for (const [key, value] of Object.entries(state)) localStorage.setItem(key, value);
