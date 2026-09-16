@@ -1,0 +1,415 @@
+﻿/**
+ * Axis™
+ * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
+ *
+ * PROPRIETARY AND CONFIDENTIAL
+ */
+
+:root {
+    /* Axis Theme */
+    --brand-gold: #d4a843; --toxic-green: #d4a843;
+    --brand-gold-dark: #b8902e; --toxic-green-dark: #b8902e;
+    --brand-gold-glow: rgba(212, 168, 67, 0.35); --toxic-green-glow: rgba(212, 168, 67, 0.35);
+    --dark-bg: #1a1a2e;
+    --darker-bg: #12121f;
+    --steel-bg: #22223a;
+    --text-primary: #e8e8f0;
+    --text-secondary: #7a7a9a;
+    --border-color: #2e2e4a;
+    
+    /* Animation Timings */
+    --transition-fast: 0.15s;
+    --transition-normal: 0.25s;
+    --transition-slow: 0.4s;
+    --axis-titlebar-h: 32px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--dark-bg);
+    color: var(--text-primary);
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.3s ease-in;
+}
+
+body.theme-dark {
+    --dark-bg: #14142a;
+    --darker-bg: #0e0e1e;
+    --steel-bg: #1e1e36;
+    --text-primary: #f0f0f8;
+    --text-secondary: #8888aa;
+    --border-color: #2a2a46;
+    --brand-gold: #d4a843; --toxic-green: #d4a843;
+    --brand-gold-dark: #b8902e; --toxic-green-dark: #b8902e;
+    --toxic-green-glow: rgba(212, 168, 67, 0.34);
+}
+
+body.theme-light {
+    --dark-bg: #f4f4f8;
+    --darker-bg: #ffffff;
+    --steel-bg: #e8e8f2;
+    --text-primary: #12121f;
+    --text-secondary: #555570;
+    --border-color: #c0c0d8;
+    --toxic-green: #b8902e;
+    --toxic-green-dark: #9a7820;
+    --toxic-green-glow: rgba(184, 144, 46, 0.2);
+}
+
+body.theme-light input,
+body.theme-light select,
+body.theme-light textarea,
+body.theme-light .sidebar-input,
+body.theme-light #omnibox {
+    background: rgba(255, 255, 255, 0.82);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+body.theme-light .sidebar-action,
+body.theme-light .axis-sidebar-mini-action,
+body.theme-light .titlebar-button,
+body.theme-light .statusbar-button,
+body.theme-light .bookmarks-bar-item,
+body.theme-light .axis-sidebar-result-badge,
+body.theme-light .axis-sidebar-card-activity,
+body.theme-light .axis-download-state {
+    color: var(--text-primary);
+}
+
+body.theme-light .axis-sidebar-card-open-hint,
+body.theme-light .axis-sidebar-mini-action,
+body.theme-light .statusbar-button,
+body.theme-light .titlebar-button {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 5px var(--toxic-green-glow); }
+    50% { box-shadow: 0 0 20px var(--toxic-green-glow), 0 0 30px var(--toxic-green-glow); }
+}
+
+/* Custom Titlebar — always above the auth gate so close/min/max stay usable */
+#titlebar {
+    height: var(--axis-titlebar-h);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 100000;
+    background: var(--darker-bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    padding: 0 8px;
+    border-bottom: 1px solid var(--brand-gold, #d4a843);
+    user-select: none;
+}
+
+.titlebar-center {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    overflow: hidden;
+}
+
+#titlebar.compact {
+    padding: 0 4px;
+}
+
+#titlebar.roomy {
+    --axis-titlebar-h: 36px;
+    height: var(--axis-titlebar-h);
+    padding: 0 10px;
+}
+
+.titlebar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.titlebar-left.compact {
+    gap: 6px;
+}
+
+#titlebar.roomy .titlebar-left {
+    gap: 10px;
+}
+
+.logo {
+    width: 16px;
+    height: 16px;
+}
+
+.window-title {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.window-title.hidden {
+    display: none;
+}
+
+.titlebar-right {
+    display: flex;
+}
+
+/* ── Header Spotlight ─────────────────────────────────────────────── */
+
+#spotlight-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.titlebar-spotlight {
+    width: 28px;
+    min-width: 28px;
+    font-size: 13px;
+    line-height: 1;
+}
+
+.titlebar-spotlight.active {
+    color: var(--brand-gold, #d4a843);
+    background: var(--accent-bg, rgba(212, 168, 67, 0.12));
+}
+
+#spotlight-dropdown {
+    position: fixed;
+    top: 40px;
+    right: 12px;
+    width: 340px;
+    max-width: calc(100vw - 32px);
+    background: var(--dark-bg, #101826);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+    padding: 10px;
+    z-index: 200000;
+    -webkit-app-region: no-drag;
+}
+
+#spotlight-dropdown.hidden,
+#spotlight-dropdown[hidden] {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+.spotlight-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+#spotlight-search {
+    flex: 1 1 auto;
+    height: 28px;
+    padding: 0 10px;
+    background: var(--darker-bg, #0a0f1a);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    color: var(--text-primary, #e2e8f0);
+    font-size: 12px;
+}
+
+#spotlight-search:focus {
+    outline: none;
+    border-color: var(--brand-gold, #d4a843);
+}
+
+.spotlight-close {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: var(--text-secondary, #94a3b8);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    pointer-events: auto;
+    -webkit-app-region: no-drag;
+}
+
+.spotlight-close:hover {
+    background: var(--hover-bg, rgba(255, 255, 255, 0.06));
+    color: var(--text-primary, #e2e8f0);
+}
+
+.spotlight-context-line {
+    margin: 8px 2px 6px;
+    font-size: 11px;
+    color: var(--text-secondary, #94a3b8);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.spotlight-feed {
+    max-height: 380px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.spotlight-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 7px 9px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.spotlight-item:hover {
+    background: var(--hover-bg, rgba(255, 255, 255, 0.06));
+    border-color: var(--border-color);
+}
+
+.spotlight-item.hidden {
+    display: none;
+}
+
+.spotlight-item-badge {
+    flex-shrink: 0;
+    min-width: 62px;
+    padding: 2px 6px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-secondary, #94a3b8);
+    text-align: center;
+}
+
+.spotlight-item-body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.spotlight-item-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-primary, #e2e8f0);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.spotlight-item-meta {
+    font-size: 10px;
+    color: var(--text-secondary, #94a3b8);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.spotlight-empty {
+    margin: 6px 2px;
+    font-size: 11px;
+    color: var(--text-secondary, #94a3b8);
+}
+
+#titlebar.roomy .titlebar-button {
+    width: 48px;
+    height: 34px;
+}
+
+.titlebar-shell-toggle {
+    width: auto;
+    min-width: 80px;
+    padding: 0 12px;
+    font-size: 11px;
+    letter-spacing: 0.02em;
+}
+
+.titlebar-compact-toggle {
+    width: auto;
+    min-width: 52px;
+    padding: 0 10px;
+    font-size: 11px;
+    letter-spacing: 0.02em;
+}
+
+.titlebar-density-toggle {
+    width: auto;
+    min-width: 74px;
+    padding: 0 10px;
+    font-size: 11px;
+    letter-spacing: 0.02em;
+}
+
+.titlebar-button,
+.section-nav-btn,
+#spotlight-wrap,
+#titlebar-compact-toggle {
+    -webkit-app-region: no-drag;
+}
+
+.titlebar-left {
+    -webkit-app-region: drag;
+}
+
+/* OS chrome owns min/max/close. Keep in-page copies out of the way. */
+#minimize-btn,
+#maximize-btn,
+#close-btn {
+    display: none;
+}
+
+.titlebar-button {
+    width: 46px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background 0.2s;
+    pointer-events: auto;
+}
+
+.titlebar-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.titlebar-button.close:hover {
+    background: #e81123;
+}
+

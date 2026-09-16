@@ -11,6 +11,7 @@ export class HistoryManager {
     constructor() {
         this.history = this.loadHistory();
         this.maxEntries = 10000;
+        this.lastId = Date.now();
     }
 
     loadHistory() {
@@ -32,7 +33,7 @@ export class HistoryManager {
 
     addEntry(url, title) {
         const entry = {
-            id: Date.now(),
+            id: ++this.lastId,
             url: url,
             title: title || url,
             timestamp: Date.now(),
@@ -79,8 +80,13 @@ export class HistoryManager {
     }
 
     getByDate(date) {
-        const startOfDay = new Date(date).setHours(0, 0, 0, 0);
-        const endOfDay = new Date(date).setHours(23, 59, 59, 999);
+        // Date-only strings are parsed as UTC; anchor to local noon first so
+        // the local-day window below matches the caller's calendar day.
+        const base = /^\d{4}-\d{2}-\d{2}$/.test(String(date))
+            ? new Date(`${date}T12:00:00`)
+            : new Date(date);
+        const startOfDay = base.setHours(0, 0, 0, 0);
+        const endOfDay = base.setHours(23, 59, 59, 999);
         return this.history.filter(h => h.timestamp >= startOfDay && h.timestamp <= endOfDay);
     }
 

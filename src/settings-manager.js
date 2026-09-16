@@ -7,6 +7,24 @@
  * Settings Manager
  */
 
+function isPlainObject(value) {
+    return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+/**
+ * Deep merge `patch` over `base`. Plain objects overlay key-by-key so a
+ * partial import cannot wipe sibling defaults; everything else replaces.
+ */
+function mergeSettings(base, patch) {
+    const out = { ...base };
+    for (const [key, value] of Object.entries(patch)) {
+        out[key] = isPlainObject(value) && isPlainObject(base[key])
+            ? mergeSettings(base[key], value)
+            : value;
+    }
+    return out;
+}
+
 export class SettingsManager {
     constructor() {
         this.settings = this.loadSettings();
@@ -104,7 +122,7 @@ export class SettingsManager {
     importSettings(jsonString) {
         try {
             const imported = JSON.parse(jsonString);
-            this.settings = { ...this.getDefaultSettings(), ...imported };
+            this.settings = mergeSettings(this.getDefaultSettings(), imported);
             this.saveSettings();
             return true;
         } catch {

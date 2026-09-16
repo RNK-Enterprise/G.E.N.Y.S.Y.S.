@@ -10,6 +10,7 @@ import { axisRuntime } from './engines/runtime.js';
 
 // Boot order matters: managers → density/UI → sidebar/surfaces → tabs → bindings → init
 import './shell/tauri-api.js';
+import './shell/settings-panel-render.js';
 import './shell/managers-boot.js';
 import './shell/fallback-manifest.js';
 import './shell/manifest.js';

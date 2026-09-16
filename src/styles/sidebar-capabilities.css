@@ -1,0 +1,447 @@
+
+.axis-sidebar-result.empty {
+    cursor: default;
+}
+
+.axis-sidebar-result-title {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+.axis-sidebar-result-meta {
+    display: block;
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.axis-download-item {
+    display: grid;
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.axis-download-item[data-status="downloading"] {
+    border-color: rgba(212, 168, 67, 0.24);
+    background: linear-gradient(180deg, rgba(212, 168, 67, 0.06), rgba(255, 255, 255, 0.03));
+}
+
+.axis-download-item[data-status="paused"] {
+    border-color: rgba(255, 191, 0, 0.24);
+    background: linear-gradient(180deg, rgba(255, 191, 0, 0.06), rgba(255, 255, 255, 0.03));
+}
+
+.axis-download-item[data-status="completed"] {
+    border-color: rgba(212, 168, 67, 0.2);
+    background: linear-gradient(180deg, rgba(212, 168, 67, 0.08), rgba(255, 255, 255, 0.03));
+}
+
+.axis-download-item[data-status="failed"] {
+    border-color: rgba(255, 107, 107, 0.24);
+    background: linear-gradient(180deg, rgba(255, 107, 107, 0.06), rgba(255, 255, 255, 0.03));
+}
+
+#axis-sidebar.compact .axis-download-item {
+    gap: 6px;
+    padding: 8px;
+}
+
+#axis-sidebar.roomy .axis-download-item {
+    gap: 10px;
+    padding: 12px;
+}
+
+.axis-download-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.axis-download-title {
+    display: block;
+    min-width: 0;
+    color: var(--text-primary);
+    font-size: 12px;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.axis-download-state {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.axis-download-state[data-state="downloading"],
+.axis-download-state[data-state="completed"] {
+    border-color: rgba(212, 168, 67, 0.28);
+    background: rgba(212, 168, 67, 0.12);
+    color: var(--text-primary);
+}
+
+.axis-download-state[data-state="paused"] {
+    border-color: rgba(255, 191, 0, 0.28);
+    background: rgba(255, 191, 0, 0.12);
+    color: var(--text-primary);
+}
+
+.axis-download-state[data-state="failed"] {
+    border-color: rgba(255, 107, 107, 0.28);
+    background: rgba(255, 107, 107, 0.12);
+    color: var(--text-primary);
+}
+
+.axis-download-meta {
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.35;
+}
+
+.axis-download-progress {
+    width: 100%;
+    height: 6px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.axis-download-progress-bar {
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--toxic-green), rgba(212, 168, 67, 0.65));
+}
+
+.axis-download-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.axis-download-actions .axis-sidebar-mini-action {
+    flex: 1 1 calc(50% - 6px);
+}
+
+.axis-sidebar-section[data-capability="axis-downloads"] .axis-sidebar-note {
+    margin-bottom: 2px;
+}
+
+.axis-sidebar-section[data-capability="axis-search"] .axis-sidebar-note {
+    margin-bottom: 4px;
+}
+
+.axis-sidebar-section[data-capability="axis-bookmarks"] .axis-sidebar-note {
+    margin-bottom: 4px;
+}
+
+.axis-sidebar-section[data-capability="axis-history"] .axis-sidebar-note {
+    margin-bottom: 4px;
+}
+
+.axis-sidebar-section[data-capability="axis-history"] .axis-sidebar-results,
+.axis-sidebar-section[data-capability="axis-bookmarks"] .axis-sidebar-results {
+    margin-bottom: 2px;
+}
+
+.axis-sidebar-section[data-capability="axis-themes"] .axis-sidebar-note,
+.axis-sidebar-section[data-capability="axis-extensions"] .axis-sidebar-note {
+    margin-bottom: 4px;
+}
+
+.axis-sidebar-section[data-capability="axis-security-stack"] .axis-sidebar-note {
+    margin-bottom: 4px;
+}
+
+.axis-sidebar-section[data-capability="axis-accessibility"] .axis-sidebar-note {
+    margin-bottom: 4px;
+}
+
+.axis-sidebar-section[data-capability="axis-developer"] .axis-sidebar-note {
+    margin-bottom: 4px;
+}
+
+.axis-sidebar-section[data-capability="axis-automation"] .axis-sidebar-note {
+    margin-bottom: 4px;
+}
+
+.axis-sidebar-section[data-capability="axis-notifications"] .axis-sidebar-note {
+    margin-bottom: 4px;
+}
+
+.axis-sidebar-section[data-capability="axis-communication"] .axis-sidebar-note {
+    margin-bottom: 4px;
+}
+
+.axis-sidebar-section[data-capability="axis-ai-assistant"] .axis-sidebar-note {
+    margin-bottom: 4px;
+}
+
+.axis-sidebar-section[data-capability="axis-media"] .axis-sidebar-note {
+    margin-bottom: 4px;
+}
+
+.axis-sidebar-section[data-capability="axis-communication"] .axis-sidebar-results {
+    margin-bottom: 2px;
+}
+
+.axis-sidebar-section[data-capability="axis-search"] .axis-sidebar-results {
+    margin-bottom: 2px;
+}
+
+#axis-sidebar-ai .axis-sidebar-results {
+    margin-bottom: 2px;
+}
+
+#axis-sidebar-bookmarks .axis-sidebar-results {
+    margin-bottom: 2px;
+}
+
+#axis-sidebar-accessibility .axis-sidebar-results {
+    margin-bottom: 2px;
+}
+
+#axis-sidebar-developer .axis-sidebar-note {
+    margin-bottom: 4px;
+}
+
+#axis-sidebar-developer .axis-sidebar-results {
+    margin-bottom: 2px;
+}
+
+#axis-sidebar-cloud .axis-sidebar-note {
+    margin-bottom: 4px;
+}
+
+#axis-sidebar-cloud .axis-sidebar-results {
+    margin-bottom: 2px;
+}
+
+#axis-sidebar-sync .axis-sidebar-note {
+    margin-bottom: 4px;
+}
+
+#axis-sidebar-sync .axis-sidebar-results {
+    margin-bottom: 2px;
+}
+
+#axis-sidebar-performance .axis-sidebar-note {
+    margin-bottom: 4px;
+}
+
+#axis-sidebar-performance .axis-sidebar-results {
+    margin-bottom: 2px;
+}
+
+#axis-sidebar-media .axis-sidebar-results {
+    margin-bottom: 2px;
+}
+
+#axis-sidebar.compact .axis-download-actions {
+    gap: 4px;
+}
+
+#axis-sidebar.roomy .axis-download-actions {
+    gap: 8px;
+}
+
+.axis-sidebar-cards {
+    display: grid;
+    gap: 8px;
+}
+
+.axis-sidebar-card {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+#axis-sidebar.compact .axis-sidebar-card {
+    padding: 8px;
+}
+
+#axis-sidebar.roomy .axis-sidebar-card {
+    padding: 12px;
+}
+
+.axis-sidebar-card.clickable {
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.axis-sidebar-card.clickable:hover {
+    border-color: var(--toxic-green);
+    background: rgba(212, 168, 67, 0.05);
+    transform: translateY(-1px);
+}
+
+.axis-sidebar-card.clickable:focus-visible {
+    outline: 1px solid var(--toxic-green);
+    outline-offset: 2px;
+}
+
+.axis-sidebar-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 12px;
+}
+
+.axis-sidebar-card-header strong {
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.axis-sidebar-card-header span {
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.axis-sidebar-card-footer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+}
+
+.axis-sidebar-card-open-hint {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(212, 168, 67, 0.22);
+    background: rgba(212, 168, 67, 0.16);
+    color: var(--text-primary);
+    font-size: 12px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.axis-sidebar-card-open-hint:hover {
+    border-color: var(--toxic-green);
+    background: rgba(212, 168, 67, 0.22);
+}
+
+.axis-sidebar-card-description {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.axis-sidebar-card-activity {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+button.axis-sidebar-card-activity {
+    cursor: pointer;
+}
+
+button.axis-sidebar-card-activity:hover {
+    border-color: var(--toxic-green);
+    background: rgba(212, 168, 67, 0.18);
+}
+
+button.axis-sidebar-card-activity:disabled {
+    cursor: default;
+    opacity: 0.8;
+}
+
+.axis-sidebar-card-activity[data-state="new"] {
+    background: rgba(212, 168, 67, 0.2);
+    border-color: rgba(212, 168, 67, 0.35);
+    color: var(--dark-bg);
+}
+
+body.theme-light .axis-sidebar-card-activity[data-state="new"] {
+    color: var(--text-primary);
+}
+
+.axis-sidebar-card-activity[data-state="ready"],
+.axis-sidebar-card-activity[data-state="online"] {
+    background: rgba(212, 168, 67, 0.12);
+    border-color: rgba(212, 168, 67, 0.22);
+    color: var(--text-primary);
+}
+
+.axis-sidebar-card-activity[data-state="beta"] {
+    background: rgba(255, 191, 0, 0.14);
+    border-color: rgba(255, 191, 0, 0.28);
+    color: var(--text-primary);
+}
+
+.sidebar-action {
+    width: 100%;
+    padding: 8px 10px;
+    background: rgba(212, 168, 67, 0.08);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sidebar-action:hover {
+    background: rgba(212, 168, 67, 0.16);
+    border-color: var(--toxic-green);
+}
+
+.sidebar-action.active {
+    border-color: var(--toxic-green);
+    background: rgba(212, 168, 67, 0.18);
+}
+
+.sidebar-action:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+#webview-container {
+    flex: 1;
+    background: var(--darker-bg);
+    position: relative;
+    overflow: hidden;
+}
+
+.webview {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+

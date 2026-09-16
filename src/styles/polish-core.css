@@ -1,0 +1,409 @@
+/*          POLISH PHASE - TOAST SYSTEM        */
+/* ============================================ */
+
+.toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.toast-container.compact {
+    bottom: 14px;
+    right: 14px;
+    gap: 8px;
+}
+
+.toast {
+    background: var(--wasteland-steel);
+    border: 1px solid var(--border-toxic);
+    border-radius: 8px;
+    padding: 12px 16px;
+    min-width: 280px;
+    max-width: 400px;
+    box-shadow: var(--shadow-toxic), var(--shadow-deep);
+    pointer-events: all;
+    animation: slideInRight 0.3s ease-out;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+}
+
+.toast-container.compact .toast {
+    padding: 10px 12px;
+    gap: 10px;
+    min-width: 240px;
+}
+
+.toast.removing {
+    animation: slideOutRight 0.3s ease-out forwards;
+}
+
+.toast-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.toast-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+.toast-container.compact .toast-title {
+    font-size: 13px;
+}
+
+.toast-message {
+    color: var(--text-secondary);
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.toast-container.compact .toast-message {
+    font-size: 11px;
+}
+
+.toast.success {
+    border-color: var(--toxic-green);
+    background: linear-gradient(135deg, var(--wasteland-dark), var(--wasteland-steel));
+}
+
+.toast.success .toast-icon {
+    color: var(--toxic-green);
+}
+
+.toast.error {
+    border-color: var(--text-warning);
+    background: linear-gradient(135deg, rgba(255, 107, 0, 0.1), var(--wasteland-steel));
+}
+
+.toast.error .toast-icon {
+    color: var(--text-warning);
+}
+
+.toast.info {
+    border-color: rgba(212, 168, 67, 0.5);
+}
+
+.toast.info .toast-icon {
+    color: var(--toxic-green-dark);
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.toast-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+}
+
+/* ============================================ */
+/*      KEYBOARD SHORTCUTS HELP MODAL          */
+/* ============================================ */
+
+.shortcuts-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 24px;
+    padding: 20px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.shortcut-section h4 {
+    color: var(--toxic-green);
+    font-size: 16px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-rusted);
+}
+
+.shortcut-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.shortcut-item kbd {
+    background: var(--wasteland-black);
+    border: 1px solid var(--border-rusted);
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: var(--toxic-green);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    min-width: 80px;
+    text-align: center;
+}
+
+.shortcut-item span {
+    flex: 1;
+}
+
+#shortcuts-help.dense .shortcuts-list {
+    gap: 14px;
+    padding: 14px;
+    max-height: 430px;
+}
+
+#shortcuts-help.roomy .shortcuts-list {
+    gap: 30px;
+    padding: 26px;
+    max-height: 560px;
+}
+
+#shortcuts-help.dense .shortcut-section h4 {
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    font-size: 15px;
+}
+
+#shortcuts-help.roomy .shortcut-section h4 {
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    font-size: 17px;
+}
+
+#shortcuts-help.dense .shortcut-item {
+    padding: 6px 0;
+    font-size: 13px;
+}
+
+#shortcuts-help.roomy .shortcut-item {
+    padding: 10px 0;
+    font-size: 15px;
+}
+
+#shortcuts-help.dense .shortcut-item kbd {
+    min-width: 68px;
+    padding: 3px 7px;
+    font-size: 11px;
+}
+
+#shortcuts-help.roomy .shortcut-item kbd {
+    min-width: 76px;
+    padding: 5px 10px;
+    font-size: 13px;
+}
+
+.shortcuts-dense-toggle {
+    width: auto;
+    min-width: 60px;
+    margin-right: 8px;
+    font-size: 12px;
+    background: transparent;
+    border: 1px solid var(--border-rusted);
+    border-radius: 4px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.shortcuts-dense-toggle:hover {
+    color: var(--toxic-green);
+    border-color: var(--toxic-green);
+}
+
+/* ============================================ */
+/*          LOADING SKELETON SCREENS           */
+/* ============================================ */
+
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        var(--wasteland-steel) 0%,
+        var(--wasteland-concrete) 50%,
+        var(--wasteland-steel) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.tab-skeleton {
+    height: 35px;
+    width: 180px;
+    margin: 0 4px;
+    display: inline-block;
+}
+
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(13, 13, 13, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(8px);
+}
+
+.loading-overlay.compact {
+    backdrop-filter: blur(4px);
+}
+
+.loading-overlay.roomy {
+    backdrop-filter: blur(10px);
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 3px solid var(--border-rusted);
+    border-top-color: var(--toxic-green);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.loading-overlay.compact .loading-spinner {
+    width: 44px;
+    height: 44px;
+    border-width: 2px;
+}
+
+.loading-overlay.roomy .loading-spinner {
+    width: 68px;
+    height: 68px;
+    border-width: 4px;
+}
+
+.loading-text {
+    margin-top: 16px;
+    color: var(--text-primary);
+    font-size: 14px;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.loading-overlay.compact .loading-text {
+    margin-top: 12px;
+    font-size: 13px;
+}
+
+.loading-overlay.roomy .loading-text {
+    margin-top: 18px;
+    font-size: 15px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* ============================================ */
+/*          SMOOTH SCROLL BEHAVIOR             */
+/* ============================================ */
+
+* {
+    scroll-behavior: smooth;
+}
+
+.modal-content,
+.shortcuts-list,
+.settings-content,
+.tab-search-results {
+    scroll-behavior: smooth;
+}
+
+/* Custom scrollbar for better aesthetics */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--wasteland-black);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--wasteland-steel);
+    border-radius: 5px;
+    border: 2px solid var(--wasteland-black);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--toxic-green-dark);
+    box-shadow: var(--shadow-toxic);
+}
+
+/* ============================================ */
+/*          ENHANCED FOCUS STATES              */
+/* ============================================ */
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--toxic-green);
+    outline-offset: 2px;
+}
+
+.tab:focus-visible {
+    box-shadow: 0 0 0 2px var(--toxic-green);
+}
+
+/* ============================================ */

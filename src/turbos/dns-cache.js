@@ -22,8 +22,21 @@ export function dnsCache() {
     try {
       const url = e.detail?.url;
       if (!url) return;
-      const host = new URL(url.startsWith('http') ? url : `https://${url}`).hostname;
-      lookup(host);
+      let parsed;
+      try {
+        parsed = new URL(url);
+      } catch {
+        parsed = null;
+      }
+      if (!parsed) {
+        try {
+          parsed = new URL(`https://${url}`);
+        } catch {
+          return;
+        }
+      }
+      if (!/^https?:$/.test(parsed.protocol)) return;
+      lookup(parsed.hostname);
     } catch { /* ignore */ }
   }
 

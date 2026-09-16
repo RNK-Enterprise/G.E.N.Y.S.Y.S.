@@ -30,6 +30,9 @@ Thumbs.db
 playwright-report/
 test-results/
 
+# Jest coverage output
+coverage/
+
 # Local tooling state / non-project dirs
 .freebuff/
 git/

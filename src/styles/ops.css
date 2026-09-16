@@ -1,0 +1,360 @@
+/* ===================================================================
+   ADMIN OPS PLANE
+   =================================================================== */
+
+.ops-plane {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--bg-primary, #0e0e24);
+}
+
+.ops-plane-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border-color, #2a2a4a);
+    flex-shrink: 0;
+}
+
+.ops-plane-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary, #e0e0f0);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.ops-plane-tier {
+    font-size: 11px;
+    color: var(--brand-gold);
+    letter-spacing: 0.06em;
+}
+
+.ops-tabs {
+    display: flex;
+    gap: 1px;
+    padding: 8px 16px 0;
+    border-bottom: 1px solid var(--border-color, #2a2a4a);
+    flex-shrink: 0;
+}
+
+.ops-tab {
+    padding: 6px 14px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-secondary, #8a8ab0);
+    font-size: 12px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.ops-tab:hover {
+    color: var(--text-primary, #e0e0f0);
+}
+
+.ops-tab.active {
+    color: var(--brand-gold);
+    border-bottom-color: var(--brand-gold);
+}
+
+.ops-panels {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.ops-panel {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+}
+
+.ops-panel.active {
+    display: flex;
+}
+
+.ops-panel-toolbar {
+    display: flex;
+    gap: 8px;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--border-color, #2a2a4a);
+    flex-shrink: 0;
+}
+
+.ops-refresh-btn {
+    padding: 4px 12px;
+    background: transparent;
+    border: 1px solid var(--border-color, #2a2a4a);
+    border-radius: 4px;
+    color: var(--text-secondary, #8a8ab0);
+    font-size: 11px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+}
+
+.ops-refresh-btn:hover {
+    border-color: var(--brand-gold);
+    color: var(--brand-gold);
+}
+
+.ops-log-feed {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+}
+
+.ops-log-entry {
+    display: flex;
+    gap: 12px;
+    padding: 3px 0;
+    border-bottom: 1px solid rgba(42, 42, 74, 0.4);
+}
+
+.ops-log-ts {
+    color: var(--text-secondary, #8a8ab0);
+    flex-shrink: 0;
+    min-width: 160px;
+}
+
+.ops-log-msg {
+    color: var(--text-primary, #e0e0f0);
+    word-break: break-all;
+}
+
+.ops-log-empty,
+.ops-log-loading {
+    color: var(--text-secondary, #8a8ab0);
+    font-style: italic;
+    padding: 16px 0;
+    font-family: inherit;
+}
+
+.ops-fleet-node {
+    display: grid;
+    grid-template-columns: 1fr 80px 120px;
+    gap: 12px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(42, 42, 74, 0.4);
+    font-size: 12px;
+    align-items: center;
+}
+
+.ops-fleet-node-name {
+    color: var(--text-primary, #e0e0f0);
+    font-weight: 500;
+}
+
+.ops-fleet-node-status {
+    text-align: center;
+}
+
+.ops-fleet-node--online .ops-fleet-node-status { color: #3a8a3a; }
+.ops-fleet-node--offline .ops-fleet-node-status { color: #8a3a3a; }
+.ops-fleet-node--unknown .ops-fleet-node-status { color: var(--text-secondary, #8a8ab0); }
+
+.ops-fleet-node-uptime {
+    color: var(--text-secondary, #8a8ab0);
+    text-align: right;
+}
+
+/* ===================================================================
+   COOKIES BAR
+   =================================================================== */
+
+#axis-cookies-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 20px;
+    background: #1a1a2e;
+    border-top: 1px solid #2a2a4a;
+    font-size: 12px;
+    color: #a0a0c0;
+    transition: opacity 0.3s ease;
+}
+
+#axis-cookies-bar a {
+    color: var(--brand-gold);
+    text-decoration: none;
+}
+
+#axis-cookies-bar a:hover {
+    text-decoration: underline;
+}
+
+#axis-cookies-accept {
+    flex-shrink: 0;
+    padding: 6px 16px;
+    background: var(--brand-gold);
+    color: #0a0a1a;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#axis-cookies-accept:hover {
+    background: var(--brand-gold-dark);
+}
+
+.axis-cookies-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ===================================================================
+   LISA Navigation Gate — status indicator + decision page styles
+   =================================================================== */
+
+#lisa-status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    transition: all 0.3s;
+}
+
+#lisa-status-indicator.lisa-status-active {
+    color: var(--brand-gold, #d4a843);
+    border-color: rgba(212, 168, 67, 0.25);
+    background: rgba(212, 168, 67, 0.08);
+}
+
+#lisa-status-indicator.lisa-status-active::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--brand-gold, #d4a843);
+    animation: lisaPulse 2s ease-in-out infinite;
+}
+
+#lisa-status-indicator.lisa-status-degraded {
+    color: #f5a623;
+    border-color: rgba(245, 166, 35, 0.25);
+    background: rgba(245, 166, 35, 0.08);
+}
+
+#lisa-status-indicator.lisa-status-degraded::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #f5a623;
+}
+
+#lisa-status-indicator.lisa-status-offline {
+    color: #7a7a9a;
+    border-color: rgba(122, 122, 154, 0.2);
+}
+
+#lisa-status-indicator.lisa-status-offline::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4a4a6a;
+}
+
+@keyframes lisaPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.6; transform: scale(0.8); }
+}
+
+.tab.status-flagged {
+    border-bottom: 2px solid rgba(245, 166, 35, 0.7);
+}
+
+/* ===================================================================
+   LISA Auth Panel (legacy — for in-page access panel)
+   =================================================================== */
+
+#lisa-auth-panel {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(18, 18, 31, 0.8);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+
+#lisa-auth-panel.hidden {
+    display: none;
+}
+
+.lisa-auth-inner {
+    width: 360px;
+    background: rgba(26, 26, 46, 0.95);
+    border: 1px solid rgba(212, 168, 67, 0.35);
+    border-top: 3px solid var(--brand-gold, #d4a843);
+    border-radius: 12px;
+    padding: 28px 24px 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.lisa-auth-title {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--brand-gold, #d4a843);
+    margin-bottom: 16px;
+}
+
+.lisa-auth-input {
+    width: 100%;
+    height: 38px;
+    background: rgba(18, 18, 31, 0.8);
+    border: 1px solid rgba(212, 168, 67, 0.2);
+    border-radius: 6px;
+    padding: 0 12px;
+    color: #e8e8f0;
+    font-family: 'Cascadia Code', 'Consolas', monospace;
+    font-size: 13px;
+    outline: none;
+    margin-bottom: 12px;
+}
+
+.lisa-auth-input:focus {
+    border-color: rgba(212, 168, 67, 0.5);
+    box-shadow: 0 0 0 2px rgba(212, 168, 67, 0.1);
+}
+
+.lisa-auth-submit {
+    width: 100%;
+    height: 38px;
+    background: linear-gradient(135deg, #d4a843, #b8902e);
+    border: none;
+    border-radius: 6px;
+    color: #12121f;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.lisa-auth-submit:hover {
+    opacity: 0.9;
+}
+

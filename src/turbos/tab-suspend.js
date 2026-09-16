@@ -11,12 +11,12 @@ export function tabSuspend(ctx = {}) {
     if (!tab?.iframe || tab.suspended) return;
     const url = tab.url || tab.iframe.src;
     if (!url || url.startsWith('axis://') || url === 'about:blank') return;
-    tab._suspendedUrl = url;
-    tab._suspendedSrcdoc = tab.iframe.srcdoc || null;
     try {
+      tab._suspendedUrl = url;
+      tab._suspendedSrcdoc = tab.iframe.srcdoc || null;
       tab.iframe.removeAttribute('srcdoc');
       tab.iframe.src = 'about:blank';
-    } catch { /* ignore */ }
+    } catch { /* cross-origin iframe: leave untouched */ }
     tab.suspended = true;
   }
 

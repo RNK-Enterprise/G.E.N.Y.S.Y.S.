@@ -1,0 +1,217 @@
+/* Tab Bar */
+#tab-bar {
+    height: 36px;
+    background: var(--steel-bg);
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+    border-bottom: 1px solid var(--border-color);
+    overflow-x: auto;
+}
+
+#tab-bar.compact {
+    padding: 0 6px;
+    gap: 4px;
+}
+
+#tab-bar.roomy {
+    height: 40px;
+    padding: 0 8px;
+    gap: 6px;
+}
+
+#tab-bar.compact #tabs,
+#tab-bar.compact #tab-search {
+    display: none;
+}
+
+#tabs {
+    display: flex;
+    flex: 1;
+    gap: 2px;
+}
+
+.tab {
+    min-width: 180px;
+    max-width: 240px;
+    height: 30px;
+    background: var(--dark-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px 4px 0 0;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    cursor: pointer;
+    transition: all var(--transition-normal) ease;
+    animation: slideIn 0.2s ease-out;
+}
+
+.tab.active {
+    background: var(--darker-bg);
+    border-bottom-color: var(--darker-bg);
+    box-shadow: 0 0 10px var(--toxic-green-glow);
+    border-top: 2px solid var(--toxic-green);
+}
+
+.tab:hover {
+    background: var(--steel-bg);
+}
+
+.tab-favicon {
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+}
+
+.tab-title {
+    flex: 1;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tab-close {
+    width: 16px;
+    height: 16px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.tab-close:hover {
+    color: var(--toxic-green);
+}
+
+.tab-button {
+    width: 30px;
+    height: 30px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--toxic-green);
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.2s;
+}
+
+.tab-button:hover {
+    background: var(--toxic-green);
+    color: var(--dark-bg);
+}
+
+.tab-bar-compact-toggle {
+    width: auto;
+    min-width: 72px;
+    padding: 0 10px;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+}
+
+#tab-bar.roomy .tab {
+    min-width: 200px;
+    max-width: 260px;
+    height: 32px;
+}
+
+#tab-bar.roomy .tab-button,
+#tab-bar.roomy .tab-bar-compact-toggle {
+    height: 32px;
+}
+
+#tab-bar.roomy .tab-search {
+    width: 220px;
+}
+
+#tab-bar.roomy .tab-search:focus {
+    width: 260px;
+}
+
+/* Omnibox / Address Bar */
+#omnibox-container {
+    height: 40px;
+    background: var(--steel-bg);
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    gap: 4px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+#omnibox-container.compact {
+    padding-right: 6px;
+    gap: 6px;
+}
+
+#omnibox-container.roomy {
+    height: 46px;
+    padding: 0 10px;
+    gap: 6px;
+}
+
+.nav-button {
+    width: 32px;
+    height: 28px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 16px;
+    transition: all var(--transition-fast) ease;
+}
+
+.nav-button:hover:not(:disabled) {
+    background: var(--toxic-green);
+    color: var(--dark-bg);
+    border-color: var(--toxic-green);
+    transform: scale(1.05);
+    box-shadow: 0 0 10px var(--toxic-green-glow);
+}
+
+.nav-button:active:not(:disabled) {
+    transform: scale(0.95);
+}
+
+.nav-button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.omnibox-compact-toggle {
+    width: auto;
+    min-width: 54px;
+    padding: 0 10px;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+}
+
+#omnibox {
+    flex: 1;
+    height: 28px;
+    background: var(--dark-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0 12px;
+    color: var(--text-primary);
+    font-size: 13px;
+    transition: all var(--transition-normal) ease;
+}
+
+#omnibox:focus {
+    outline: none;
+    border-color: var(--toxic-green);
+    box-shadow: 0 0 8px var(--toxic-green-glow);
+    background: var(--darker-bg);
+}
+
+/* WebView Container */
+#workspace {
+    flex: 1;
+    display: flex;
+    flex-direction: row-reverse; /* sidebar slides in from right */
+    min-height: 0;
+}
+

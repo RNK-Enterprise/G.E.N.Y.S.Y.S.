@@ -2,11 +2,13 @@
 # Axis™ — one-command verification gate
 # Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
 #
-# Chains the four independent checks that guard this codebase:
+# Chains the independent checks that guard this codebase:
 #   1. audit — global-wiring audit (scripts/audit-window-globals.mjs): every
 #              window.* READ has a provider and every bare identifier resolves
 #              to one, so an unwired global can never reach a build again.
-#   2. unit  — Jest unit suite (tests/ and src/**/*.test.js), native ESM.
+#   2. loc   — 500 LOC hard-cap audit (scripts/audit-loc.mjs): no hand-written
+#              file may exceed the cap; lockfiles/generated catalog are exempt.
+#   3. unit  — Jest unit suite (tests/ and src/**/*.test.js), native ESM.
 #   3. e2e   — Playwright specs in e2e/ against the Vite dev server; each spec
 #              boots Axis and fails on any console error or uncaught throw.
 #   4. rust  — cargo test in src-tauri/ through the WebKitGTK pkg-config
@@ -18,6 +20,7 @@
 #              via `npm run verify -- live` (needs xdotool + xvfb). Direct
 #              scripts/verify-live.sh runs accept more flags (real display,
 #              release binary, etc.).
+#   6. loc runs before unit so a cap violation is the cheapest failure.
 #
 # By default every selected stage runs even if an earlier one fails, so a single
 # invocation reports the whole picture; --fail-fast stops at the first failure.
@@ -35,8 +38,8 @@ set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 LOGDIR="${AXIS_VERIFY_LOGDIR:-/tmp/axis-verify}"
-ORDER=(audit unit e2e rust live)
-DEFAULT_STAGES=(audit unit e2e rust)
+ORDER=(audit loc unit e2e rust live)
+DEFAULT_STAGES=(audit loc unit e2e rust)
 
 FAIL_FAST=0
 VERBOSE=0
@@ -113,6 +116,7 @@ report() {
 
 # ── Stage bodies ─────────────────────────────────────────────────────────────
 stage_audit() { (cd "$ROOT" && npm --silent run audit:globals); }
+stage_loc() { (cd "$ROOT" && node scripts/audit-loc.mjs); }
 stage_unit() { (cd "$ROOT" && npm --silent run test); }
 stage_e2e() { (cd "$ROOT" && npm --silent run test:e2e); }
 stage_rust() { (cd "$ROOT/src-tauri" && bash "$ROOT/scripts/with-webkit-pc.sh" cargo test); }
@@ -121,6 +125,7 @@ stage_live() { bash "$ROOT/scripts/verify-live.sh" --xvfb; }  # forced Xvfb: det
 stage_label() {
   case "$1" in
     audit) echo "global-wiring audit" ;;
+    loc) echo "500 LOC cap audit" ;;
     unit) echo "jest unit tests" ;;
     e2e) echo "playwright e2e" ;;
     rust) echo "cargo test" ;;
@@ -131,7 +136,7 @@ stage_label() {
 # Prerequisites that would otherwise fail with a cryptic error.
 stage_preflight() {
   case "$1" in
-    audit | unit | e2e)
+    audit | loc | unit | e2e)
       [ -d "$ROOT/node_modules" ] || { echo "node_modules missing — run npm install" >&2; return 1; }
       ;;
     rust)
@@ -161,6 +166,9 @@ stage_detail() {
   case "$1" in
     audit)
       grep -oE '[0-9]+ files, [0-9]+ window\.\* names \([0-9]+ reads, [0-9]+ writes/deletes\)' "$log" | tail -1
+      ;;
+    loc)
+      grep -oE '[0-9,]+ files, [0-9,]+ LOC, cap [0-9]+' "$log" | tail -1
       ;;
     unit)
       grep -E '^Tests:' "$log" | tail -1 | sed 's/^Tests: *//'

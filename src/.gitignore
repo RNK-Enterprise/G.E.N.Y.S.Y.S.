@@ -1,0 +1,1 @@
+# Dependency policy: the app is a static bundle; nothing here should emit local artifacts.

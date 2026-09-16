@@ -4,7 +4,6 @@ export function startupDefer() {
   let cancelled = false;
 
   function deferWork(fn) {
-    if (cancelled) return;
     if ('requestIdleCallback' in window) {
       requestIdleCallback(() => !cancelled && fn(), { timeout: 4000 });
     } else {

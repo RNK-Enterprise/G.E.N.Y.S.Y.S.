@@ -1,0 +1,381 @@
+/* ===================================================================
+   AXIS AUTH GATE — startup shortcode prompt
+   =================================================================== */
+
+#axis-auth-gate {
+    position: fixed;
+    top: var(--axis-titlebar-h);
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at 40% 30%, rgba(212, 168, 67, 0.08) 0%, transparent 60%),
+                linear-gradient(180deg, #12121f 0%, #1a1a2e 100%);
+    /* grid overlay like Raven */
+    background-image: radial-gradient(ellipse at 40% 30%, rgba(212, 168, 67, 0.08) 0%, transparent 60%),
+                      linear-gradient(rgba(212, 168, 67, 0.03) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(212, 168, 67, 0.03) 1px, transparent 1px),
+                      linear-gradient(180deg, #12121f 0%, #1a1a2e 100%);
+    background-size: 100% 100%, 40px 40px, 40px 40px, 100% 100%;
+}
+
+#axis-auth-gate.hidden {
+    display: none;
+}
+
+.axis-auth-card {
+    width: 420px;
+    background: rgba(26, 26, 46, 0.85);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(212, 168, 67, 0.3);
+    border-radius: 16px;
+    padding: 40px 36px 36px;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(212, 168, 67, 0.08) inset;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    animation: fadeIn 0.35s ease-out;
+}
+
+.axis-auth-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.axis-auth-logo {
+    width: 48px;
+    height: 48px;
+    background: rgba(212, 168, 67, 0.12);
+    border: 1px solid rgba(212, 168, 67, 0.35);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: var(--brand-gold, #d4a843);
+}
+
+.axis-auth-title {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #e8e8f0;
+    letter-spacing: 0.02em;
+}
+
+.axis-auth-subtitle {
+    font-size: 12px;
+    color: #7a7a9a;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.axis-auth-subtitle--live {
+    color: var(--brand-gold);
+}
+
+.axis-auth-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.axis-auth-input-wrap {
+    position: relative;
+}
+
+#axis-auth-input {
+    width: 100%;
+    height: 44px;
+    background: rgba(18, 18, 31, 0.8);
+    border: 1px solid rgba(212, 168, 67, 0.2);
+    border-radius: 8px;
+    padding: 0 44px 0 16px;
+    color: #e8e8f0;
+    font-family: 'Cascadia Code', 'Consolas', monospace;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#axis-auth-input:focus {
+    border-color: rgba(212, 168, 67, 0.5);
+    box-shadow: 0 0 0 3px rgba(212, 168, 67, 0.1);
+}
+
+#axis-auth-input::placeholder {
+    color: #4a4a6a;
+}
+
+.axis-auth-toggle-vis {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #4a4a6a;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0;
+    transition: color 0.2s;
+}
+
+.axis-auth-toggle-vis:hover {
+    color: var(--brand-gold, #d4a843);
+}
+
+#axis-auth-submit {
+    width: 100%;
+    height: 44px;
+    background: linear-gradient(135deg, var(--brand-gold, #d4a843), var(--brand-gold-dark, #b8902e));
+    border: none;
+    border-radius: 8px;
+    color: #12121f;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+}
+
+#axis-auth-submit:hover {
+    opacity: 0.92;
+}
+
+#axis-auth-submit:active {
+    transform: scale(0.98);
+}
+
+#axis-auth-submit:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+#axis-auth-error {
+    font-size: 12px;
+    color: #e05555;
+    text-align: center;
+    min-height: 18px;
+}
+
+.axis-auth-footer {
+    font-size: 11px;
+    color: #3a3a5a;
+    text-align: center;
+    letter-spacing: 0.03em;
+}
+
+@keyframes axis-auth-shake {
+    0%, 100% { transform: translateX(0); }
+    20%       { transform: translateX(-8px); }
+    40%       { transform: translateX(8px); }
+    60%       { transform: translateX(-5px); }
+    80%       { transform: translateX(5px); }
+}
+
+.axis-auth-card.shake {
+    animation: axis-auth-shake 0.4s ease;
+}
+
+/* ===================================================================
+   WELCOME TOUR
+   =================================================================== */
+
+#axis-tour-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: rgba(5, 5, 18, 0.88);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.4s ease;
+}
+
+#axis-tour-overlay.axis-tour-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#axis-tour-card {
+    background: #12122a;
+    border: 1px solid #2a2a50;
+    border-radius: 12px;
+    padding: 32px 36px;
+    width: 440px;
+    max-width: 90vw;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.axis-tour-progress {
+    height: 3px;
+    background: #2a2a4a;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.axis-tour-progress-bar {
+    height: 100%;
+    background: var(--brand-gold);
+    border-radius: 2px;
+    transition: width 0.35s ease;
+}
+
+#axis-tour-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary, #e0e0f0);
+}
+
+#axis-tour-body {
+    font-size: 13px;
+    color: var(--text-secondary, #8a8ab0);
+    line-height: 1.6;
+    min-height: 18px;
+}
+
+#axis-tour-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+#axis-tour-field label {
+    font-size: 12px;
+    color: var(--text-secondary, #8a8ab0);
+}
+
+#axis-tour-field input {
+    padding: 8px 12px;
+    background: #0e0e24;
+    border: 1px solid #2a2a50;
+    border-radius: 6px;
+    color: var(--text-primary, #e0e0f0);
+    font-size: 14px;
+    outline: none;
+}
+
+#axis-tour-field input:focus {
+    border-color: var(--brand-gold);
+}
+
+#axis-tour-choices {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.axis-tour-choice {
+    padding: 10px 14px;
+    background: #0e0e24;
+    border: 1px solid #2a2a50;
+    border-radius: 6px;
+    color: var(--text-secondary, #8a8ab0);
+    font-size: 13px;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+}
+
+.axis-tour-choice:hover {
+    border-color: var(--brand-gold);
+    color: var(--text-primary, #e0e0f0);
+}
+
+.axis-tour-choice.selected {
+    border-color: var(--brand-gold);
+    color: var(--brand-gold);
+    background: rgba(212, 168, 67, 0.08);
+}
+
+#axis-tour-action {
+    padding: 10px 0;
+    background: var(--brand-gold);
+    color: #0a0a1a;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+#axis-tour-action:hover {
+    background: var(--brand-gold-dark);
+}
+
+/* ===================================================================
+   DAILY LISA MESSAGE
+   =================================================================== */
+
+#axis-daily-message {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    z-index: 9000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px 10px 14px;
+    background: #12122a;
+    border: 1px solid rgba(212, 168, 67, 0.3);
+    border-radius: 8px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+    font-size: 13px;
+    color: var(--text-secondary, #8a8ab0);
+    max-width: 560px;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#axis-daily-message.axis-daily-msg-visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+#axis-daily-message.axis-daily-msg-out {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px);
+}
+
+.axis-daily-msg-icon {
+    color: var(--brand-gold);
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.axis-daily-msg-text {
+    flex: 1;
+    line-height: 1.5;
+}
+
+.axis-daily-msg-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary, #8a8ab0);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0 2px;
+    flex-shrink: 0;
+    opacity: 0.6;
+    transition: opacity 0.15s;
+}
+
+.axis-daily-msg-close:hover {
+    opacity: 1;
+}
+

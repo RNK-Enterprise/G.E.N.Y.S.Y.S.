@@ -2,6 +2,7 @@
 
 export function navPrefetch() {
   let timer = null;
+  let onPolicyAllow = null;
   const seen = new Set();
 
   function prefetch(url) {
@@ -33,14 +34,17 @@ export function navPrefetch() {
     start() {
       const input = document.getElementById('url-input') || document.getElementById('omnibox');
       input?.addEventListener('input', onOmnibox);
-      window.addEventListener('axis:policy-allow', (e) => {
+      onPolicyAllow = (e) => {
         if (e.detail?.url) prefetch(e.detail.url);
-      });
+      };
+      window.addEventListener('axis:policy-allow', onPolicyAllow);
     },
     stop() {
       clearTimeout(timer);
       const input = document.getElementById('url-input') || document.getElementById('omnibox');
       input?.removeEventListener('input', onOmnibox);
+      if (onPolicyAllow) window.removeEventListener('axis:policy-allow', onPolicyAllow);
+      onPolicyAllow = null;
     },
   };
 }

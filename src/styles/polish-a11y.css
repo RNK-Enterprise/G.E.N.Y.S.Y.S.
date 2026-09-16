@@ -1,0 +1,153 @@
+/*          MICRO-ANIMATIONS                   */
+/* ============================================ */
+
+.button-press {
+    animation: buttonPress 0.1s ease;
+}
+
+@keyframes buttonPress {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.95);
+    }
+}
+
+.icon-bounce {
+    animation: iconBounce 0.5s ease;
+}
+
+@keyframes iconBounce {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+/* Hover lift effect for cards */
+.suggestion-item:hover,
+.provider-item:hover,
+.shortcut-item:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
+}
+
+/* ============================================ */
+/*          IMPROVED ERROR STATES              */
+/* ============================================ */
+
+.error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.error-icon {
+    font-size: 48px;
+    color: var(--text-warning);
+    margin-bottom: 16px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.empty-title,
+.error-title {
+    font-size: 18px;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.error-message {
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.error-retry {
+    background: linear-gradient(135deg, var(--toxic-green-dark), var(--dark-green));
+    color: var(--wasteland-black);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.error-retry:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-toxic);
+}
+
+/* ============================================ */
+/*          EMPTY STATES                       */
+/* ============================================ */
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.empty-icon {
+    font-size: 64px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.empty-message {
+    font-size: 14px;
+    max-width: 400px;
+    line-height: 1.6;
+}
+
+/* ============================================ */
+/*          ACCESSIBILITY IMPROVEMENTS         */
+/* ============================================ */
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+[aria-busy="true"] {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* High contrast focus indicators */
+@media (prefers-contrast: high) {
+    *:focus-visible {
+        outline: 3px solid var(--toxic-green) !important;
+        outline-offset: 3px;
+    }
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+

@@ -1,0 +1,106 @@
+/* ===================================================================
+   SECTION NAVIGATION
+   =================================================================== */
+
+#section-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 0;
+    background: transparent;
+    border: none;
+}
+
+.section-nav-group {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.section-nav-group + .section-nav-group {
+    margin-left: 8px;
+    padding-left: 10px;
+    border-left: 1px solid var(--border-color);
+}
+
+.section-nav-btn {
+    padding: 2px 10px;
+    height: 22px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+}
+
+.section-nav-btn:hover {
+    background: var(--hover-bg);
+    color: var(--text-primary);
+}
+
+.section-nav-btn.active {
+    background: var(--accent-bg, rgba(212, 168, 67, 0.12));
+    color: var(--brand-gold);
+}
+
+/* Section panels */
+.axis-section {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+}
+
+.axis-section.hidden {
+    display: none !important;
+}
+
+.axis-section-inner {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+.axis-section-placeholder {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    padding: 40px;
+}
+
+.axis-section-icon {
+    font-size: 48px;
+    opacity: 0.3;
+}
+
+.axis-section-placeholder h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.axis-section-placeholder p {
+    font-size: 13px;
+    margin: 0;
+    opacity: 0.7;
+}
+
+.axis-section-coming-soon {
+    font-size: 11px !important;
+    color: var(--brand-gold) !important;
+    opacity: 1 !important;
+    margin-top: 8px !important;
+    letter-spacing: 0.05em;
+}
+
