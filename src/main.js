@@ -125,6 +125,10 @@ function startWhenAuthenticated() {
     Boolean(sessionStorage.getItem('rnk-axis-auth-session'));
 
   const boot = (detail = {}) => {
+    // CI diagnostics: prove the full import graph executed and the orchestrator started.
+    if (window.__TAURI__?.invoke) {
+      window.__TAURI__.invoke('log_boot', { marker: 'main.js initializeApp' }).catch(() => {});
+    }
     initializeApp().catch((err) => console.error('Axis initializeApp failed:', err));
     import('./axis-welcome-tour.js').then((m) => m.initWelcomeSystem(detail || {}));
   };

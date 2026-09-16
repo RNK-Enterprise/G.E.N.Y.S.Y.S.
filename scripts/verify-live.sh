@@ -29,19 +29,24 @@
 # headless path needs no window manager.
 #
 # Usage: bash scripts/verify-live.sh [--xvfb] [--release] [--bin PATH]
-#                                    [--keep] [--code CODE] [--timeout SECS]
+#                                    [--keep] [--code CODE] [--url URL]
+#                                    [--timeout SECS]
 #   --xvfb          force the headless Xvfb path (auto when $DISPLAY is unset)
 #   --release       use target/release/rnk-axis (skips the dev-server step)
 #   --bin PATH      use an explicit binary (marker still enforced)
 #   --keep          keep the scratch dir even on success (path is printed)
 #   --code CODE     auth code for the gate (default: axis-odinn;
 #                   override with AXIS_LIVE_CODE)
+#   --url URL       URL typed verbatim into the omnibox (default: example.com;
+#                   override with AXIS_LIVE_URL). Use a dotted host — a scheme
+#                   like axis:// is search-mangled by the omnibox.
 #   --timeout SECS  per-phase window/journal poll timeout (default 40)
 # Exit codes: 0 proof passed · 1 proof failed · 2 bad usage/prerequisites.
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 CODE="${AXIS_LIVE_CODE:-axis-odinn}"
+NAV_URL="${AXIS_LIVE_URL:-example.com}"
 TIMEOUT=40
 FORCE_XVFB=0
 RELEASE=0
@@ -56,6 +61,7 @@ while [ "$#" -gt 0 ]; do
     --bin) BIN=$2; shift ;;
     --keep) KEEP=1 ;;
     --code) CODE=$2; shift ;;
+    --url) NAV_URL=$2; shift ;;
     --timeout) TIMEOUT=$2; shift ;;
     -h | --help) sed -n '2,/^set -uo/p' "$0" | sed '$d' | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "verify-live: unknown option '$1' (try --help)" >&2; exit 2 ;;
@@ -106,11 +112,17 @@ elif [ "$RELEASE" = 1 ]; then
   # whichever exists, preferring the CLI layout when present.
   if [ -f "$ROOT/src-tauri/target/release/axis" ]; then
     BIN="$ROOT/src-tauri/target/release/axis"
-  else
+  elif [ -f "$ROOT/src-tauri/target/release/rnk-axis" ]; then
     BIN="$ROOT/src-tauri/target/release/rnk-axis"
   fi
 else
-  BIN="$ROOT/src-tauri/target/debug/rnk-axis"
+  # Same two-name situation in debug: cargo build emits rnk-axis, the tauri
+  # CLI build copies it to the productName.
+  if [ -f "$ROOT/src-tauri/target/debug/axis" ]; then
+    BIN="$ROOT/src-tauri/target/debug/axis"
+  else
+    BIN="$ROOT/src-tauri/target/debug/rnk-axis"
+  fi
 fi
 [ -f "$BIN" ] || die "binary missing: $BIN (debug: npm run build:debug · release: npm run build)"
 
@@ -118,9 +130,14 @@ fi
 # before it existed would "pass" vacuously. Content check, not mtime.
 # (Counting matches instead of `grep -q`: under `set -o pipefail`, grep -q
 # exiting early SIGPIPEs the producer and turns a match into a failure.)
-if [ "$(strings -a "$BIN" | grep -c "axis:tabwin" || true)" -eq 0 ]; then
-  die "binary $BIN predates [axis:tabwin] lifecycle logging — rebuild first (npm run build:debug)" 1
-fi
+# axis:page is asserted too: the readiness gate blocks on its journal line,
+# so a pre-[axis:page] binary would hang the whole TIMEOUT window instead
+# of failing with a clear rebuild hint.
+for marker in axis:tabwin axis:page; do
+  if [ "$(strings -a "$BIN" | grep -c "$marker" || true)" -eq 0 ]; then
+    die "binary $BIN predates [$marker] logging — rebuild first (npm run build:debug)" 1
+  fi
+done
 
 # ── Small helpers (xdotool only — works with or without a window manager) ────
 have_win() { [ -n "$(xdotool search --name "$1" 2>/dev/null | head -1)" ]; }
@@ -193,25 +210,55 @@ drive() { # runs inside the chosen display session
   # scratch profile. no_proxy covers the loopback dev server: WebKit's proxy
   # resolution on CI (no session manager, gsettings proxy absent) has been
   # observed to route localhost through a dead proxy and hang page loads.
-  setsid env NO_AT_BRIDGE=1 GDK_BACKEND=x11 \
-    WEBKIT_FORCE_SANDBOX=0 WEBKIT_DISABLE_SANDBOX_THIS_IS_DANGEROUS=1 \
-    WEBKIT_DISABLE_COMPOSITING_MODE=1 \
-    WEBKIT_DISABLE_DMABUF_RENDERER=1 LIBGL_ALWAYS_SOFTWARE=1 \
-    no_proxy=localhost,127.0.0.1 NO_PROXY=localhost,127.0.0.1 \
-    WEBKIT_DEBUG=Loading \
-    AXIS_TEST_MODE=1 "$BIN" >"$APP_LOG" 2>&1 < /dev/null &
-  APP_PID=$!
-  echo "app: launched pid $APP_PID ($BIN)"
-
-  # ── Main window up? ───────────────────────────────────────────────────────
-  if ! wait_win '^Axis$'; then
-    echo "FAILED: main window never appeared (${TIMEOUT}s)"
-    tail -20 "$APP_LOG" | sed 's/^/    /'
+  # Launch + main-window wait is retried: on a heavily loaded desktop
+  # (this shared host regularly runs multi-core ML jobs) cold GTK/WebKit
+  # init can outlive TIMEOUT, and a concurrent agent's process sweep can
+  # reap the launch outright. Both look identical: banner, then silence.
+  app_ok=0
+  for launch in 1 2 3; do
+    setsid env NO_AT_BRIDGE=1 GDK_BACKEND=x11 \
+      WEBKIT_FORCE_SANDBOX=0 WEBKIT_DISABLE_SANDBOX_THIS_IS_DANGEROUS=1 \
+      WEBKIT_DISABLE_COMPOSITING_MODE=1 \
+      WEBKIT_DISABLE_DMABUF_RENDERER=1 LIBGL_ALWAYS_SOFTWARE=1 \
+      no_proxy=localhost,127.0.0.1 NO_PROXY=localhost,127.0.0.1 \
+      AXIS_TEST_MODE=1 "$BIN" >"$APP_LOG" 2>&1 < /dev/null &
+    APP_PID=$!
+    echo "app: launched pid $APP_PID ($BIN, attempt $launch)"
+    if wait_win '^Axis$'; then app_ok=1; break; fi
+    echo "launch attempt $launch: no main window after ${TIMEOUT}s"
+    kill -9 -- -"$APP_PID" 2>/dev/null
+    tail -8 "$APP_LOG" | sed 's/^/    /'
+  done
+  if [ "$app_ok" != 1 ]; then
+    echo "FAILED: main window never appeared ($((TIMEOUT * 3))s across 3 launches)"
     return 1
   fi
+
   MAIN=$(xdotool search --name '^Axis$' | head -1)
   focus_win "$MAIN"
   echo "main window: up ($MAIN)"
+
+  # ── Wait for the page to actually initialize (journal-driven) ───────────
+  # A mapped X window is NOT a ready UI: under load the webview's first
+  # page init can trail the map by tens of seconds (5s quiet, 60s+ while
+  # this shared host runs ML jobs), and keystrokes typed before the page's
+  # JS runs land nowhere — indistinguishable from a dead webview. The
+  # app's own [axis:page] journal line (Tauri's page-initialized hook) is
+  # the authoritative readiness signal, locally and in CI.
+  ready=0
+  waited=0
+  while [ "$waited" -lt $((TIMEOUT * 3)) ]; do
+    if grep -q "axis:page.*main page initialized" "$APP_LOG" 2>/dev/null; then ready=1; break; fi
+    if ! kill -0 "$APP_PID" 2>/dev/null; then break; fi
+    sleep 2
+    waited=$((waited + 2))
+  done
+  if [ "$ready" != 1 ]; then
+    echo "FAILED: main page never initialized (no [axis:page] journal line within $((TIMEOUT * 3))s)"
+    grep -E "axis:|WARN|ERROR" "$APP_LOG" | tail -8 | sed 's/^/    /'
+    return 1
+  fi
+  echo "page: initialized (journal) — UI ready after ${waited}s"
 
   # ── Drive the real UI: auth → Ctrl+T → Ctrl+L → URL → Enter ──────────────
   # On a real desktop another window can steal focus mid-sequence (Xvfb never
@@ -229,7 +276,7 @@ drive() { # runs inside the chosen display session
     sleep 1
     xdotool key --clearmodifiers ctrl+l
     sleep 0.5
-    xdotool type --delay 40 "example.com"
+    xdotool type --delay 40 "$NAV_URL"
     xdotool key Return
     echo "drive: attempt $attempt — auth + Ctrl+T + navigation sent"
     waited=0
@@ -250,8 +297,10 @@ drive() { # runs inside the chosen display session
     dpkg -l 2>/dev/null | awk '/libwebkit2gtk-4.1/ {print "    " $2 " " $3; exit}'
     bwrap --ro-bind / / -- true 2>&1 | head -1 | sed 's/^/    bwrap probe: /'
     echo "    all X windows: $(xdotool search --name '.*' 2>/dev/null | wc -l) ids; names: $(xdotool search --name '.*' 2>/dev/null | while read -r w; do xdotool getwindowname "$w" 2>/dev/null; done | sort -u | tr '\n' '|')"
-    echo "    page-load traces (WEBKIT_DEBUG=Loading):"
-    grep -E "Loading|load|Provisional|page load|URL" "$APP_LOG" | tail -8 | sed 's/^/      /'
+    echo "    page/JS evidence ([axis:page] / [axis:boot] lines):"
+    grep -E "axis:page|axis:boot|axis:mainwin" "$APP_LOG" | tail -8 | sed 's/^/      /'
+    [ "$(grep -cE 'axis:page|axis:boot|axis:mainwin' "$APP_LOG" || true)" = 0 ] && \
+      echo "      (none — webview never initialized a page; see journal above)"
     return 1
   fi
   TABWIN=$(xdotool search --name '^Axis Tab$' | head -1)
@@ -323,7 +372,7 @@ if [ "$FORCE_XVFB" = 1 ] || [ -z "${DISPLAY:-}" ]; then
     # deleting the shared scratch dir (it returns early anyway).
     INNER_ARGS=(--bin "$BIN")
     [ "$RELEASE" = 1 ] && INNER_ARGS+=(--release)
-    INNER_ARGS+=(--code "$CODE" --timeout "$TIMEOUT" --keep)
+    INNER_ARGS+=(--code "$CODE" --url "$NAV_URL" --timeout "$TIMEOUT" --keep)
     AXIS_LIVE_INNER=1 AXIS_LIVE_SCRATCH="$SCRATCH" \
       xvfb-run -a -s "-screen 0 1280x800x24" bash "$0" "${INNER_ARGS[@]}"
     RC=$?

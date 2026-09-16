@@ -340,6 +340,14 @@ fn window_minimize(window: Window) -> Result<(), String> {
     window.minimize().map_err(|e| e.to_string())
 }
 
+/// CI diagnostics: the frontend calls this once its full import graph has
+/// executed. Presence proves page load AND JS execution, separating
+/// "webview never loaded the page" from "page loaded but JS is broken".
+#[tauri::command]
+fn log_boot(marker: String) {
+    eprintln!("[axis:boot] frontend ready ({})", marker);
+}
+
 #[tauri::command]
 #[allow(unused_variables)]
 fn open_devtools(window: Window) {
@@ -399,6 +407,7 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             navigate_tab,
             create_tab,
+            log_boot,
             close_tab,
             get_tabs,
             update_tab_meta,
@@ -442,7 +451,26 @@ fn main() {
                 }
             }
         })
+        .on_page_load(|window, payload| {
+            // CI diagnostics: Tauri 1.x fires this hook when a page's JS runs
+            // the __initialized handshake, so seeing this line means the page
+            // loaded AND tauri IPC is alive in that window.
+            eprintln!(
+                "[axis:page] {} page initialized: {}",
+                window.label(),
+                payload.url()
+            );
+        })
         .setup(|_app| {
+            if let Some(window) = tauri::Manager::get_window(_app, "main") {
+                let size = window.outer_size().unwrap_or_default();
+                eprintln!(
+                    "[axis:mainwin] main window live ({}x{} visible={})",
+                    size.width,
+                    size.height,
+                    window.is_visible().unwrap_or(false)
+                );
+            }
             tab_commands::spawn_meta_watcher(_app.handle().clone());
             #[cfg(debug_assertions)]
             {

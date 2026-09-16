@@ -528,6 +528,11 @@
     <script type="module">
         // Inline initialization to ensure it loads
         console.log('Axis initializing...');
+        // CI diagnostics: report the shell's own JS execution to the native log.
+        if (window.__TAURI__?.invoke) {
+            window.__TAURI__.invoke('log_boot', { marker: 'inline module' })
+                .catch(() => {});
+        }
     </script>
     <script type="module" src="./axis-auth-gate.js"></script>
     <script type="module" src="./axis-cookies-bar.js"></script>
