@@ -15,6 +15,7 @@
 
 import { chromium } from 'playwright';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -24,9 +25,30 @@ const OUT_DIR = path.join(ROOT, 'src-tauri', 'icons');
 
 const SIZES = [16, 24, 32, 48, 64, 128, 256];
 
+/** Pinned-build cache miss → newest chromium already in the Playwright cache. */
+async function launchChromium() {
+  try {
+    return await chromium.launch();
+  } catch (err) {
+    const base = process.env.PLAYWRIGHT_BROWSERS_PATH || path.join(os.homedir(), '.cache', 'ms-playwright');
+    const candidates = [];
+    for (const dir of fs.existsSync(base) ? fs.readdirSync(base) : []) {
+      if (dir.startsWith('chromium_headless_shell-')) {
+        candidates.push(path.join(base, dir, 'chrome-headless-shell-linux64', 'chrome-headless-shell'));
+      } else if (dir.startsWith('chromium-')) {
+        candidates.push(path.join(base, dir, 'chrome-linux', 'chrome'));
+      }
+    }
+    const exe = candidates.filter((p) => fs.existsSync(p)).sort().pop();
+    if (!exe) throw err;
+    console.log(`pinned playwright chromium missing — using cached ${path.basename(path.dirname(path.dirname(exe)))}`);
+    return chromium.launch({ executablePath: exe });
+  }
+}
+
 async function rasterize() {
   const svg = fs.readFileSync(SVG, 'utf8');
-  const browser = await chromium.launch();
+  const browser = await launchChromium();
   try {
     const page = await browser.newPage();
     const frames = {};

@@ -140,7 +140,10 @@ for marker in veil:tabwin veil:page; do
 done
 
 # ── Small helpers (xdotool only — works with or without a window manager) ────
-have_win() { [ -n "$(xdotool search --name "$1" 2>/dev/null | head -1)" ]; }
+# GTK creates UNMAPPED placeholder windows that inherit the app's window name
+# (ICCCM client leader + Tauri's per-tab pre-create); without --onlyvisible a
+# ghost matches ^VEIL Tab$ forever and focus calls on it die with BadMatch.
+have_win() { [ -n "$(xdotool search --onlyvisible --name "$1" 2>/dev/null | head -1)" ]; }
 wait_win() { # <name-regex> — poll until it appears
   local waited=0
   while [ "$waited" -lt "$TIMEOUT" ]; do
@@ -159,6 +162,18 @@ wait_win_gone() { # <name-regex> — poll until it disappears
 }
 focus_win() { # <window-id> — X focus that works without a WM
   xdotool windowactivate "$1" 2>/dev/null || xdotool windowfocus "$1"
+  # With no WM and focus unset, XTEST key delivery follows the POINTER: park
+  # it on the main window's titlebar chrome — the tab content window overlays
+  # the center, and keys landing in the tab webview are lost (no handler).
+  local geo x y w h
+  geo=$(xdotool getwindowgeometry "$1" 2>/dev/null) || true
+  if [ -n "$geo" ]; then
+    x=$(echo "$geo" | awk '/Position/{print $2}' | cut -d, -f1)
+    y=$(echo "$geo" | awk '/Position/{print $2}' | cut -d, -f2)
+    w=$(echo "$geo" | awk '/Geometry/{print $2}' | cut -dx -f1)
+    h=$(echo "$geo" | awk '/Geometry/{print $2}' | cut -dx -f2)
+    [ -n "$x" ] && [ -n "$w" ] && xdotool mousemove --sync $((x + w / 2)) $((y + 12)) 2>/dev/null
+  fi
   sleep 0.5
 }
 
@@ -234,7 +249,7 @@ drive() { # runs inside the chosen display session
     return 1
   fi
 
-  MAIN=$(xdotool search --name '^VEIL$' | head -1)
+  MAIN=$(xdotool search --onlyvisible --name '^VEIL$' | head -1)
   focus_win "$MAIN"
   echo "main window: up ($MAIN)"
 
@@ -303,7 +318,7 @@ drive() { # runs inside the chosen display session
       echo "      (none — webview never initialized a page; see journal above)"
     return 1
   fi
-  TABWIN=$(xdotool search --name '^VEIL Tab$' | head -1)
+  TABWIN=$(xdotool search --onlyvisible --name '^VEIL Tab$' | head -1)
   HELPERS_BEFORE=$(pgrep -fc WebKitWebProcess 2>/dev/null || true); HELPERS_BEFORE=${HELPERS_BEFORE:-0}
   CREATE_LINE=$(grep -oE "create tab-[0-9]+: url=[^ ]+ privileged=[a-z]+ → window live" "$APP_LOG" | tail -1)
   TAB_ID=$(printf '%s' "$CREATE_LINE" | grep -oE "tab-[0-9]+" | grep -oE "[0-9]+")

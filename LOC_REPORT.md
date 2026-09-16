@@ -33,18 +33,18 @@
 |---|---|---|
 | .gitignore | 38 | OK |
 | AGENTS.md | 4 | OK |
-| VEIL_TO_100_PROMPT.md | 120 | OK |
-| VEIL.md | 116 | OK |
-| CHANGELOG.md | 85 | OK |
-| jest.config.cjs | 63 | OK |
-| LOC_REPORT.md | 322 | OK |
-| package-lock.json | 5,792 | AUTO-GENERATED — EXEMPT |
-| package.json | 49 | OK |
+| CHANGELOG.md | 126 | OK |
+| jest.config.cjs | 54 | OK |
+| LOC_REPORT.md | 335 | OK |
+| package-lock.json | 6,503 | AUTO-GENERATED — EXEMPT |
+| package.json | 50 | OK |
 | playwright.config.js | 45 | OK |
 | README.md | 81 | OK |
 | RNK Rules to Obide By.md | 25 | OK |
 | Rules and Guidelines for the Privacy sys.md | 450 | OK |
 | The Entire System.md | 52 | OK |
+| VEIL_TO_100_PROMPT.md | 120 | OK |
+| VEIL.md | 116 | OK |
 | vite.config.js | 35 | OK |
 
 ## agent/
@@ -52,34 +52,34 @@
 | File | LOC | Status |
 |---|---|---|
 | .gitignore | 1 | OK |
-| VEIL.md | 8 | OK |
 | README.md | 3 | OK |
+| VEIL.md | 8 | OK |
 
 ## docs/
 
 | File | LOC | Status |
 |---|---|---|
 | .gitignore | 1 | OK |
+| README.md | 3 | OK |
 | VEIL_ATTESTATION.md | 57 | OK |
 | veil-attestation-gate.cjs | 129 | OK |
-| README.md | 3 | OK |
 
 ## e2e/
 
 | File | LOC | Status |
 |---|---|---|
 | .gitignore | 1 | OK |
-| veil-boot.js | 52 | OK |
 | README.md | 3 | OK |
 | smoke.spec.js | 84 | OK |
 | tab-close.spec.js | 47 | OK |
+| veil-boot.js | 52 | OK |
 
 ## memory/
 
 | File | LOC | Status |
 |---|---|---|
 | .gitignore | 1 | OK |
-| 2026-08-21-standalone-trusted-client.md | 215 | OK |
+| 2026-08-21-standalone-trusted-client.md | 232 | OK |
 | README.md | 3 | OK |
 
 ## public/
@@ -87,8 +87,8 @@
 | File | LOC | Status |
 |---|---|---|
 | .gitignore | 1 | OK |
-| veil-manifest.json | 1 | AUTO-GENERATED — EXEMPT |
 | README.md | 3 | OK |
+| veil-manifest.json | 1 | AUTO-GENERATED — EXEMPT |
 
 ## scripts/
 
@@ -103,10 +103,11 @@
 | ci-verify.sh | 41 | OK |
 | generate-veil-catalog.mjs | 136 | OK |
 | README.md | 7 | OK |
+| render-icons.mjs | 180 | OK |
 | smoke-suite.sh | 404 | OK |
 | split-main-engine.mjs | 318 | OK |
 | split-main.mjs | 254 | OK |
-| verify-live.sh | 393 | OK |
+| verify-live.sh | 408 | OK |
 | verify.sh | 247 | OK |
 | with-webkit-pc.sh | 7 | OK |
 
@@ -127,7 +128,7 @@
 | Cargo.lock | 4,674 | AUTO-GENERATED — EXEMPT |
 | Cargo.toml | 38 | OK |
 | README.md | 13 | OK |
-| tauri.conf.json | 76 | OK |
+| tauri.conf.json | 77 | OK |
 
 ## src-tauri/icons/
 
@@ -160,29 +161,29 @@
 | File | LOC | Status |
 |---|---|---|
 | .gitignore | 1 | OK |
-| veil-admin-ops.js | 179 | OK |
-| veil-auth-gate.js | 359 | OK |
-| veil-cookies-bar.js | 33 | OK |
-| veil-manifest.json | 1 | AUTO-GENERATED — EXEMPT |
-| veil-server-control.js | 309 | OK |
-| veil-welcome-tour.js | 215 | OK |
 | bookmark-manager.js | 109 | OK |
 | download-manager.js | 122 | OK |
 | history-manager.js | 104 | OK |
-| index.html | 354 | OK |
-| lisa-bridge.js | 415 | OK |
+| index.html | 355 | OK |
+| lisa-bridge.js | 418 | OK |
 | main.js | 153 | OK |
-| newtab.html | 179 | OK |
+| newtab.html | 180 | OK |
 | README.md | 16 | OK |
-| settings-manager.js | 138 | OK |
+| settings-manager.js | 140 | OK |
 | styles.css | 23 | OK |
+| veil-admin-ops.js | 179 | OK |
+| veil-auth-gate.js | 360 | OK |
+| veil-cookies-bar.js | 45 | OK |
+| veil-manifest.json | 1 | AUTO-GENERATED — EXEMPT |
+| veil-server-control.js | 309 | OK |
+| veil-welcome-tour.js | 235 | OK |
 
 ## src/assets/
 
 | File | LOC | Status |
 |---|---|---|
 | .gitignore | 1 | OK |
-| logo.svg | 11 | OK |
+| logo.svg | 27 | OK |
 | README.md | 3 | OK |
 
 ## src/browser/
@@ -191,8 +192,8 @@
 |---|---|---|
 | .gitignore | 1 | OK |
 | README.md | 3 | OK |
-| tab-manager-extras.js | 387 | OK |
-| tab-manager.js | 172 | OK |
+| tab-manager-extras.js | 403 | OK |
+| tab-manager.js | 193 | OK |
 
 ## src/engines/
 
@@ -264,7 +265,7 @@
 |---|---|---|
 | .gitignore | 1 | OK |
 | assistant.css | 114 | OK |
-| base.css | 415 | OK |
+| base.css | 423 | OK |
 | browser.css | 217 | OK |
 | gate.css | 381 | OK |
 | omnibox-extras.css | 388 | OK |
@@ -325,11 +326,31 @@
 | history-manager.test.js | 109 | OK |
 | html-pages.test.js | 84 | OK |
 | last-branches.test.js | 271 | OK |
+| main-orchestrator.test.js | 165 | OK |
 | README.md | 3 | OK |
 | recently-closed-manager.test.js | 51 | OK |
 | session-manager.test.js | 66 | OK |
 | settings-manager.test.js | 99 | OK |
+| shell-app.test.js | 207 | OK |
+| shell-bindings-c.test.js | 322 | OK |
+| shell-bindings.test.js | 266 | OK |
+| shell-chrome-core.test.js | 362 | OK |
+| shell-lisa-bridge.test.js | 228 | OK |
+| shell-misc.test.js | 260 | OK |
+| shell-surface-panels.test.js | 347 | OK |
+| shell-tabs.test.js | 312 | OK |
+| shell-ui.test.js | 339 | OK |
 | turbos-full.test.js | 338 | OK |
 | turbos.test.js | 225 | OK |
 
-> Exempt (auto-generated): package-lock.json (5,792), public/veil-manifest.json (1), src-tauri/Cargo.lock (4,674), src/veil-manifest.json (1)
+## tests/helpers/
+
+| File | LOC | Status |
+|---|---|---|
+| .gitignore | 1 | OK |
+| env-transform.cjs | 18 | OK |
+| raw-transform.cjs | 15 | OK |
+| README.md | 11 | OK |
+| shell-harness.js | 281 | OK |
+
+> Exempt (auto-generated): package-lock.json (6,503), public/veil-manifest.json (1), src-tauri/Cargo.lock (4,674), src/veil-manifest.json (1)

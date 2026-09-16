@@ -23,6 +23,18 @@ mark tagged states of the repository.
   `veil-welcome-tour.js` and `veil-cookies-bar.js` copied the pre-rename
   `axis-*` keys but never deleted them, so the lift re-ran on every boot.
   Both now remove the legacy key after a successful copy.
+- **Icon set completion.** `icon.icns` was generated but never referenced by
+  `tauri.conf.json` — macOS bundles would have shipped the default Tauri icon;
+  it is now in the bundle icon list. The chrome pages (`index.html`,
+  `newtab.html`) carried no `<link rel="icon">`, so tab surfaces fell back to
+  the browser default; both now point at the real `assets/logo.svg` mark. The
+  generator (`scripts/render-icons.mjs`) also survives Playwright pinned-build
+  cache skew by falling back to the newest cached Chromium, and was re-run:
+  output is byte-identical to the committed set.
+- **Build Rule 1 gaps closed.** `.pkgconfig/`, `.pkgconfig/lib/`, and
+  `tests/helpers/` had no `.gitignore`/`README.md`; all three are documented
+  now (the pkg-config shims are tracked on purpose — they are part of the
+  build) and `LOC_REPORT.md` was regenerated.
 
 ### Changed
 
