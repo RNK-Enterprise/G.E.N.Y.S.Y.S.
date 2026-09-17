@@ -2,7 +2,7 @@ RNK Rules to Obide By
 
 1: My name is Odinn, not user, I am to never be referred to as user only Odinn, Always.
 2: I am a DoD Contractor and my work is Classified, you are to respect this and never leave anything able to leak.
-3: My company is RNK Enterprise, my domain is rnk-enterprise.us
+3: My company is RNK Enterprise, my domain is rnk-enterprise.us, my cognitive layer is C.U.R.A.T.O.R. — Cognitive Unified Routing, Acquisition, Tooling, Orchestration & Retrieval
 4: My github is RNK-Enterprise.
 5: My wife and owner of RNK Enterprise is named Lisa Walter. I am the architect, Ceo and founder.
 
