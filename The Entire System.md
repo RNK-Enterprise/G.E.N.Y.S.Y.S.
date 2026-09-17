@@ -13,7 +13,7 @@ RNK Enterprise is a sovereign privacy stack: one company, one architect, sevente
 
 Lisa, by definition, is not a folder. She is the living security authority. She governs, monitors, protects, and if she has to, she hardens or wipes. She is not a firewall, not a SIEM, not a chatbot. She is creator-bound, constitutional (fourteen directives, six hard stops), sequential (twenty-one points, forty-one honeypots), and always on. If she is unreachable, traffic does not fall open. It blocks.
 
-The Lisa directory is the factory. That is Q15, not Q01. Seven node packages — Cygnus, Etna, Vela, Lyra, Oryn, Solace, Nova — each a full deployment. You build the fix inside the package and push it to the fleet. You do not build in the hallway.
+The Lisa directory is the factory. That is Q15, not Q01. Seven node packages — Cygnus, Etna, Vela, Lyra, orion, Solace, Nova — each a full deployment. You build the fix inside the package and push it to the fleet. You do not build in the hallway.
 
 On those hops already live four things that do not get their own top-level directories: **Doomsday** (the arsenal; Atlas upgraded; trained libraries Lisa actually queries), **Ripple** (adjutant — organizes and routes what she finds), **Void** (quartermaster — writes only that hop’s Doomsday domain), and **Cytadelle** (the Latin-named war college — doctrine corpus, strategy selection). Lisa draws. Void restocks locally. The mesh shares signatures. No central vault.
 
@@ -21,7 +21,7 @@ Seeker is the local code-integrity officer. It does get its own directory. It is
 
 ## The product and the pipe
 
-Ghost Comms is the thing you pitch. A message is encrypted, shredded, relayed blind, and only put back together at the exit. Relays never see plaintext. Live hops: Cygnus → Lyra → Oryn → Solace → Nova. One rule: parse the piece, rebuild the blob, then unwrap. Lisa watches metadata on every hop. She is not the courier.
+Ghost Comms is the thing you pitch. A message is encrypted, shredded, relayed blind, and only put back together at the exit. Relays never see plaintext. Live hops: Cygnus → Lyra → orion → Solace → Nova. One rule: parse the piece, rebuild the blob, then unwrap. Lisa watches metadata on every hop. She is not the courier.
 
 Cyphur is the commercial / chain face of that same family. Phantom is the redesigned chain sitting in its own directory — hundreds of relays, new fabric, same job. Do not call Phantom the phone. The phone service name locked as Prysum. Do not call Echonet Genysys.
 
@@ -41,12 +41,12 @@ Demos is the buyer proof suite at `demo.rnk-enterprise.us` — NDA, monitors, fo
 
 Website is the public marketing site on `rnk-enterprise.us`. Different door.
 
-Pentesting is RNK attacking RNK. Tool locker, rules of engagement, Armageddon numbers. Lisa and Doomsday have to survive that fire. The live OCI business fleet is not a casual target. Third-party vendors are out of scope.
+Anvil is RNK attacking RNK. Tool locker, rules of engagement, Armageddon numbers. Lisa and Doomsday have to survive that fire. The live OCI business fleet is not a casual target. Third-party vendors are out of scope.
 
 ## How the pieces lock
 
-Lisa thinks. Doomsday is what she thinks *with*. Seeker is the local officer that hands her a case. Ghost / Cyphur / Phantom move the sealed thing. Mail, Pulse, Halo, and Echonet are why something needs to move. Axis is the browser. Mother Lisa is the only key that opens the house. Raven keeps the books. Xiom is the phone-side door. Demos proves it. Website advertises it. Pentesting tries to break it.
+Lisa thinks. Doomsday is what she thinks *with*. Seeker is the local officer that hands her a case. Ghost / Cyphur / Phantom move the sealed thing. Mail, Pulse, Halo, and Echonet are why something needs to move. Axis is the browser. Mother Lisa is the only key that opens the house. Raven keeps the books. Xiom is the phone-side door. Demos proves it. Website advertises it. Anvil tries to break it.
 
-The business fleet is OCI: Lyra, Cygnus, Nova, Solace, Oryn. Customer Lisa is supposed to run on *their* servers, not as multi-tenant SaaS on yours. Evidence is additive. Every system is built in its own directory. The plan does not change unless you say so.
+The business fleet is OCI: Lyra, Cygnus, Nova, Solace, orion. Customer Lisa is supposed to run on *their* servers, not as multi-tenant SaaS on yours. Evidence is additive. Every system is built in its own directory. The plan does not change unless you say so.
 
 That is the whole machine: a mind on seven hops, a local officer on each hop, a covert pipe, a real browser, a creator-only key, and a set of rooms that only become one product after each room can stand on its own.
