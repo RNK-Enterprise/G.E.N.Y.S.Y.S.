@@ -64,7 +64,7 @@ documented, not secret; tokens are per-session. Details: `docs/VEIL_ATTESTATION.
 ## Sweep 2026-09-17
 
 `coverage/` and the stale `dist/` build removed (rebuilt with the standard build);
-`.gitignore` hardened. Git remote migrated to private `RNK-Enterprise/veil` — the old
+`.gitignore` hardened. Git remote migrated to private `RNK-Enterprise/V.E.I.L.` — the old
 `lisasdungeon/axis` GitHub remote is retired from this tree (history preserved there;
 nothing pushed to it in this sweep).
 
