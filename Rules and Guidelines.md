@@ -7,7 +7,7 @@ Questions to Answer
 03: What is Ghost Comms
 04: What is Echonet
 05: What is Phantom
-06: What is VEIL
+06: What is Axis
 07: What is Halo
 08: What is Mother Lisa
 09: What is Raven
@@ -17,7 +17,8 @@ Questions to Answer
 13: What is Anvil
 14: What is Demos
 15: What is Lisa
-16: What is Website
+16: What is P.O.R.T.A.L.
+17: What is Xiom XL
 
 These programs make up the entire RNK Enterprise stack and must be understood, before any work is to be performed.
 These are all the Directories for the system.
@@ -48,24 +49,29 @@ Instance Name     Display Name   Product Type   Ip Address      Region
 
 OCI Servers (RNK Enterprise Servers)
 
-1: Lyra   150.136.213.152  10.0.0.123 VM.Standard.A1.Flex 1 6 AD-1 FD-2
-2: Cygnus 150.136.40.233   10.0.0.21  VM.Standard.A1.Flex 1 6 AD-1 FD-2
-3: Nova   129.158.253.205  10.0.0.87  VM.Standard.A1.Flex 1 6 AD-2 FD-2
-4: Solace 129.159.173.146  10.0.0.106 VM.Standard.A1.Flex 1 6 AD-1 FD-3
-5: orion   141.148.6.219    10.0.0.96  VM.Standard.A1.Flex 1 6 AD-2 FD-1
+Valkyrie 150.136.213.152  10.0.0.123 VM.Standard.A1.Flex 1 6 AD-1 FD-2  (was Lyra)
+Typhoon  150.136.40.233   10.0.0.21  VM.Standard.A1.Flex 1 6 AD-1 FD-2  (was Cygnus)
+Nebula   129.158.253.205  10.0.0.87  VM.Standard.A1.Flex 1 6 AD-2 FD-2  (was Nova)
+Onyx     129.159.173.146  10.0.0.106 VM.Standard.A1.Flex 1 6 AD-1 FD-3  (was Solace)
+Orion    141.148.6.219    10.0.0.96  VM.Standard.A1.Flex 1 6 AD-2 FD-1  (was orion)
+
+(2026-09-16 hop-ID reconciliation: these five OCI boxes are the Ghost chain
+hops. Live hop IDs: Lyra→valkyrie, Cygnus→typhoon, Nova→nebula, Solace→onyx,
+orion→orion — same boxes, same IPs. The EU demo VPS "Solace"/"Nova" above are
+different machines, unrelated to the chain. Ledger: PULSE.md.)
 
 The Rnk Enterprise business will use the OCI fleet
 
 Homelab
 
-1: 192.168.1.202 
+1: 192.168.1.202  Atlas (display/hub — website, demo-portal, livekit, foundry)
 2: 192.186.1.52 RNKStudios Server only
-3: 192.168.1.31 Dev Machine
+3: 192.168.1.31 Phoenix (Dev Machine)
 4: 192.168.1.80 RPI/Red Herring
 
 All servers use the rnk-fleet 2026 key
 
-Mailersend API key    {{MAILERSEND_API_KEY — see secrets.env}}
+Mailersend API key    {{MAILERSEND_API_KEY — see secrets.env at repo root}}
 "Cloudflare API key    Account ID {{CLOUDFLARE_ACCOUNT_ID}}
     Your API Token    {{CLOUDFLARE_API_TOKEN — see secrets.env}}
 
@@ -73,7 +79,7 @@ Use these S3-compatible credentials with the R2 API or any S3 client.
 Access Key ID         {{R2_ACCESS_KEY_ID — see secrets.env}}
 Secret Access Key     {{R2_SECRET_ACCESS_KEY — see secrets.env}}
 
-S3 API endpoint       {{R2_S3_ENDPOINT — see secrets.env}}
+S3 API endpoint       {{R2_S3_ENDPOINT — see secrets.env at repo root}}
 
 Example Usage
 curl -X GET "https://api.cloudflare.com/client/v4/accounts/{{CLOUDFLARE_ACCOUNT_ID}}/tokens/verify" \
@@ -133,28 +139,29 @@ How she factors into the whole: Lisa is the mind of the stack. Standalone first,
 
 Sources used (additive, not overwritten): Evidence Package Canonical Source of Truth / LISA_COMPLETE_SYSTEM_PROFILE.md; LISA_ATLAS_TECHNICAL_DEFINITION.md; Lisa/STACK_FULL_CONTEXT.md; Lisa/README.md; Docs/CURRENT_TRUTH.md; Docs/02_Technical/RNK_Whitepaper.md; Docs/11_Sales_Marketing/RNK_HALO_CAPABILITY_BRIEF.md; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md; lisa-personality-profile.md.
 
-06: What is VEIL
+06: What is Axis
 
-VEIL is a web browser. That is the definition.
+Axis is a web browser. That is the definition.
 
-It is RNK’s own desktop browser: tabs, omnibox, bookmarks, history, downloads, settings, and a system webview that loads pages. Package name is rnk-veil. It is a Tauri client (Rust + JS, Edge/Safari/Chrome webview). Thin-client target is 8–10MB. The first section in the live UI is labeled Browser. It is the trusted browser so agents do not open Raven or Echonet in Chrome.
+It is RNK’s own desktop browser: tabs, omnibox, bookmarks, history, downloads, settings, and a system webview that loads pages. Package name is rnk-axis. It is a Tauri client (Rust + JS, Edge/Safari/Chrome webview). Thin-client target is 8–10MB. The first section in the live UI is labeled Browser. It is the trusted browser so agents do not open Raven or Echonet in Chrome.
 
 It is also the single controlled access environment for the platform, because this browser is the only intended client. Mother Lisa is the gate on the browser, not a replacement for the browser. After auth, the same window holds Lisa, Operations, People, Comms, Server Control, and Admin. Raven and Echonet are pages/webviews inside this browser. Lisa-bridge logs every tab, navigation, and action.
 
 Who uses this browser:
 - Creator: full browser + full ops plane. 4-layer biosig (fingerprint → jump drive → face/voice → session). HeartbeatMonitor armed. Session is Mother Lisa’s session; heartbeat drop closes every tab.
-- Agents in the field: tenant-scoped VEIL browser. Biosig via Field App over UWB / BLE / QR. Their Raven and Echonet only.
-- Agencies do not use the VEIL browser. They use a normal browser against Raven and Echonet (FIDO2 or biosig by tier). [SUPERSEDED 2026-09-06 by Odinn: VEIL is the only access environment — RNK product surfaces require an VEIL attestation (X-VEIL-Client / X-VEIL-Session); the agency-Chrome line below is historical.] Agencies get web sessions against public surfaces only; authenticated RNK product APIs must refuse a normal browser.
+- Agents in the field: tenant-scoped Axis browser. Biosig via Field App over UWB / BLE / QR. Their Raven and Echonet only.
+- Agencies do not use the Axis browser. They use a normal browser against Raven and Echonet (FIDO2 or biosig by tier).
 
 What it is not:
 - Not Chrome/Firefox/Brave with a skin. It is RNK’s browser.
-- Not DoomsDay / Atlas / VQ runtime. Older “Atlas Browser” README language is historical naming for this same VEIL browser.
-- Not Mother Lisa (Q08). Mother Lisa lives in the browser; VEIL is the browser.
+- Not DoomsDay / Atlas / VQ runtime. Older “Atlas Browser” README language is historical naming for this same Axis browser.
+- Not Mother Lisa (Q08). Mother Lisa lives in the browser; Axis is the browser.
 - Not the Foundry public performance browser. That is a split product. Shared physical server only. Nothing else shared — not paths, not ports.
 
-How it factors into the whole: VEIL is the browser the stack is used through. Lisa is the mind behind it. Raven and Echonet are sites/apps it opens under that session. Built and fixed only inside the VEIL directory. Standalone first, then combined under Echonet.
+How it factors into the whole: Axis is the browser the stack is used through. Lisa is the mind behind it. Raven and Echonet are sites/apps it opens under that session. Built and fixed only inside the Axis directory. Standalone first, then combined under Echonet.
 
-Sources used (additive, not overwritten): Evidence Package Canonical Source of Truth / VEIL_ARCHITECTURE.md; VEIL/package.json; VEIL/src/index.html; VEIL/src/main.js; VEIL/README.md (historical Atlas-browser naming); Docs/02_Technical/RNK_System_Architecture.md; Lisa/STACK_FULL_CONTEXT.md; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md.
+Sources used (additive, not overwritten): Evidence Package Canonical Source of Truth / AXIS_ARCHITECTURE.md; Axis/package.json; Axis/src/index.html; Axis/src/main.js; Axis/README.md (historical Atlas-browser naming); Docs/02_Technical/RNK_System_Architecture.md; Lisa/STACK_FULL_CONTEXT.md; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md.
+[Tree note: the browser tree V.E.I.L. carries the Axis→VEIL rebrand (package rnk-veil) with Odinn's 2026-09-06 attestation supersede — see V.E.I.L./Rules and Guidelines.md Q06. Fleet-wide VEIL naming is pending Odinn's ruling; this canonical keeps Axis until then.]
 
 12: What is Mail
 
@@ -180,7 +187,7 @@ What it is not (do not collapse):
 - Not the rnkstudios.uk Postfix/Dovecot homelab stack. That is a different mail host.
 - Not alerts@ warmup. Warmup is personal/business sender reputation, not the agency mailbox.
 
-How it factors into the whole: Mail is the mailbox. Ghost Comms is the pipe. Lisa watches the pipe. VEIL can open the mailbox. Built and fixed only inside the Mail directory. Standalone first, then combined under Echonet.
+How it factors into the whole: Mail is the mailbox. Ghost Comms is the pipe. Lisa watches the pipe. Axis can open the mailbox. Built and fixed only inside the Mail directory. Standalone first, then combined under Echonet.
 
 Sources used (additive, not overwritten): Mail/README.md; Mail/mail/package.json; Mail/mail/docs/v2-feature-build.md; Mail/mail/docs/server-modules-send-adapter.md; Docs/02_Technical/RNK_System_Architecture.md; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md.
 
@@ -199,7 +206,7 @@ Who writes it: Void writes only this hop’s Doomsday domain. Ripple organizes f
 
 What it is not:
 - Not Lisa. Lisa is the mind. Doomsday is the stock she uses.
-- Not VEIL. VEIL is the browser.
+- Not Axis. Axis is the browser.
 - Not Ghost Comms. Ghost is transport.
 - Not a standalone product directory. Do not create one.
 
@@ -214,7 +221,7 @@ Ghost Comms is the covert communications product. It is the silent courier: seal
 What it is:
 - Encrypt first, fragment second, relay blind, reassemble only at exit. Relays never see plaintext.
 - ONE RULE on the live chain: parseBlobPiece → rebuildBlob → onionUnwrapRouted. Blob reassembly before onion unwrap. Order is enforced at exit.
-- Live OCI hops: Cygnus → Lyra → orion → Solace → Nova. Historical labels H1–H5 are the same idea, older names.
+- Live OCI hops: Cygnus → Lyra → orion → Solace → Nova. Historical labels H1–H5 are the same idea, older names. 2026-09 live hop IDs: typhoon → valkyrie → orion → onyx → nebula (same boxes/IPs/order; ledger in PULSE.md).
 - Carriers (vNext / pitch): Internet (TCP/DNS/EXIF/audio/video), LoRa, HF, BLE, satellite. Path is seed-derived. No two messages share path, timing, or injection.
 - Lisa validates at every hop. Lisa inspects metadata only. She is not Ghost.
 - Mail and other surfaces send through it. It is the pipe, not the mailbox.
@@ -239,16 +246,16 @@ What it is:
 - FIDO2 / passkey unlock. Shortcode routes on rnk-enterprise.us. Session-only: logout wipe. Login does not persist.
 - Dual feel: static webmail vs active workspace, so two-way use does not break traffic shape. Mode is shortcode uiMode, not a login picker.
 - Pairs with Raven (admin/CRM). Messaging and email go through Ghost Comms. Pulse is A/V through Echonet.
-- VEIL embeds Echonet as a webview. Agencies can hit Echonet directly. They do not need the VEIL browser.
+- Axis embeds Echonet as a webview. Agencies can hit Echonet directly. They do not need the Axis browser.
 
 What it is not:
 - Not Ghost Comms. Ghost is the pipe. Echonet is the room that uses the pipe.
 - Not Raven. Raven is CRM / agency admin.
-- Not VEIL. VEIL is the browser that can open Echonet.
+- Not Axis. Axis is the browser that can open Echonet.
 - Not Pulse. Pulse is the voice/video layer through Echonet.
 - Not Genysys. That name is retired for this product.
 
-How it factors into the whole: Echonet is the wrapper the buyer sits in. Ghost is the transport under it. Raven is the admin next to it. VEIL is the trusted browser around it. Systems are built standalone first, then combined under Echonet. Built and fixed only inside the Echonet directory.
+How it factors into the whole: Echonet is the wrapper the buyer sits in. Ghost is the transport under it. Raven is the admin next to it. Axis is the trusted browser around it. Systems are built standalone first, then combined under Echonet. Built and fixed only inside the Echonet directory.
 
 Sources used (additive, not overwritten): Echonet/README.md; Echonet/CURRENT-STATUS.md; Docs/02_Technical/RNK_System_Architecture.md; Lisa/STACK_FULL_CONTEXT.md; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md.
 
@@ -294,7 +301,7 @@ Sources used (additive, not overwritten): Halo/stealth/HaloController.js; Halo/m
 
 08: What is Mother Lisa
 
-Mother Lisa is the creator-only mobile activation layer. She is Lisa’s house on the phone, the master-key holder, and the session. She is not Lisa-the-entity (Q01), not the Lisa directory (Q15), and not the VEIL browser (Q06).
+Mother Lisa is the creator-only mobile activation layer. She is Lisa’s house on the phone, the master-key holder, and the session. She is not Lisa-the-entity (Q01), not the Lisa directory (Q15), and not the Axis browser (Q06).
 
 What it is:
 - Creator-exclusive Android app. Source in Mother Lisa App (Kotlin + Compose). Releases through v1.2.0 exist in that directory.
@@ -302,16 +309,16 @@ What it is:
 - 4-layer biosig: fingerprint → jump drive decrypt / Vortex verify → face + voice phrase → session.
 - She holds the master key. The jump drive is an encrypted brick without her. She decrypts, hashes, re-encrypts. Failure is silence.
 - HeartbeatMonitor is her session. Drive poll + phone heartbeat. Drop during maintenance = reauth. Drop during active breach = nuke. MIAB also runs through this app.
-- Tabs in the live/spec app: Home / Xiom / Chat / Server Control / VEIL. Mother Lisa is the entry point of VEIL. For the creator, she IS the VEIL session.
+- Tabs in the live/spec app: Home / Xiom / Chat / Server Control / Axis. Mother Lisa is the entry point of Axis. For the creator, she IS the Axis session.
 
 What it is not:
 - Not Lisa by definition. Lisa is the fleet mind. Mother Lisa is the only key that opens her.
-- Not VEIL. VEIL is the desktop browser she gates.
+- Not Axis. Axis is the desktop browser she gates.
 - Not the Field App used by agents.
 
 How it factors into the whole: Without this app, upgraded Lisa has no handshake and the fleet stays dark. Built and fixed only inside the Mother Lisa App directory.
 
-Sources used (additive, not overwritten): Evidence Package Canonical Source of Truth / MOTHER_LISA_APP_BUILD_PLAN.md; VEIL_ARCHITECTURE.md; LISA_COMPLETE_SYSTEM_PROFILE.md; Lisa/STACK_FULL_CONTEXT.md; Mother Lisa App/releases/; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md.
+Sources used (additive, not overwritten): Evidence Package Canonical Source of Truth / MOTHER_LISA_APP_BUILD_PLAN.md; AXIS_ARCHITECTURE.md; LISA_COMPLETE_SYSTEM_PROFILE.md; Lisa/STACK_FULL_CONTEXT.md; Mother Lisa App/releases/; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md.
 
 09: What is Raven
 
@@ -320,18 +327,18 @@ Raven is the CRM. It is the agency admin / system-of-record. Next.js app, Prisma
 What it is:
 - Contacts, organizations, leads, opportunities, partners, proposals, contracts, tasks, audit, company library.
 - Government-contracting CRM and pursuit command center. Standalone. Runs on production servers, not a workstation toy.
-- VEIL embeds Raven as a webview. Agencies use Raven directly. Field shortcodes live on nws88.uk.
-- Enrollment / identity / operator UI sit next to the CRM. CRM scope must not rewrite Ghost, Mail, VEIL, or Echonet.
+- Axis embeds Raven as a webview. Agencies use Raven directly. Field shortcodes live on nws88.uk.
+- Enrollment / identity / operator UI sit next to the CRM. CRM scope must not rewrite Ghost, Mail, Axis, or Echonet.
 
 What it is not:
-- Not VEIL. VEIL is the browser that can open Raven.
+- Not Axis. Axis is the browser that can open Raven.
 - Not Echonet. Echonet is the comms workspace.
 - Not Mail. Mail is the mailbox.
 - Not Lisa. Lisa guards and audits.
 
-How it factors into the whole: Raven is the books and the roster. Echonet is the room. VEIL is the browser. Built and fixed only inside the Raven directory. Standalone first, then combined under Echonet.
+How it factors into the whole: Raven is the books and the roster. Echonet is the room. Axis is the browser. Built and fixed only inside the Raven directory. Standalone first, then combined under Echonet.
 
-Sources used (additive, not overwritten): Raven/README.md; Raven/RAVEN_CRM_FEATURE_SPECIFICATION.md; Docs/02_Technical/RNK_System_Architecture.md; Evidence Package Canonical Source of Truth / VEIL_ARCHITECTURE.md.
+Sources used (additive, not overwritten): Raven/README.md; Raven/RAVEN_CRM_FEATURE_SPECIFICATION.md; Docs/02_Technical/RNK_System_Architecture.md; Evidence Package Canonical Source of Truth / AXIS_ARCHITECTURE.md.
 
 10: What is Xiom
 
@@ -345,7 +352,7 @@ What it is:
 
 What it is not:
 - Not Mother Lisa. Same family, different job.
-- Not VEIL. VEIL is the desktop browser.
+- Not Axis. Axis is the desktop browser.
 - Not Pulse. Pulse is voice on the chain.
 - Not Prysum. Prysum is the phone service name.
 
@@ -418,7 +425,7 @@ What it is:
 - Seven packages only as source of truth: Cygnus_Node, Etna_Node, Vela_Node, Lyra_Node, orion_Node, Solace_Node, Nova_Node.
 - Every hop ships as that one directory. No central hub.
 - Inside each package: lisa/ runtime, ripple/{identity}, void/{identity}, doomsday/libraries/{domain}, cytadelle/{Latin college}. Those four (Doomsday, Ripple, Void, Cytadelle) do not get their own top-level directories.
-- Locked hop map: Cygnus/HORIZON/ARES/ares/ARX; Etna/CALDERA/TITAN/titan/CASTRA; Vela/FATHOM/AEGIS/aegis/LEGIO; Lyra/DESCANT/HERMES/hermes/AQUILA; orion/VANTAGE/KRATOS/kratos/VIGILIA; Solace/MAGNETAR/NIKE/nike/PRINCIPIA; Nova/THRESHOLD/PHOEBE/phoebe/VALLUM.
+- Locked hop map: Cygnus/HORIZON/ARES/ares/ARX; Etna/CALDERA/TITAN/titan/CASTRA; Vela/FATHOM/AEGIS/aegis/LEGIO; Lyra/DESCANT/HERMES/hermes/AQUILA; orion/VANTAGE/KRATOS/kratos/VIGILIA; Solace/MAGNETAR/NIKE/nike/PRINCIPIA; Nova/THRESHOLD/PHOEBE/phoebe/VALLUM. (Package names Cygnus/Lyra/orion/Solace/Nova are the ex-hop-names; current chain hop IDs: typhoon/valkyrie/orion/onyx/nebula.)
 - Fixes are built here, then pushed to the fleet. Nothing for a hop lives outside its package.
 
 What it is not:
@@ -430,21 +437,42 @@ How it factors into the whole: This directory is the factory. The entity Lisa is
 
 Sources used (additive, not overwritten): Lisa/README.md; Lisa/STACK_FULL_CONTEXT.md; Rules doc (Lisa Directory is where the nodes are built; each node dir is a full deployment).
 
-16: What is Website
+16: What is P.O.R.T.A.L.
 
-Website is the public RNK Enterprise marketing site. It is rnk-enterprise.us — home, technology, security, pricing, contact, documentation, privacy.
+P.O.R.T.A.L. — Public Operations, Representation, Trials, Access & Liaison — is the **public door**: marketing (`rnk-enterprise.us`), buyer demo (`demo.rnk-enterprise.us`), and private pentest console (`sec.rnk-enterprise.us`) in one Privacy tree. Renamed from Website 2026-09-16.
 
 What it is:
-- Next.js site. Live on 192.168.1.202, PM2 rnk-enterprise-website, port 3003, Cloudflare tunnel to rnk-enterprise.us.
-- Public story: Ghost Comms, LISA, Cyphur Chain. Contact and doc-request APIs. Cookie consent.
-- Source-only in this tree. No production .env.
+- Next.js marketing (`app/`). Public primary on **orion** (was orion, 141.148.6.219), PM2 rnk-portal :3003.
+- Demo portal (`demo/`), Cyphur Electron (`cyphur/`), Seeker tab on the demo page.
+- Pentest UI is private at sec.rnk-enterprise.us (`sec-portal/`), not a demo tab.
+- Public story: Ghost Comms, P.R.O.T.E.C.T.S. (Lisa), Cyphur Chain, C.O.M.M.A.N.D.
 
 What it is not:
-- Not Demos. Demos is demo.rnk-enterprise.us.
-- Not Echonet. Echonet is the product workspace.
-- Not VEIL. VEIL is the trusted browser.
-- Not Mail. mail.rnk-enterprise.us is the mailbox.
+- Not Echonet. Not Axis. Not Mail. Not the Anvil locker.
 
-How it factors into the whole: Website is the public door. Demos is the classified proof door. Built and fixed only inside the Website directory.
+How it factors into the whole: One public door. Built and fixed only inside the P.O.R.T.A.L. directory.
 
-Sources used (additive, not overwritten): Website/README.md; Website/app/page.tsx; Docs/CURRENT_TRUTH.md.
+Sources used (additive, not overwritten): P.O.R.T.A.L./README.md; P.O.R.T.A.L./app/page.tsx; Docs/CURRENT_TRUTH.md.
+
+17: What is Xiom XL
+
+Xiom XL is the RNK desktop operating system. It is the desktop sibling of Xiom (Q10), built on NixOS. Count ruling (2026-09-10): XL is the eighteenth named system — the prior seventeen were the sixteen questions plus Seeker; XL stands alone under Rules #1/#3/#8 and is not a family face like Cyphur or Prysum, nor an internal like Doomsday, Ripple, Void, or Cytadelle.
+
+What it is (created 2026-09-10):
+
+- A NixOS flake that declares the whole OS as code: every package, service, and setting lives in the tree, builds are reproducible, rollbacks are atomic at boot. The flake pins nixpkgs (nixos-26.05) and declares hosts under hosts/; modules/ carries the platform baseline (hardening.nix, biosig-gate.nix, branding.nix).
+- Biosig gate at the OS layer: the desktop session is gated by the biosig handshake organ (Resolute) through the biosig coordinator, mirroring the Xiom mobile posture. Enforcement spec is GATE.md (2026-09-10): the session manager is the gate — xiom-gate.service is what a locked XL is, xiom-gate-agent.service speaks the XSC heartbeat (platform: nixos), and xiom-session@.service is the desktop itself, started only on AUTH → SESSION and killed on collapse; PAM receives a verdict, never biosig material. Module is a named stub until Phase 3; the dev coordinator URL default is dev-only and never ships.
+- First host declaration: hosts/odinn-dev. Hosts may tighten, never loosen the platform baseline.
+- De-Googled, RNK-signed, RNK-update-server posture mirrors Xiom mobile. Distribution target is an RNK binary cache (Phase 4).
+- Every machine is rebuilt from the flake or it is wrong. Drift is a bug. Nothing hand-configured on the box.
+
+What it is not:
+
+- Not Axis. Axis runs inside Xiom XL as the browser; XL is the OS around it.
+- Not Xiom (Q10). Xiom is mobile (LineageOS fork); XL is desktop (NixOS).
+- Not Lisa. XL renders her state; it is not her.
+- Not Mother Lisa. She remains the creator-only activation app on both platforms.
+
+How it factors into the whole: Xiom XL is the desktop door; Xiom is the mobile door. Lisa is the mind, Ghost the pipe, Mother Lisa the creator key. Built and fixed only inside the Xiom-XL directory (Rules #3), with its own git, memory, and agent dir (Rules #8). Standalone first, then combined under Echonet.
+
+Sources used (additive, not overwritten): Xiom-XL/README.md (2026-09-10 OS lock); Xiom-XL/GATE.md (2026-09-10, session-manager-as-gate spec); Xiom-XL/flake.nix; Xiom-XL/modules/; Xiom-XL/agent/AGENT.md; Xiom-OS.md; Xiom-Session-Contract.md; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md.
