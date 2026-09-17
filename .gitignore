@@ -36,3 +36,14 @@ coverage/
 # Local tooling state / non-project dirs
 .freebuff/
 git/
+
+# sweep 2026-09-17
+.verify/
+.remediation/
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.bak
+*~
+*.tsbuildinfo
