@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# VEIL — pre-commit secret scanner (fail closed)
+# Scans the exact content being committed: every staged path is read from the
+# git index (git show :path), so worktree edits after `git add` cannot leak
+# into a commit, and a secret staged-then-deleted in the worktree is still
+# caught. Deleted files (D) are not scanned — nothing of them enters history.
+# Enable repo-wide: git config core.hooksPath .githooks  (already configured)
+# Bypass (audited only): git commit --no-verify
+
+set -uo pipefail
+
+GITLEAKS="$(command -v gitleaks || true)"
+[ -z "$GITLEAKS" ] && [ -x "$HOME/.local/bin/gitleaks" ] && GITLEAKS="$HOME/.local/bin/gitleaks"
+if [ -z "$GITLEAKS" ]; then
+  echo "✗ pre-commit: gitleaks not found — refusing to commit (fail closed)." >&2
+  echo "  Install it (sudo apt install gitleaks) or place a binary at ~/.local/bin/gitleaks." >&2
+  exit 1
+fi
+
+CONFIG="$(git rev-parse --show-toplevel)/.gitleaks.toml"
+if [ ! -f "$CONFIG" ]; then
+  echo "✗ pre-commit: .gitleaks.toml missing — refusing to commit (fail closed)." >&2
+  exit 1
+fi
+
+if git diff --cached --quiet --diff-filter=ACMRT; then
+  exit 0
+fi
+
+failed=0
+while IFS= read -r -d '' f; do
+  if git show ":$f" 2>/dev/null | "$GITLEAKS" detect --no-banner --redact --pipe -c "$CONFIG" >/dev/null 2>&1; then
+    :
+  else
+    rc=$?
+    if [ "$rc" -ne 1 ]; then
+      echo "✗ pre-commit: scanner/index error (rc=$rc) on '$f' — refusing to commit." >&2
+      exit 2
+    fi
+    echo "✗ pre-commit: SECRET DETECTED in staged file: $f" >&2
+    echo "  Commit refused. Remove the secret (or rotate it) — never paste values into tracked files." >&2
+    failed=1
+  fi
+done < <(git diff --cached --name-only --diff-filter=ACMRT -z)
+
+[ "$failed" -eq 1 ] && exit 1
+exit 0

@@ -1,15 +1,30 @@
 #!/usr/bin/env bash
-# VEIL™ — pre-push gate
-# Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
-#
-# Runs `npm run verify` (fail-fast) before any push leaves this machine: global
-# audit → jest → playwright → cargo test. A push is refused if any stage fails.
-#
-# Wired up with:  npm run hooks:install   (sets core.hooksPath=.githooks)
-# Opt-out (use sparingly, it is logged):  git push --no-verify
+# VEIL — pre-push full-history secret scan (fail closed)
+# Last local line of defense: scans every commit on every branch (patches
+# included, so removed files are still scanned). Local hooks are a guardrail,
+# not a tamper-proof control — the push target should also run secret
+# protection (e.g. GitHub push protection).
+
 set -uo pipefail
 
-ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+GITLEAKS="$(command -v gitleaks || true)"
+[ -z "$GITLEAKS" ] && [ -x "$HOME/.local/bin/gitleaks" ] && GITLEAKS="$HOME/.local/bin/gitleaks"
+if [ -z "$GITLEAKS" ]; then
+  echo "✗ pre-push: gitleaks not found — refusing to push (fail closed)." >&2
+  exit 1
+fi
 
-echo "veil pre-push: verifying (audit → unit → e2e → rust, stop at first failure)…"
-exec bash "$ROOT/scripts/verify.sh" --fail-fast
+ROOT="$(git rev-parse --show-toplevel)"
+if [ ! -f "$ROOT/.gitleaks.toml" ]; then
+  echo "✗ pre-push: .gitleaks.toml missing — refusing to push (fail closed)." >&2
+  exit 1
+fi
+
+"$GITLEAKS" detect -s "$ROOT" -c "$ROOT/.gitleaks.toml" --no-banner --redact --log-opts="-p --all" || {
+  echo "✗ pre-push: gitleaks found secrets in history — push refused." >&2
+  echo "  Purge the history (git filter-repo) and rotate every exposed credential." >&2
+  exit 1
+}
+
+echo " pre-push: full-history gitleaks scan clean."
+exit 0

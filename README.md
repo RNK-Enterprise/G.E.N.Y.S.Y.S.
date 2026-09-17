@@ -67,3 +67,17 @@ documented, not secret; tokens are per-session. Details: `docs/VEIL_ATTESTATION.
 `.gitignore` hardened. Git remote migrated to private `RNK-Enterprise/veil` — the old
 `lisasdungeon/axis` GitHub remote is retired from this tree (history preserved there;
 nothing pushed to it in this sweep).
+
+## Secret scanning
+
+Gitleaks runs as a git hook (pre-commit scans staged content; pre-push scans full
+history). Both fail closed. After cloning:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Bypass is `--no-verify` — audited use only.
+
+Verified false positives are fingerprinted in `.gitleaksignore` with reasons — never
+weaken `.gitleaks.toml`.
