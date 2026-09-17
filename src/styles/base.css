@@ -62,15 +62,27 @@ body.theme-dark {
 }
 
 body.theme-light {
-    --dark-bg: #eef2fa;
-    --darker-bg: #ffffff;
-    --steel-bg: #e2e9f6;
-    --text-primary: #101b30;
-    --text-secondary: #55688c;
-    --border-color: #c2cfe6;
-    --toxic-green: #4f7dc4;
-    --toxic-green-dark: #3d64a8;
-    --toxic-green-glow: rgba(79, 125, 196, 0.2);
+    /* VEIL Light — same brand in daylight: the dark theme's midnight ink
+       becomes the page text, the accent deepens for legibility (the pale
+       ice #8ab4f8 is ~2.2:1 on white), and every accent alias is re-pointed
+       together so no surface keeps its dark-theme value. */
+    --dark-bg: #eef2f9;            /* page — cool ice wash */
+    --darker-bg: #ffffff;          /* chrome — titlebar, statusbar */
+    --steel-bg: #e3eaf6;           /* raised surfaces, wells, hovers */
+    --text-primary: #101b30;       /* midnight ink from the dark theme */
+    --text-secondary: #51648a;
+    --border-color: #c9d5ea;
+    --accent: #3a6fc4; --brand-gold: #3a6fc4; --toxic-green: #3a6fc4;
+    --accent-dark: #2d5aa8; --brand-gold-dark: #2d5aa8; --toxic-green-dark: #2d5aa8;
+    --accent-glow: rgba(58, 111, 196, 0.25); --brand-gold-glow: rgba(58, 111, 196, 0.25); --toxic-green-glow: rgba(58, 111, 196, 0.25);
+    --accent-bg: rgba(58, 111, 196, 0.10);
+    --hover-bg: rgba(58, 111, 196, 0.07);
+    --border-toxic: rgba(58, 111, 196, 0.45);
+    --shadow-toxic: 0 0 18px rgba(58, 111, 196, 0.18);
+    --shadow-deep: 0 14px 40px rgba(22, 42, 76, 0.18);
+    --success: #1a8f5f;
+    --danger: #c73f3f;
+    --warning: #a86a08;
 }
 
 body.theme-light input,
@@ -83,21 +95,25 @@ body.theme-light #omnibox {
     border-color: var(--border-color);
 }
 
+body.theme-light input:focus,
+body.theme-light select:focus,
+body.theme-light textarea:focus,
+body.theme-light .sidebar-input:focus,
+body.theme-light #omnibox:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
 body.theme-light .sidebar-action,
 body.theme-light .veil-sidebar-mini-action,
 body.theme-light .titlebar-button,
 body.theme-light .statusbar-button,
 body.theme-light .bookmarks-bar-item,
-body.theme-light .veil-sidebar-result-badge,
-body.theme-light .veil-sidebar-card-activity,
-body.theme-light .veil-download-state {
+body.theme-light .veil-sidebar-card-activity {
     color: var(--text-primary);
 }
 
-body.theme-light .veil-sidebar-card-open-hint,
-body.theme-light .veil-sidebar-mini-action,
-body.theme-light .statusbar-button,
-body.theme-light .titlebar-button {
+body.theme-light .veil-sidebar-card-open-hint {
     background: rgba(255, 255, 255, 0.9);
 }
 
@@ -419,5 +435,9 @@ body.theme-light .titlebar-button {
 
 .titlebar-button.close:hover {
     background: #e81123;
+}
+
+body.theme-light .titlebar-button:hover {
+    background: rgba(16, 27, 48, 0.08);
 }
 

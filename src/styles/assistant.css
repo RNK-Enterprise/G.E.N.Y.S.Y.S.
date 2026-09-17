@@ -112,3 +112,18 @@
     background: var(--brand-gold-dark);
 }
 
+/* ===================================================================
+   VEIL LIGHT THEME — assistant surfaces (quarantined literals)
+   =================================================================== */
+
+body.theme-light .lisa-msg--lisa {
+    background: #ffffff;
+    border-color: var(--border-color);
+}
+
+body.theme-light .lisa-assistant-input-row input {
+    background: #f6f9fd;
+    border-color: var(--border-color);
+}
+
+body.theme-light .lisa-assistant-input-row button { color: #ffffff; }

@@ -358,3 +358,17 @@
     opacity: 0.9;
 }
 
+/* ===================================================================
+   VEIL LIGHT THEME — ops surfaces (cookies bar, Lisa auth submit)
+   Re-points the hard-coded midnight literals under body.theme-light.
+   =================================================================== */
+
+body.theme-light #veil-cookies-bar {
+    background: #ffffff;
+    border-top-color: var(--border-color);
+    color: var(--text-secondary);
+}
+
+body.theme-light #veil-cookies-accept { color: #ffffff; }
+
+body.theme-light .lisa-auth-submit { color: #ffffff; }

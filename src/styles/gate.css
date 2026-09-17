@@ -379,3 +379,81 @@
     opacity: 1;
 }
 
+/* ===================================================================   VEIL LIGHT THEME — gate surfaces (quarantined from the dark literals)
+   The dark values stay above for the midnight theme; body.theme-light
+   re-points every hard-coded surface here. Accent deepens to #3a6fc4
+   for legibility on white, shadows move from black to midnight ink.
+   =================================================================== */
+
+body.theme-light #veil-auth-gate {
+    background-image:
+        radial-gradient(ellipse at 40% 30%, rgba(58, 111, 196, 0.10) 0%, transparent 60%),
+        linear-gradient(rgba(58, 111, 196, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(58, 111, 196, 0.05) 1px, transparent 1px),
+        linear-gradient(180deg, #f4f7fc 0%, #eef2f9 100%);
+}
+
+body.theme-light .veil-auth-card {
+    background: rgba(255, 255, 255, 0.88);
+    border-color: rgba(58, 111, 196, 0.35);
+    box-shadow: 0 24px 80px rgba(22, 42, 76, 0.22), 0 0 0 1px rgba(58, 111, 196, 0.06) inset;
+}
+
+body.theme-light .veil-auth-logo {
+    background: var(--accent-bg);
+    border-color: rgba(58, 111, 196, 0.4);
+}
+
+body.theme-light .veil-auth-title { color: var(--text-primary); }
+
+body.theme-light .veil-auth-subtitle { color: var(--text-secondary); }
+
+body.theme-light #veil-auth-input {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+body.theme-light #veil-auth-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
+body.theme-light #veil-auth-input::placeholder,
+body.theme-light .veil-auth-toggle-vis { color: var(--text-secondary); }
+
+body.theme-light #veil-auth-submit { color: #ffffff; }
+
+body.theme-light #veil-auth-error { color: #b23333; }
+
+body.theme-light .veil-auth-footer { color: var(--text-secondary); }
+
+body.theme-light #veil-tour-overlay {
+    background: rgba(214, 224, 240, 0.72);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+}
+
+body.theme-light #veil-tour-card {
+    background: #ffffff;
+    border-color: var(--border-color);
+    box-shadow: 0 18px 60px rgba(22, 42, 76, 0.22);
+}
+
+body.theme-light .veil-tour-progress { background: var(--steel-bg); }
+
+body.theme-light #veil-tour-field input,
+body.theme-light .veil-tour-choice {
+    background: #f6f9fd;
+    border-color: var(--border-color);
+}
+
+body.theme-light .veil-tour-choice.selected { background: var(--accent-bg); }
+
+body.theme-light #veil-tour-action { color: #ffffff; }
+
+body.theme-light #veil-daily-message {
+    background: #ffffff;
+    border-color: rgba(58, 111, 196, 0.35);
+    box-shadow: 0 4px 24px rgba(22, 42, 76, 0.18);
+}

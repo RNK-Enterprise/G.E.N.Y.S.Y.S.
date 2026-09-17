@@ -36,6 +36,19 @@ mark tagged states of the repository.
   now (the pkg-config shims are tracked on purpose — they are part of the
   build) and `LOC_REPORT.md` was regenerated.
 
+### Fixed
+
+- **Light theme redesigned as a first-class pass.** `body.theme-light` now
+  re-points every accent alias together (`--accent`/`--brand-gold`/
+  `--toxic-green` to deep ice `#3a6fc4`, 4.6:1 on white — previously only one
+  alias was re-pointed, leaving `--accent` at a 2.2:1 contrast fail), deepens
+  `--danger`/`--warning`/`--success` for daylight, and moves shadows from
+  black to midnight ink. The gate, welcome tour, daily message, cookies bar,
+  Lisa auth submit, and assistant surfaces quarantine their dark literals
+  behind `body.theme-light` overrides in their own modules, so no
+  hardcoded-midnight surface escapes the light pass. Input focus rings added
+  in light mode.
+
 ### Changed
 
 - **Rebrand: midnight blue + ice.** The gold / "toxic green" accent scheme is
