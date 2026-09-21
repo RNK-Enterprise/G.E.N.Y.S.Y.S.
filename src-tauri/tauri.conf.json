@@ -2,7 +2,7 @@
   "build": {
     "beforeDevCommand": "echo Starting dev server",
     "beforeBuildCommand": "npm run build:vite",
-    "devPath": "http://localhost:1420",
+    "devPath": "http://127.0.0.1:1420",
     "distDir": "../dist",
     "withGlobalTauri": true
   },
@@ -57,7 +57,7 @@
       }
     },
     "security": {
-      "csp": "default-src 'self' customprotocol: asset:; img-src 'self' data: https: asset: blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self' 'unsafe-inline'; connect-src 'self' https: http://127.0.0.1:* http://localhost:* ws://localhost:* ipc:;"
+      "csp": "default-src 'self' customprotocol: asset:; img-src 'self' data: https: asset: blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self' 'unsafe-inline'; connect-src 'self' https: http://127.0.0.1:* ws://127.0.0.1:* ipc:;"
     },
     "windows": [
       {

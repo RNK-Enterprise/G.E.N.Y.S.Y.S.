@@ -17,13 +17,13 @@ Stack fit and doctrine: `VEIL.md`.
 
 ```bash
 npm install
-npm run dev:vite      # frontend on :1420
+npm run dev:vite      # frontend on 127.0.0.1:1420
 npm run dev:tauri     # Tauri shell (second terminal)
 ```
 
 Ubuntu 24.04+ ships WebKitGTK 4.1 under 4.1 sonames; Tauri 1 links the 4.0 names. The
 repo carries the fix: `scripts/with-webkit-pc.sh` + `src-tauri/.cargo/config.toml`.
-`npm run check:rust` and `cargo test` work on this host.
+`npm run check:rust` and `cargo test` work on this host. Vite binds `127.0.0.1` only.
 
 ## Access doctrine
 
@@ -67,6 +67,12 @@ documented, not secret; tokens are per-session. Details: `docs/VEIL_ATTESTATION.
 `.gitignore` hardened. Git remote migrated to private `RNK-Enterprise/V.E.I.L.` — the old
 `lisasdungeon/axis` GitHub remote is retired from this tree (history preserved there;
 nothing pushed to it in this sweep).
+
+## Sweep 2026-09-20
+
+Vite `server.host` and Tauri `devPath` pin `127.0.0.1`. `.gitignore` covers `.env` /
+`secrets.env` / keys. Package description no longer says Mother Lisa. COMMAND gate
+still fail-closes when `COMMAND_URL` is empty — no fallback IdP.
 
 ## Secret scanning
 

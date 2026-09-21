@@ -87,7 +87,8 @@ describe('HistoryManager', () => {
   test('getByDate filters to the requested day', () => {
     const hm = new HistoryManager();
     hm.addEntry('https://today.test', 'Today');
-    const today = new Date().toISOString().slice(0, 10);
+    const d = new Date();
+    const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     expect(hm.getByDate(today)).toHaveLength(1);
     expect(hm.getByDate('2001-01-01')).toHaveLength(0);
   });

@@ -160,9 +160,10 @@ describe('history same-day boundary', () => {
   test('an entry stamped 1ms before local midnight is excluded from today', () => {
     const hm = new HistoryManager();
     hm.addEntry('https://a.test', 'A');
-    const today = new Date().toISOString().slice(0, 10);
-    const entries = hm.getByDate(today);
-    expect(entries).toHaveLength(1);
+    hm.history[0].timestamp = new Date().setHours(0, 0, 0, 0) - 1;
+    const d = new Date();
+    const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    expect(hm.getByDate(today)).toHaveLength(0);
     expect(hm.getByDate('2001-01-01')).toHaveLength(0);
   });
 

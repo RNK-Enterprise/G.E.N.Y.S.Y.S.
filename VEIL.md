@@ -1,9 +1,9 @@
 # VEIL — agent file
 
 RNK Enterprise — Proprietary and Confidential.
-SoT: `/media/odinn/privacy-system/VEIL`
+SoT: `/media/odinn/privacy-system/V.E.I.L.`
 Portable memory (any agent, whole system): `/media/odinn/privacy-system/memory/SYSTEM.md`
-Swept 2026-09-10. Ask Odinn before acting.
+Swept 2026-09-20. Ask Odinn before acting.
 
 You are in the **VEIL** tree. VEIL is RNK's **only client / only access environment**. It is a Tauri desktop browser. It is not C.O.M.M.A.N.D., not P.R.O.T.E.C.T.S., not the products.
 
@@ -89,12 +89,13 @@ Health default Resolute URL in the panel is still `http://127.0.0.1:7781` (local
 ## Commands
 
 ```bash
-cd /media/odinn/privacy-system/VEIL
-npm run dev:vite          # :1420
+cd /media/odinn/privacy-system/V.E.I.L.
+npm run dev:vite          # 127.0.0.1:1420
 npm run dev:tauri         # native shell (webkit 4.0→4.1 shim)
+npm test                  # Jest unit (src/)
 npm run check:rust
 npm run catalog
-# cargo test in src-tauri: policy, attestation, Resolute exchange
+# cargo test in src-tauri: policy, attestation, COMMAND/Resolute exchange
 ```
 
 Ubuntu 24.04: WebKitGTK 4.1 under 4.1 sonames; Tauri 1 wants 4.0. Shim is `scripts/with-webkit-pc.sh` + `src-tauri/.cargo/config.toml`. Do not "fix" by installing 4.0 packages.
@@ -103,13 +104,14 @@ Ubuntu 24.04: WebKitGTK 4.1 under 4.1 sonames; Tauri 1 wants 4.0. Shim is `scrip
 
 ## Honest remaining
 
-- Gate is **coded**, not live-wired. Production VEIL HOLDs without `COMMAND_URL`. C.O.M.M.A.N.D. daemon on this host has been dark. Do not claim VEIL is talking to the fleet until that URL is set and the coordinator answers.
+- Gate is **coded**, not live-wired. Production VEIL HOLDs without `COMMAND_URL`. Do not invent a fallback IdP. Do not claim VEIL is talking to the fleet until that URL is set and the coordinator answers.
 - Mail and Website demo attestation are log-only.
 - Ghost chain for `sec.rnk` is not wired.
-- Git tree has no commits (all untracked as of sweep).
-- `package.json` description still says "Mother Lisa". Stale.
-- No JS unit tests despite Jest in `package.json`. Rust tests exist.
 - Bundles exist at 0.1.0 (`AppImage` / `.deb` / `.rpm`). Not proven against live C.O.M.M.A.N.D.
+
+## Sweep 2026-09-20
+
+Vite + Tauri `devPath` pin `127.0.0.1`. `.gitignore` covers `.env` / secrets. `package.json` / Cargo description no longer say Mother Lisa. `dist/.gitkeep` so cargo test compiles; `with-webkit-pc.sh` exports absolute `-L` so linking works from repo root. History tests use local calendar day (UTC ISO was crossing midnight in EDT). Jest + Rust tests are the test SoT. No IdP invented. Do not push from this sweep unless Odinn says so.
 
 ## Out of scope
 

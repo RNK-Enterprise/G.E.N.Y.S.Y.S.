@@ -80,11 +80,11 @@ impl TabWindows {
 // ── Pure classification helpers (unit-tested) ─────────────────────────────────
 
 /// The app-origin page used for all internal tab content (new tab, block
-/// pages, locked state). Dev serves it from the Vite server; release embeds
-/// it behind `tauri://localhost`.
+/// pages, locked state). Dev serves it from the Vite server on loopback;
+/// release embeds it behind `tauri://localhost` (custom protocol, not a bind).
 pub fn app_origin() -> &'static str {
     if cfg!(debug_assertions) {
-        "http://localhost:1420"
+        "http://127.0.0.1:1420"
     } else {
         "tauri://localhost"
     }

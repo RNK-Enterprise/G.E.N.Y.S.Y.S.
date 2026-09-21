@@ -28,11 +28,13 @@ fn veil_newtab_alias_is_allowed() {
 }
 
 #[test]
-fn app_origin_exact_only_localhost_ports_dont_sneak_in() {
+fn app_origin_exact_only_loopback_ports_dont_sneak_in() {
     assert!(is_app_origin(&newtab_url()));
+    assert!(is_app_origin("http://127.0.0.1:1420/newtab.html"));
     assert!(is_app_origin("veil://newtab"));
+    assert!(!is_app_origin("http://localhost:1420/newtab.html"));
     assert!(!is_app_origin("http://localhost:9999/evil"));
-    assert!(!is_app_origin("http://evil.com/?x=http://localhost:1420"));
+    assert!(!is_app_origin("http://evil.com/?x=http://127.0.0.1:1420"));
 }
 
 #[test]
@@ -98,7 +100,7 @@ fn internal_loader_refuses_external_urls() {
     // The internal-load command must refuse anything off app-origin.
     assert!(is_app_origin(&newtab_url()));
     assert!(!is_app_origin("https://example.com"));
-    assert!(!is_app_origin("http://localhost:1420.evil.com/"));
+    assert!(!is_app_origin("http://127.0.0.1:1420.evil.com/"));
 }
 
 // ── Lifecycle bookkeeping against the mock runtime ───────────────────────────

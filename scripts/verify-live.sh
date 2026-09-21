@@ -183,8 +183,8 @@ drive() { # runs inside the chosen display session
 
   # ── Dev server (debug builds load the UI from devPath) ────────────────────
   if [ "$RELEASE" = 0 ]; then
-    if curl -sf --max-time 2 -o /dev/null http://localhost:1420/; then
-      echo "dev server: already running on :1420 (not ours — left alone)"
+    if curl -sf --max-time 2 -o /dev/null http://127.0.0.1:1420/; then
+      echo "dev server: already running on 127.0.0.1:1420 (not ours — left alone)"
     else
       # Launch the vite binary directly. Going through `npm run dev` is a
       # trap: npm's children don't join the launched group, so cleanup
@@ -195,7 +195,7 @@ drive() { # runs inside the chosen display session
       VITE_PID=$!
       ok=0
       for _ in $(seq 1 30); do
-        curl -sf --max-time 2 -o /dev/null http://localhost:1420/ && { ok=1; break; }
+        curl -sf --max-time 2 -o /dev/null http://127.0.0.1:1420/ && { ok=1; break; }
         sleep 1
       done
       if [ "$ok" != 1 ]; then

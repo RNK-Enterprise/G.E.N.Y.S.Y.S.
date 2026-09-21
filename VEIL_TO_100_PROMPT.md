@@ -50,7 +50,7 @@ LOCKED
 - C.O.M.M.A.N.D. = master key (Mother Lisa still in play). VEIL does not replace it; VEIL opens after it.
 - Fail-closed: policy error / key app dark / missing attestation → block. Never fail open. Dev bypass = Vite DEV + veil_dev_bypass only.
 - Catalog: ONLY browser-real engines + the 9 live turbos. Delete the 800/4000 stub mill.
-- Do not edit Ghost Comms crypto, Vortex, Pentesting locker, P.R.O.T.E.C.T.S. organ internals, D.O.M.A.I.N.
+- Do not edit Ghost Comms crypto, Vortex, Anvil locker, P.R.O.T.E.C.T.S. organ internals, D.O.M.A.I.N.
 - You MAY add a small VEIL-attestation check in Raven / Mail / Echonet / Website-demo APIs. No CRM feature work. No Mail IMAP work. No Website marketing copy except if a login page must refuse Chrome.
 - Public marketing GET rnk-enterprise.us can stay public. Authenticated APIs cannot.
 - ≤500 LOC on files you touch; split if you must. main.js was ~7k — finish the extract, don’t grow it.

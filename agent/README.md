@@ -1,3 +1,3 @@
 # Agent operating notes
 
-`VEIL.md` is the agent-facing note: standalone-first constraint, fail-closed Lisa policy, LOC cap, and the `memory/` evidence protocol. Human contributors can ignore this directory.
+`VEIL.md` (repo root) is the agent file. This directory's `VEIL.md` is the short operating note: COMMAND-gated sessions, fail-closed policy, LOC cap, loopback bind, `memory/` evidence protocol. Human contributors can ignore this directory.

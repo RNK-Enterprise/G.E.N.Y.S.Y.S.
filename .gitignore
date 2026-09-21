@@ -1,4 +1,4 @@
-# RNK Axis Browser - Build Artifacts
+# V.E.I.L. — RNK browser build artifacts
 
 # Rust
 /target
@@ -6,8 +6,18 @@
 
 # Node
 node_modules/
-dist/
+# Vite output — keep the directory so Tauri distDir exists for cargo test
+/dist/*
+!/dist/.gitkeep
 *.log
+
+# Secrets / local env — never commit
+.env
+.env.*
+!.env.example
+secrets.env
+*.pem
+*.key
 
 # Build outputs
 src-tauri/target/
