@@ -3,7 +3,7 @@
  */
 
 /**
- * VEIL™ — shell misc coverage (manifest, tauri-api, rnk-webviews,
+ * GENYSYS™ — shell misc coverage (manifest, tauri-api, rnk-webviews,
  * protects-health, sidebar-utils, spotlight-context, eval-chunk)
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
@@ -40,8 +40,8 @@ afterEach(() => {
 describe('shell/eval-chunk', () => {
     test('evaluates chunk source into the global scope', async () => {
         const { evalChunk } = await import(srcUrl('shell/eval-chunk.js'));
-        evalChunk('var __veilProbe = 41 + 1;', 'probe');
-        expect(window.__veilProbe).toBe(42);
+        evalChunk('var __genysysProbe = 41 + 1;', 'probe');
+        expect(window.__genysysProbe).toBe(42);
     });
 
     test('syntax errors are logged and rethrown', async () => {
@@ -51,22 +51,22 @@ describe('shell/eval-chunk', () => {
 });
 
 describe('shell/manifest', () => {
-    test('loadVEILManifest caches the catalog response and fills the capability map', async () => {
+    test('loadGENYSYSManifest caches the catalog response and fills the capability map', async () => {
         const fetchMock = jest.fn(async () => ({ ok: true, status: 200, json: async () => catalogManifest() }));
         window.fetch = fetchMock;
         await import(srcUrl('shell/manifest.js'));
-        const manifest = await window.loadVEILManifest();
+        const manifest = await window.loadGENYSYSManifest();
         expect(manifest.capabilities.length).toBe(8);
-        expect(window.veilRuntime.capabilities.get('veil-settings')).toBeDefined();
-        expect(window.veilManifest.product).toBe('VEIL');
+        expect(window.genysysRuntime.capabilities.get('genysys-settings')).toBeDefined();
+        expect(window.genysysManifest.product).toBe('GENYSYS');
     });
 
-    test('catalog failure falls back to FALLBACK_VEIL_MANIFEST with an empty map', async () => {
+    test('catalog failure falls back to FALLBACK_GENYSYS_MANIFEST with an empty map', async () => {
         window.fetch = async () => ({ ok: false, status: 404, json: async () => ({}) });
         await import(srcUrl('shell/manifest.js'));
-        const manifest = await window.loadVEILManifest();
-        expect(manifest).toBe(window.FALLBACK_VEIL_MANIFEST);
-        expect(window.veilRuntime.capabilities.size).toBe(0);
+        const manifest = await window.loadGENYSYSManifest();
+        expect(manifest).toBe(window.FALLBACK_GENYSYS_MANIFEST);
+        expect(window.genysysRuntime.capabilities.size).toBe(0);
     });
 });
 
@@ -193,7 +193,7 @@ describe('lisa/protects-health', () => {
         document.getElementById('protects-url-input').value = 'http://127.0.0.1:9000/';
         document.getElementById('protects-url-save').click();
         await new Promise((resolve) => setTimeout(resolve, 0));
-        expect(localStorage.getItem('veil_resolute_url')).toBe('http://127.0.0.1:9000/');
+        expect(localStorage.getItem('genysys_resolute_url')).toBe('http://127.0.0.1:9000/');
     });
 
     test('dark Resolute renders the fail-closed gate and empty input is ignored', async () => {
@@ -210,7 +210,7 @@ describe('lisa/protects-health', () => {
         document.getElementById('protects-url-input').value = '';
         document.getElementById('protects-url-save').click();
         await new Promise((resolve) => setTimeout(resolve, 0));
-        expect(localStorage.getItem('veil_resolute_url')).toBeNull();
+        expect(localStorage.getItem('genysys_resolute_url')).toBeNull();
     });
 
     test('missing mount element is a no-op', async () => {
@@ -241,8 +241,8 @@ describe('shell/sidebar-utils', () => {
 describe('shell/spotlight-context', () => {
     test('every context class is classified', async () => {
         await bootShell();
-        const ctx = window.getVEILSpotlightContext;
-        expect(ctx('github.com', 'repo', 'https://github.com/rnk/veil/pull/1')).toBe('dev');
+        const ctx = window.getGENYSYSSpotlightContext;
+        expect(ctx('github.com', 'repo', 'https://github.com/rnk/genysys/pull/1')).toBe('dev');
         expect(ctx('github.com', 'repository hub', '')).toBe('code');
         expect(ctx('docs.rust', 'guide', '')).toBe('docs');
         expect(ctx('', 'The AI assistant', '')).toBe('ai');

@@ -1,7 +1,7 @@
 [package]
-name = "rnk-veil"
+name = "rnk-genysys"
 version = "0.1.0"
-description = "V.E.I.L. — RNK browser. COMMAND-gated sessions. P.R.O.T.E.C.T.S. policy fail-closed."
+description = "G.E.N.Y.S.Y.S. — RNK browser. COMMAND-gated sessions. P.R.O.T.E.C.T.S. policy fail-closed."
 authors = ["Asgard Innovations / RNK™"]
 license = "PROPRIETARY"
 repository = ""

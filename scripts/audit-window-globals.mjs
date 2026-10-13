@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * VEIL — global-wiring audit (build gate).
+ * GENYSYS — global-wiring audit (build gate).
  *
  * Catches the "unwired global" bug class that shipped twice: the splitter
  * rewrote call sites to `window.foo` / bare `foo` without anything ever
@@ -24,7 +24,7 @@
  *      A write only counts as a provider when it really publishes a value:
  *      `window.X = X` with no local `X` is a self-assignment whose right-hand
  *      side is the same undefined name (ReferenceError at module load, as
- *      `window.setVEILSidebarStateBadges` did), so it never excuses a read.
+ *      `window.setGENYSYSSidebarStateBadges` did), so it never excuses a read.
  *      Guarded reads with no provider are extension points by design —
  *      reported as info, never fatal.
  *

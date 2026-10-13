@@ -1,10 +1,10 @@
 /* ===================================================================
-   VEIL AUTH GATE — startup shortcode prompt
+   GENYSYS AUTH GATE — startup shortcode prompt
    =================================================================== */
 
-#veil-auth-gate {
+#genysys-auth-gate {
     position: fixed;
-    top: var(--veil-titlebar-h);
+    top: var(--genysys-titlebar-h);
     right: 0;
     bottom: 0;
     left: 0;
@@ -22,11 +22,11 @@
     background-size: 100% 100%, 40px 40px, 40px 40px, 100% 100%;
 }
 
-#veil-auth-gate.hidden {
+#genysys-auth-gate.hidden {
     display: none;
 }
 
-.veil-auth-card {
+.genysys-auth-card {
     width: 420px;
     background: rgba(26, 26, 46, 0.85);
     -webkit-backdrop-filter: blur(20px);
@@ -42,14 +42,14 @@
     animation: fadeIn 0.35s ease-out;
 }
 
-.veil-auth-brand {
+.genysys-auth-brand {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
 }
 
-.veil-auth-logo {
+.genysys-auth-logo {
     width: 48px;
     height: 48px;
     background: rgba(138, 180, 248, 0.12);
@@ -62,7 +62,7 @@
     color: var(--brand-gold, #8ab4f8);
 }
 
-.veil-auth-title {
+.genysys-auth-title {
     font-family: 'Segoe UI', system-ui, sans-serif;
     font-size: 18px;
     font-weight: 600;
@@ -70,29 +70,29 @@
     letter-spacing: 0.02em;
 }
 
-.veil-auth-subtitle {
+.genysys-auth-subtitle {
     font-size: 12px;
     color: #7a7a9a;
     letter-spacing: 0.04em;
     text-transform: uppercase;
 }
 
-.veil-auth-subtitle--live {
+.genysys-auth-subtitle--live {
     color: var(--brand-gold);
 }
 
-.veil-auth-form {
+.genysys-auth-form {
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 16px;
 }
 
-.veil-auth-input-wrap {
+.genysys-auth-input-wrap {
     position: relative;
 }
 
-#veil-auth-input {
+#genysys-auth-input {
     width: 100%;
     height: 44px;
     background: rgba(18, 18, 31, 0.8);
@@ -107,16 +107,16 @@
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-#veil-auth-input:focus {
+#genysys-auth-input:focus {
     border-color: rgba(138, 180, 248, 0.5);
     box-shadow: 0 0 0 3px rgba(138, 180, 248, 0.1);
 }
 
-#veil-auth-input::placeholder {
+#genysys-auth-input::placeholder {
     color: #4a4a6a;
 }
 
-.veil-auth-toggle-vis {
+.genysys-auth-toggle-vis {
     position: absolute;
     right: 12px;
     top: 50%;
@@ -130,11 +130,11 @@
     transition: color 0.2s;
 }
 
-.veil-auth-toggle-vis:hover {
+.genysys-auth-toggle-vis:hover {
     color: var(--brand-gold, #8ab4f8);
 }
 
-#veil-auth-submit {
+#genysys-auth-submit {
     width: 100%;
     height: 44px;
     background: linear-gradient(135deg, var(--brand-gold, #8ab4f8), var(--brand-gold-dark, #6d9ae0));
@@ -149,34 +149,34 @@
     transition: opacity 0.2s, transform 0.1s;
 }
 
-#veil-auth-submit:hover {
+#genysys-auth-submit:hover {
     opacity: 0.92;
 }
 
-#veil-auth-submit:active {
+#genysys-auth-submit:active {
     transform: scale(0.98);
 }
 
-#veil-auth-submit:disabled {
+#genysys-auth-submit:disabled {
     opacity: 0.4;
     cursor: not-allowed;
 }
 
-#veil-auth-error {
+#genysys-auth-error {
     font-size: 12px;
     color: #e05555;
     text-align: center;
     min-height: 18px;
 }
 
-.veil-auth-footer {
+.genysys-auth-footer {
     font-size: 11px;
     color: #3a3a5a;
     text-align: center;
     letter-spacing: 0.03em;
 }
 
-@keyframes veil-auth-shake {
+@keyframes genysys-auth-shake {
     0%, 100% { transform: translateX(0); }
     20%       { transform: translateX(-8px); }
     40%       { transform: translateX(8px); }
@@ -184,15 +184,15 @@
     80%       { transform: translateX(5px); }
 }
 
-.veil-auth-card.shake {
-    animation: veil-auth-shake 0.4s ease;
+.genysys-auth-card.shake {
+    animation: genysys-auth-shake 0.4s ease;
 }
 
 /* ===================================================================
    WELCOME TOUR
    =================================================================== */
 
-#veil-tour-overlay {
+#genysys-tour-overlay {
     position: fixed;
     inset: 0;
     z-index: 10000;
@@ -203,12 +203,12 @@
     transition: opacity 0.4s ease;
 }
 
-#veil-tour-overlay.veil-tour-out {
+#genysys-tour-overlay.genysys-tour-out {
     opacity: 0;
     pointer-events: none;
 }
 
-#veil-tour-card {
+#genysys-tour-card {
     background: #12122a;
     border: 1px solid #2a2a50;
     border-radius: 12px;
@@ -220,45 +220,45 @@
     gap: 16px;
 }
 
-.veil-tour-progress {
+.genysys-tour-progress {
     height: 3px;
     background: #2a2a4a;
     border-radius: 2px;
     overflow: hidden;
 }
 
-.veil-tour-progress-bar {
+.genysys-tour-progress-bar {
     height: 100%;
     background: var(--brand-gold);
     border-radius: 2px;
     transition: width 0.35s ease;
 }
 
-#veil-tour-title {
+#genysys-tour-title {
     font-size: 18px;
     font-weight: 600;
     color: var(--text-primary, #e0e0f0);
 }
 
-#veil-tour-body {
+#genysys-tour-body {
     font-size: 13px;
     color: var(--text-secondary, #8a8ab0);
     line-height: 1.6;
     min-height: 18px;
 }
 
-#veil-tour-field {
+#genysys-tour-field {
     display: flex;
     flex-direction: column;
     gap: 6px;
 }
 
-#veil-tour-field label {
+#genysys-tour-field label {
     font-size: 12px;
     color: var(--text-secondary, #8a8ab0);
 }
 
-#veil-tour-field input {
+#genysys-tour-field input {
     padding: 8px 12px;
     background: #0e0e24;
     border: 1px solid #2a2a50;
@@ -268,17 +268,17 @@
     outline: none;
 }
 
-#veil-tour-field input:focus {
+#genysys-tour-field input:focus {
     border-color: var(--brand-gold);
 }
 
-#veil-tour-choices {
+#genysys-tour-choices {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.veil-tour-choice {
+.genysys-tour-choice {
     padding: 10px 14px;
     background: #0e0e24;
     border: 1px solid #2a2a50;
@@ -290,18 +290,18 @@
     transition: border-color 0.15s, color 0.15s;
 }
 
-.veil-tour-choice:hover {
+.genysys-tour-choice:hover {
     border-color: var(--brand-gold);
     color: var(--text-primary, #e0e0f0);
 }
 
-.veil-tour-choice.selected {
+.genysys-tour-choice.selected {
     border-color: var(--brand-gold);
     color: var(--brand-gold);
     background: rgba(138, 180, 248, 0.08);
 }
 
-#veil-tour-action {
+#genysys-tour-action {
     padding: 10px 0;
     background: var(--brand-gold);
     color: #0a0a1a;
@@ -313,7 +313,7 @@
     transition: background 0.15s;
 }
 
-#veil-tour-action:hover {
+#genysys-tour-action:hover {
     background: var(--brand-gold-dark);
 }
 
@@ -321,7 +321,7 @@
    DAILY LISA MESSAGE
    =================================================================== */
 
-#veil-daily-message {
+#genysys-daily-message {
     position: fixed;
     top: 80px;
     left: 50%;
@@ -342,28 +342,28 @@
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-#veil-daily-message.veil-daily-msg-visible {
+#genysys-daily-message.genysys-daily-msg-visible {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
 }
 
-#veil-daily-message.veil-daily-msg-out {
+#genysys-daily-message.genysys-daily-msg-out {
     opacity: 0;
     transform: translateX(-50%) translateY(-8px);
 }
 
-.veil-daily-msg-icon {
+.genysys-daily-msg-icon {
     color: var(--brand-gold);
     font-size: 14px;
     flex-shrink: 0;
 }
 
-.veil-daily-msg-text {
+.genysys-daily-msg-text {
     flex: 1;
     line-height: 1.5;
 }
 
-.veil-daily-msg-close {
+.genysys-daily-msg-close {
     background: none;
     border: none;
     color: var(--text-secondary, #8a8ab0);
@@ -375,17 +375,17 @@
     transition: opacity 0.15s;
 }
 
-.veil-daily-msg-close:hover {
+.genysys-daily-msg-close:hover {
     opacity: 1;
 }
 
-/* ===================================================================   VEIL LIGHT THEME — gate surfaces (quarantined from the dark literals)
+/* ===================================================================   GENYSYS LIGHT THEME — gate surfaces (quarantined from the dark literals)
    The dark values stay above for the midnight theme; body.theme-light
    re-points every hard-coded surface here. Accent deepens to #3a6fc4
    for legibility on white, shadows move from black to midnight ink.
    =================================================================== */
 
-body.theme-light #veil-auth-gate {
+body.theme-light #genysys-auth-gate {
     background-image:
         radial-gradient(ellipse at 40% 30%, rgba(58, 111, 196, 0.10) 0%, transparent 60%),
         linear-gradient(rgba(58, 111, 196, 0.05) 1px, transparent 1px),
@@ -393,66 +393,66 @@ body.theme-light #veil-auth-gate {
         linear-gradient(180deg, #f4f7fc 0%, #eef2f9 100%);
 }
 
-body.theme-light .veil-auth-card {
+body.theme-light .genysys-auth-card {
     background: rgba(255, 255, 255, 0.88);
     border-color: rgba(58, 111, 196, 0.35);
     box-shadow: 0 24px 80px rgba(22, 42, 76, 0.22), 0 0 0 1px rgba(58, 111, 196, 0.06) inset;
 }
 
-body.theme-light .veil-auth-logo {
+body.theme-light .genysys-auth-logo {
     background: var(--accent-bg);
     border-color: rgba(58, 111, 196, 0.4);
 }
 
-body.theme-light .veil-auth-title { color: var(--text-primary); }
+body.theme-light .genysys-auth-title { color: var(--text-primary); }
 
-body.theme-light .veil-auth-subtitle { color: var(--text-secondary); }
+body.theme-light .genysys-auth-subtitle { color: var(--text-secondary); }
 
-body.theme-light #veil-auth-input {
+body.theme-light #genysys-auth-input {
     background: rgba(255, 255, 255, 0.9);
     border-color: var(--border-color);
     color: var(--text-primary);
 }
 
-body.theme-light #veil-auth-input:focus {
+body.theme-light #genysys-auth-input:focus {
     border-color: var(--accent);
     box-shadow: 0 0 0 3px var(--accent-bg);
 }
 
-body.theme-light #veil-auth-input::placeholder,
-body.theme-light .veil-auth-toggle-vis { color: var(--text-secondary); }
+body.theme-light #genysys-auth-input::placeholder,
+body.theme-light .genysys-auth-toggle-vis { color: var(--text-secondary); }
 
-body.theme-light #veil-auth-submit { color: #ffffff; }
+body.theme-light #genysys-auth-submit { color: #ffffff; }
 
-body.theme-light #veil-auth-error { color: #b23333; }
+body.theme-light #genysys-auth-error { color: #b23333; }
 
-body.theme-light .veil-auth-footer { color: var(--text-secondary); }
+body.theme-light .genysys-auth-footer { color: var(--text-secondary); }
 
-body.theme-light #veil-tour-overlay {
+body.theme-light #genysys-tour-overlay {
     background: rgba(214, 224, 240, 0.72);
     -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
 }
 
-body.theme-light #veil-tour-card {
+body.theme-light #genysys-tour-card {
     background: #ffffff;
     border-color: var(--border-color);
     box-shadow: 0 18px 60px rgba(22, 42, 76, 0.22);
 }
 
-body.theme-light .veil-tour-progress { background: var(--steel-bg); }
+body.theme-light .genysys-tour-progress { background: var(--steel-bg); }
 
-body.theme-light #veil-tour-field input,
-body.theme-light .veil-tour-choice {
+body.theme-light #genysys-tour-field input,
+body.theme-light .genysys-tour-choice {
     background: #f6f9fd;
     border-color: var(--border-color);
 }
 
-body.theme-light .veil-tour-choice.selected { background: var(--accent-bg); }
+body.theme-light .genysys-tour-choice.selected { background: var(--accent-bg); }
 
-body.theme-light #veil-tour-action { color: #ffffff; }
+body.theme-light #genysys-tour-action { color: #ffffff; }
 
-body.theme-light #veil-daily-message {
+body.theme-light #genysys-daily-message {
     background: #ffffff;
     border-color: rgba(58, 111, 196, 0.35);
     box-shadow: 0 4px 24px rgba(22, 42, 76, 0.18);

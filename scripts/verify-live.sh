@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# VEIL™ — live compositor verification: tab create → close → OS-level destroy
+# GENYSYS™ — live compositor verification: tab create → close → OS-level destroy
 # Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
 #
 # Closes the gap the mock-runtime cargo tests cannot: headless tests pin the
@@ -7,7 +7,7 @@
 # never pumps the CloseWindow message, so OS-level WebviewWindow destruction is
 # unobservable there. This script proves it in a real compositor (or Xvfb):
 #
-#   1. Picks the app binary (debug by default) and requires the [veil:tabwin]
+#   1. Picks the app binary (debug by default) and requires the [genysys:tabwin]
 #      marker — a stale binary fails with a rebuild hint instead of passing
 #      vacuously.
 #   2. Ensures the Vite dev server (devPath) is up, starting it if needed
@@ -17,42 +17,42 @@
 #   4. Drives the REAL UI with xdotool: auth code → Ctrl+T (new tab) →
 #      Ctrl+L → URL → Enter. navigate_tab then creates the real WebviewWindow
 #      after the policy allow.
-#   5. Asserts the full [veil:tabwin] lifecycle (create → close → destroyed,
-#      same tab id), that the "VEIL Tab" X window existed and then vanished,
+#   5. Asserts the full [genysys:tabwin] lifecycle (create → close → destroyed,
+#      same tab id), that the "GENYSYS Tab" X window existed and then vanished,
 #      and reports WebKit helper process deltas as corroborating evidence.
 #   6. Cleans up: app process group, dev server (only if we started it),
 #      scratch profile — trap-guarded; on failure the scratch dir is KEPT and
 #      its path printed so the app log survives for debugging.
 #
 # All app state goes to a scratch XDG profile, so this never touches the
-# user's real VEIL data. Windowing uses xdotool only (XQueryTree), so the
+# user's real GENYSYS data. Windowing uses xdotool only (XQueryTree), so the
 # headless path needs no window manager.
 #
 # Usage: bash scripts/verify-live.sh [--xvfb] [--release] [--bin PATH]
 #                                    [--keep] [--code CODE] [--url URL]
 #                                    [--timeout SECS]
 #   --xvfb          force the headless Xvfb path (auto when $DISPLAY is unset)
-#   --release       use target/release/rnk-veil (skips the dev-server step)
+#   --release       use target/release/rnk-genysys (skips the dev-server step)
 #   --bin PATH      use an explicit binary (marker still enforced)
 #   --keep          keep the scratch dir even on success (path is printed)
-#   --code CODE     auth code for the gate (default: veil-odinn;
-#                   override with VEIL_LIVE_CODE)
+#   --code CODE     auth code for the gate (default: genysys-odinn;
+#                   override with GENYSYS_LIVE_CODE)
 #   --url URL       URL typed verbatim into the omnibox (default: example.com;
-#                   override with VEIL_LIVE_URL). Use a dotted host — a scheme
-#                   like veil:// is search-mangled by the omnibox.
+#                   override with GENYSYS_LIVE_URL). Use a dotted host — a scheme
+#                   like genysys:// is search-mangled by the omnibox.
 #   --timeout SECS  per-phase window/journal poll timeout (default 40)
 # Exit codes: 0 proof passed · 1 proof failed · 2 bad usage/prerequisites.
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-CODE="${VEIL_LIVE_CODE:-veil-odinn}"
-NAV_URL="${VEIL_LIVE_URL:-example.com}"
+CODE="${GENYSYS_LIVE_CODE:-genysys-odinn}"
+NAV_URL="${GENYSYS_LIVE_URL:-example.com}"
 TIMEOUT=40
 FORCE_XVFB=0
 RELEASE=0
 KEEP=0
 BIN=""
-IS_INNER="${VEIL_LIVE_INNER:-0}"
+IS_INNER="${GENYSYS_LIVE_INNER:-0}"
 
 while [ "$#" -gt 0 ]; do
   case "$1" in
@@ -71,10 +71,10 @@ done
 
 # One scratch dir shared with the inner (Xvfb) re-invocation; on failure it is
 # kept and printed so the captured app log survives.
-if [ -n "${VEIL_LIVE_SCRATCH:-}" ] && [ -d "$VEIL_LIVE_SCRATCH" ]; then
-  SCRATCH=$VEIL_LIVE_SCRATCH
+if [ -n "${GENYSYS_LIVE_SCRATCH:-}" ] && [ -d "$GENYSYS_LIVE_SCRATCH" ]; then
+  SCRATCH=$GENYSYS_LIVE_SCRATCH
 else
-  SCRATCH=$(mktemp -d /tmp/veil-live.XXXXXX)
+  SCRATCH=$(mktemp -d /tmp/genysys-live.XXXXXX)
 fi
 APP_LOG="$SCRATCH/app.log"
 VITE_PID=""
@@ -110,18 +110,18 @@ elif [ "$RELEASE" = 1 ]; then
   # Bare `cargo build --release` emits the crate name; the tauri CLI build
   # additionally copies it to the productName (tauri.conf package). Accept
   # whichever exists, preferring the CLI layout when present.
-  if [ -f "$ROOT/src-tauri/target/release/veil" ]; then
-    BIN="$ROOT/src-tauri/target/release/veil"
-  elif [ -f "$ROOT/src-tauri/target/release/rnk-veil" ]; then
-    BIN="$ROOT/src-tauri/target/release/rnk-veil"
+  if [ -f "$ROOT/src-tauri/target/release/genysys" ]; then
+    BIN="$ROOT/src-tauri/target/release/genysys"
+  elif [ -f "$ROOT/src-tauri/target/release/rnk-genysys" ]; then
+    BIN="$ROOT/src-tauri/target/release/rnk-genysys"
   fi
 else
-  # Same two-name situation in debug: cargo build emits rnk-veil, the tauri
+  # Same two-name situation in debug: cargo build emits rnk-genysys, the tauri
   # CLI build copies it to the productName.
-  if [ -f "$ROOT/src-tauri/target/debug/veil" ]; then
-    BIN="$ROOT/src-tauri/target/debug/veil"
+  if [ -f "$ROOT/src-tauri/target/debug/genysys" ]; then
+    BIN="$ROOT/src-tauri/target/debug/genysys"
   else
-    BIN="$ROOT/src-tauri/target/debug/rnk-veil"
+    BIN="$ROOT/src-tauri/target/debug/rnk-genysys"
   fi
 fi
 [ -f "$BIN" ] || die "binary missing: $BIN (debug: npm run build:debug · release: npm run build)"
@@ -130,10 +130,10 @@ fi
 # before it existed would "pass" vacuously. Content check, not mtime.
 # (Counting matches instead of `grep -q`: under `set -o pipefail`, grep -q
 # exiting early SIGPIPEs the producer and turns a match into a failure.)
-# veil:page is asserted too: the readiness gate blocks on its journal line,
-# so a pre-[veil:page] binary would hang the whole TIMEOUT window instead
+# genysys:page is asserted too: the readiness gate blocks on its journal line,
+# so a pre-[genysys:page] binary would hang the whole TIMEOUT window instead
 # of failing with a clear rebuild hint.
-for marker in veil:tabwin veil:page; do
+for marker in genysys:tabwin genysys:page; do
   if [ "$(strings -a "$BIN" | grep -c "$marker" || true)" -eq 0 ]; then
     die "binary $BIN predates [$marker] logging — rebuild first (npm run build:debug)" 1
   fi
@@ -142,7 +142,7 @@ done
 # ── Small helpers (xdotool only — works with or without a window manager) ────
 # GTK creates UNMAPPED placeholder windows that inherit the app's window name
 # (ICCCM client leader + Tauri's per-tab pre-create); without --onlyvisible a
-# ghost matches ^VEIL Tab$ forever and focus calls on it die with BadMatch.
+# ghost matches ^GENYSYS Tab$ forever and focus calls on it die with BadMatch.
 have_win() { [ -n "$(xdotool search --onlyvisible --name "$1" 2>/dev/null | head -1)" ]; }
 wait_win() { # <name-regex> — poll until it appears
   local waited=0
@@ -209,13 +209,13 @@ drive() { # runs inside the chosen display session
 
   # ── Launch the app (own process group → clean group kill in cleanup) ─────
   # A release (production) build holds fail-closed with no auth core; the
-  # live drive is by definition a bench test, so opt into VEIL_TEST_MODE
+  # live drive is by definition a bench test, so opt into GENYSYS_TEST_MODE
   # exactly as the gate instructs. Debug builds ignore it.
   #
   # WebKitGTK env hardening mirrors smoke-suite.sh's proven launch set:
   # GPU-less runners wedge webview init (DMABUF), lack user namespaces
   # (bubblewrap aborts), and have no GLX (force llvmpipe) — without these
-  # the tab window's webview never realizes and the drive fails at "VEIL
+  # the tab window's webview never realizes and the drive fails at "GENYSYS
   # Tab never appeared". The sandbox-off pair covers both WebKitGTK
   # generations: old builds honor WEBKIT_FORCE_SANDBOX=0, new builds ignore
   # it and demand WEBKIT_DISABLE_SANDBOX_THIS_IS_DANGEROUS=1 (verified in
@@ -236,10 +236,10 @@ drive() { # runs inside the chosen display session
       WEBKIT_DISABLE_COMPOSITING_MODE=1 \
       WEBKIT_DISABLE_DMABUF_RENDERER=1 LIBGL_ALWAYS_SOFTWARE=1 \
       no_proxy=localhost,127.0.0.1 NO_PROXY=localhost,127.0.0.1 \
-      VEIL_TEST_MODE=1 "$BIN" >"$APP_LOG" 2>&1 < /dev/null &
+      GENYSYS_TEST_MODE=1 "$BIN" >"$APP_LOG" 2>&1 < /dev/null &
     APP_PID=$!
     echo "app: launched pid $APP_PID ($BIN, attempt $launch)"
-    if wait_win '^VEIL$'; then app_ok=1; break; fi
+    if wait_win '^GENYSYS$'; then app_ok=1; break; fi
     echo "launch attempt $launch: no main window after ${TIMEOUT}s"
     kill -9 -- -"$APP_PID" 2>/dev/null
     tail -8 "$APP_LOG" | sed 's/^/    /'
@@ -249,7 +249,7 @@ drive() { # runs inside the chosen display session
     return 1
   fi
 
-  MAIN=$(xdotool search --onlyvisible --name '^VEIL$' | head -1)
+  MAIN=$(xdotool search --onlyvisible --name '^GENYSYS$' | head -1)
   focus_win "$MAIN"
   echo "main window: up ($MAIN)"
 
@@ -258,19 +258,19 @@ drive() { # runs inside the chosen display session
   # page init can trail the map by tens of seconds (5s quiet, 60s+ while
   # this shared host runs ML jobs), and keystrokes typed before the page's
   # JS runs land nowhere — indistinguishable from a dead webview. The
-  # app's own [veil:page] journal line (Tauri's page-initialized hook) is
+  # app's own [genysys:page] journal line (Tauri's page-initialized hook) is
   # the authoritative readiness signal, locally and in CI.
   ready=0
   waited=0
   while [ "$waited" -lt $((TIMEOUT * 3)) ]; do
-    if grep -q "veil:page.*main page initialized" "$APP_LOG" 2>/dev/null; then ready=1; break; fi
+    if grep -q "genysys:page.*main page initialized" "$APP_LOG" 2>/dev/null; then ready=1; break; fi
     if ! kill -0 "$APP_PID" 2>/dev/null; then break; fi
     sleep 2
     waited=$((waited + 2))
   done
   if [ "$ready" != 1 ]; then
-    echo "FAILED: main page never initialized (no [veil:page] journal line within $((TIMEOUT * 3))s)"
-    grep -E "veil:|WARN|ERROR" "$APP_LOG" | tail -8 | sed 's/^/    /'
+    echo "FAILED: main page never initialized (no [genysys:page] journal line within $((TIMEOUT * 3))s)"
+    grep -E "genysys:|WARN|ERROR" "$APP_LOG" | tail -8 | sed 's/^/    /'
     return 1
   fi
   echo "page: initialized (journal) — UI ready after ${waited}s"
@@ -296,7 +296,7 @@ drive() { # runs inside the chosen display session
     echo "drive: attempt $attempt — auth + Ctrl+T + navigation sent"
     waited=0
     while [ "$waited" -lt "$DRIVE_WAIT" ]; do
-      have_win '^VEIL Tab$' && { created=1; break; }
+      have_win '^GENYSYS Tab$' && { created=1; break; }
       sleep 1; waited=$((waited + 1))
     done
     [ "$created" = 1 ] && break
@@ -304,21 +304,21 @@ drive() { # runs inside the chosen display session
   done
 
   # ── Assert CREATE ─────────────────────────────────────────────────────────
-  if [ "$created" != 1 ] && ! wait_win '^VEIL Tab$'; then
-    echo "FAILED: 'VEIL Tab' WebviewWindow never appeared (${TIMEOUT}s)"
-    grep "veil:tabwin" "$APP_LOG" | sed 's/^/    journal: /'
+  if [ "$created" != 1 ] && ! wait_win '^GENYSYS Tab$'; then
+    echo "FAILED: 'GENYSYS Tab' WebviewWindow never appeared (${TIMEOUT}s)"
+    grep "genysys:tabwin" "$APP_LOG" | sed 's/^/    journal: /'
     tail -15 "$APP_LOG" | sed 's/^/    /'
     echo "    webkit procs at failure: web=$(pgrep -fc WebKitWebProcess 2>/dev/null || echo 0) net=$(pgrep -fc WebKitNetworkProcess 2>/dev/null || echo 0)"
     dpkg -l 2>/dev/null | awk '/libwebkit2gtk-4.1/ {print "    " $2 " " $3; exit}'
     bwrap --ro-bind / / -- true 2>&1 | head -1 | sed 's/^/    bwrap probe: /'
     echo "    all X windows: $(xdotool search --name '.*' 2>/dev/null | wc -l) ids; names: $(xdotool search --name '.*' 2>/dev/null | while read -r w; do xdotool getwindowname "$w" 2>/dev/null; done | sort -u | tr '\n' '|')"
-    echo "    page/JS evidence ([veil:page] / [veil:boot] lines):"
-    grep -E "veil:page|veil:boot|veil:mainwin" "$APP_LOG" | tail -8 | sed 's/^/      /'
-    [ "$(grep -cE 'veil:page|veil:boot|veil:mainwin' "$APP_LOG" || true)" = 0 ] && \
+    echo "    page/JS evidence ([genysys:page] / [genysys:boot] lines):"
+    grep -E "genysys:page|genysys:boot|genysys:mainwin" "$APP_LOG" | tail -8 | sed 's/^/      /'
+    [ "$(grep -cE 'genysys:page|genysys:boot|genysys:mainwin' "$APP_LOG" || true)" = 0 ] && \
       echo "      (none — webview never initialized a page; see journal above)"
     return 1
   fi
-  TABWIN=$(xdotool search --onlyvisible --name '^VEIL Tab$' | head -1)
+  TABWIN=$(xdotool search --onlyvisible --name '^GENYSYS Tab$' | head -1)
   HELPERS_BEFORE=$(pgrep -fc WebKitWebProcess 2>/dev/null || true); HELPERS_BEFORE=${HELPERS_BEFORE:-0}
   CREATE_LINE=$(grep -oE "create tab-[0-9]+: url=[^ ]+ privileged=[a-z]+ → window live" "$APP_LOG" | tail -1)
   TAB_ID=$(printf '%s' "$CREATE_LINE" | grep -oE "tab-[0-9]+" | grep -oE "[0-9]+")
@@ -338,14 +338,14 @@ drive() { # runs inside the chosen display session
   for attempt in 1 2 3; do
     focus_win "$MAIN"
     xdotool key --clearmodifiers ctrl+w
-    if wait_win_gone '^VEIL Tab$'; then
+    if wait_win_gone '^GENYSYS Tab$'; then
       CLOSED=1
       break
     fi
     echo "close: window persisted after Ctrl+W — refocusing shell (attempt $attempt/3)"
   done
   if [ "$CLOSED" != 1 ]; then
-    echo "FAILED: 'VEIL Tab' window still on the X server after Ctrl+W (3 attempts × ${TIMEOUT}s)"
+    echo "FAILED: 'GENYSYS Tab' window still on the X server after Ctrl+W (3 attempts × ${TIMEOUT}s)"
     return 1
   fi
   sleep 1
@@ -388,7 +388,7 @@ if [ "$FORCE_XVFB" = 1 ] || [ -z "${DISPLAY:-}" ]; then
     INNER_ARGS=(--bin "$BIN")
     [ "$RELEASE" = 1 ] && INNER_ARGS+=(--release)
     INNER_ARGS+=(--code "$CODE" --url "$NAV_URL" --timeout "$TIMEOUT" --keep)
-    VEIL_LIVE_INNER=1 VEIL_LIVE_SCRATCH="$SCRATCH" \
+    GENYSYS_LIVE_INNER=1 GENYSYS_LIVE_SCRATCH="$SCRATCH" \
       xvfb-run -a -s "-screen 0 1280x800x24" bash "$0" "${INNER_ARGS[@]}"
     RC=$?
     # Surface the inner app log on failure (outer cleanup keeps the dir).

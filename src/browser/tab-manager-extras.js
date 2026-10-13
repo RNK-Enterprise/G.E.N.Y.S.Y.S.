@@ -1,5 +1,5 @@
 /**
- * VEIL™ — TabManager extras (window mode)
+ * GENYSYS™ — TabManager extras (window mode)
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * Window-mode companions to tab-manager.js: tab lifecycle through Rust
@@ -37,7 +37,7 @@ TabManager.prototype.saveTabs = function() {
         favicon: tab.favicon,
         pinned: tab.pinned
     }));
-    localStorage.setItem('rnk-veil-tabs', JSON.stringify({
+    localStorage.setItem('rnk-genysys-tabs', JSON.stringify({
         tabs: tabsData,
         activeIndex: this.tabs.findIndex(t => t.id === this.activeTabId)
     }));
@@ -45,7 +45,7 @@ TabManager.prototype.saveTabs = function() {
 
 TabManager.prototype.restoreTabs = function() {
     try {
-        const saved = localStorage.getItem('rnk-veil-tabs') ?? localStorage.getItem('rnk-axis-tabs') ?? localStorage.getItem('rnk-atlas-tabs');
+        const saved = localStorage.getItem('rnk-genysys-tabs') ?? localStorage.getItem('rnk-axis-tabs') ?? localStorage.getItem('rnk-atlas-tabs');
         if (!saved) return false;
 
         const data = JSON.parse(saved);
@@ -65,8 +65,8 @@ TabManager.prototype.restoreTabs = function() {
                 // the sync activateTab already wrote (the user navigated
                 // nowhere — no transient “Loading” belongs in the status bar).
                 // The credit is kept until the navigation settles
-                // (veil:navigate / policy block), not consumed on first use.
-                if (tabData.url && tabData.url !== 'veil://newtab' && tabData.url !== 'about:blank') {
+                // (genysys:navigate / policy block), not consumed on first use.
+                if (tabData.url && tabData.url !== 'genysys://newtab' && tabData.url !== 'about:blank') {
                     this._restoreCredits.set(tab.id, true);
                 }
                 // Restore the session's memory, not a placeholder: a saved
@@ -97,7 +97,7 @@ TabManager.prototype.pinTab = function(tabId) {
         tab.pinned = !tab.pinned;
         this.renderTabs();
         this.saveTabs();
-        window.refreshVEILSidebarFeeds();
+        window.refreshGENYSYSSidebarFeeds();
     }
 };
 
@@ -202,11 +202,11 @@ TabManager.prototype.activateTab = function(tabId) {
         document.getElementById('omnibox').value =
             tab.blockedView ? (tab.blockedView.domain || tab.url) : tab.url;
         window.updateStatusBar(`Viewing ${tab.title}`);
-        window.dispatchEvent(new CustomEvent('veil:tab-activated', { detail: { tab } }));
+        window.dispatchEvent(new CustomEvent('genysys:tab-activated', { detail: { tab } }));
     }
     this.tabs.forEach(other => {
         if (other.id !== tabId) {
-            window.dispatchEvent(new CustomEvent('veil:tab-deactivated', {
+            window.dispatchEvent(new CustomEvent('genysys:tab-deactivated', {
                 detail: { tab: other, activeId: tabId },
             }));
         }
@@ -224,7 +224,7 @@ TabManager.prototype.activateTab = function(tabId) {
     this.renderTabs();
     this.saveTabs();
     this.syncContentRect(tabId);
-    window.refreshVEILSidebarFeeds();
+    window.refreshGENYSYSSidebarFeeds();
 };
 
 TabManager.prototype.renderTabs = function() {
@@ -275,7 +275,7 @@ TabManager.prototype.updateTab = function(tabId, updates) {
     if (tab) {
         Object.assign(tab, updates);
         this.renderTabs();
-        window.refreshVEILSidebarFeeds();
+        window.refreshGENYSYSSidebarFeeds();
     }
 };
 
@@ -321,10 +321,10 @@ TabManager.prototype.renderBlockedView = function(tab) {
     if (!tab || !tab.blockedView) return;
     const { view, reason, domain } = tab.blockedView;
     const params = new URLSearchParams({ view, reason, domain });
-    let frame = document.getElementById('veil-blocked-view');
+    let frame = document.getElementById('genysys-blocked-view');
     if (!frame) {
         frame = document.createElement('iframe');
-        frame.id = 'veil-blocked-view';
+        frame.id = 'genysys-blocked-view';
         frame.className = 'webview';
         frame.setAttribute('role', 'document');
         frame.setAttribute('aria-label', 'Policy notice');
@@ -336,7 +336,7 @@ TabManager.prototype.renderBlockedView = function(tab) {
 };
 
 TabManager.prototype.hideBlockedView = function() {
-    const frame = document.getElementById('veil-blocked-view');
+    const frame = document.getElementById('genysys-blocked-view');
     if (frame) frame.remove();
 };
 

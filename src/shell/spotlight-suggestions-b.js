@@ -1,12 +1,12 @@
 /**
- * VEIL™ — spotlight suggestion builders
+ * GENYSYS™ — spotlight suggestion builders
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
-window.veilSpotlightPush = function veilSpotlightPush(suggestions, cond, item) {
+window.genysysSpotlightPush = function genysysSpotlightPush(suggestions, cond, item) {
   if (cond) suggestions.push(item);
 };
 
-window.veilSpotlightCaps = function veilSpotlightCaps(id) {
-  return window.isVEILCapabilityAvailable?.(id);
+window.genysysSpotlightCaps = function genysysSpotlightCaps(id) {
+  return window.isGENYSYSCapabilityAvailable?.(id);
 };

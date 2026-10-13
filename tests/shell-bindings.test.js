@@ -3,7 +3,7 @@
  */
 
 /**
- * VEIL™ — bindings coverage (chrome-bindings, chrome-bindings-b)
+ * GENYSYS™ — bindings coverage (chrome-bindings, chrome-bindings-b)
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -17,7 +17,7 @@ import {
 } from './helpers/shell-harness.js';
 
 function stopRuntime() {
-    try { window.veilRuntime?.stop(); } catch { /* not started */ }
+    try { window.genysysRuntime?.stop(); } catch { /* not started */ }
 }
 
 beforeEach(() => {
@@ -123,20 +123,20 @@ describe('shell: chrome-bindings', () => {
 describe('shell: chrome-bindings-b', () => {
     test('omnibox suggestion flow: history matches render, click navigates', async () => {
         await bootShell();
-        window.historyManager.addEntry('https://docs.veil.test/guide', 'VEIL docs');
-        window.tabManager.createTab('veil://newtab');
+        window.historyManager.addEntry('https://docs.genysys.test/guide', 'GENYSYS docs');
+        window.tabManager.createTab('genysys://newtab');
         const omnibox = document.getElementById('omnibox');
-        omnibox.value = 'veil';
+        omnibox.value = 'genysys';
         omnibox.dispatchEvent(new Event('input', { bubbles: true }));
         const items = document.querySelectorAll('#omnibox-suggestions .suggestion-item');
         expect(items.length).toBeGreaterThan(0);
         items[0].dispatchEvent(new Event('click', { bubbles: true }));
-        expect(omnibox.value).toBe('https://docs.veil.test/guide');
+        expect(omnibox.value).toBe('https://docs.genysys.test/guide');
     });
 
     test('short query hides the dropdown; escape closes; arrow keys move selection', async () => {
         await bootShell();
-        window.historyManager.addEntry('VEIL docs', 'https://docs.veil.test/guide');
+        window.historyManager.addEntry('GENYSYS docs', 'https://docs.genysys.test/guide');
         const omnibox = document.getElementById('omnibox');
         const dropdown = document.getElementById('omnibox-suggestions');
 
@@ -144,7 +144,7 @@ describe('shell: chrome-bindings-b', () => {
         omnibox.dispatchEvent(new Event('input', { bubbles: true }));
         expect(dropdown.classList.contains('hidden')).toBe(true);
 
-        omnibox.value = 'veil';
+        omnibox.value = 'genysys';
         omnibox.dispatchEvent(new Event('input', { bubbles: true }));
         expect(dropdown.classList.contains('hidden')).toBe(false);
 
@@ -158,15 +158,15 @@ describe('shell: chrome-bindings-b', () => {
 
     test('Enter on selected suggestion navigates; bare Enter builds search URL', async () => {
         await bootShell();
-        window.historyManager.addEntry('https://docs.veil.test/guide', 'VEIL docs');
-        window.tabManager.createTab('veil://newtab');
+        window.historyManager.addEntry('https://docs.genysys.test/guide', 'GENYSYS docs');
+        window.tabManager.createTab('genysys://newtab');
         const omnibox = document.getElementById('omnibox');
 
-        omnibox.value = 'veil';
+        omnibox.value = 'genysys';
         omnibox.dispatchEvent(new Event('input', { bubbles: true }));
         omnibox.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
         omnibox.dispatchEvent(new KeyboardEvent('keypress', { key: 'Enter', bubbles: true }));
-        expect(omnibox.value).toBe('https://docs.veil.test/guide');
+        expect(omnibox.value).toBe('https://docs.genysys.test/guide');
 
         omnibox.value = 'best privacy browser';
         window.selectedSuggestionIndex = -1;

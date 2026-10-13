@@ -1,4 +1,4 @@
-# V.E.I.L. build config.
+# G.E.N.Y.S.Y.S. build config.
 # WebKitGTK 4.1 libs ship under their 4.1 sonames on Ubuntu 24.04+; Tauri 1
 # links 4.0 names. .pkgconfig/lib holds compatibility symlinks (4.0 → 4.1).
 # Prefer `scripts/with-webkit-pc.sh` (absolute -L). These rustflags only

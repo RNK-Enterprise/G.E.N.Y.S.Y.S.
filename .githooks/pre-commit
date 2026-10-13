@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# VEIL — pre-commit secret scanner (fail closed)
+# GENYSYS — pre-commit secret scanner (fail closed)
 # Scans the exact content being committed: every staged path is read from the
 # git index (git show :path), so worktree edits after `git add` cannot leak
 # into a commit, and a secret staged-then-deleted in the worktree is still

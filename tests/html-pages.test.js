@@ -1,12 +1,12 @@
 /**
- * VEIL™ — HTML page guards (unit)
+ * GENYSYS™ — HTML page guards (unit)
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * Both tests here cover bugs that actually shipped once:
  *
  *  1. `scripts/audit-window-globals.mjs` only scans `src/**\/*.js`, so the
  *     inline scripts inside the HTML pages are invisible to it. One had
- *     `'VEIL — RNK\\'s only client…'` — the doubled backslash closed the string
+ *     `'GENYSYS — RNK\\'s only client…'` — the doubled backslash closed the string
  *     early, the whole inline script failed to parse, and the newtab /
  *     blocked-view page (every tab window loads it) ran with no script at all.
  *

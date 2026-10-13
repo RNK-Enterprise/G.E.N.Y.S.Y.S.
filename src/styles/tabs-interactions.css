@@ -75,7 +75,7 @@
     transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
 }
 
-.veil-sidebar-pinned-item:active,
+.genysys-sidebar-pinned-item:active,
 .tab:active {
     cursor: grabbing;
 }

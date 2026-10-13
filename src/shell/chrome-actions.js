@@ -1,5 +1,5 @@
 /**
- * VEIL™ — extracted from main.js
+ * GENYSYS™ — extracted from main.js
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -80,9 +80,9 @@ function hideModal(modal) {
     hideElement(modal);
 }
 
-function openVEILSettingsSection(sectionSelector) {
+function openGENYSYSSettingsSection(sectionSelector) {
     window.openSettings();
-    document.querySelector('.settings-tab[data-tab="veil"]')?.click();
+    document.querySelector('.settings-tab[data-tab="genysys"]')?.click();
     if (sectionSelector) {
         document.querySelector(sectionSelector)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -99,7 +99,7 @@ function toggleActiveTabPinnedState() {
 }
 
 // Single export block — the sidebar/command-palette helpers were removed with
-// the VEIL SHELL sidebar DOM; only helpers with live call sites are published.
+// the GENYSYS SHELL sidebar DOM; only helpers with live call sites are published.
 window.getActiveBrowserTab = getActiveBrowserTab;
 window.getTabHost = getTabHost;
 window.focusOmniboxAndMaybeSearchProvider = focusOmniboxAndMaybeSearchProvider;
@@ -113,6 +113,6 @@ window.openRecentlyClosedView = openRecentlyClosedView;
 window.closeSearchProviderModal = closeSearchProviderModal;
 window.setElementHidden = setElementHidden;
 window.hideModal = hideModal;
-window.openVEILSettingsSection = openVEILSettingsSection;
+window.openGENYSYSSettingsSection = openGENYSYSSettingsSection;
 window.focusTabSearch = focusTabSearch;
 window.toggleActiveTabPinnedState = toggleActiveTabPinnedState;

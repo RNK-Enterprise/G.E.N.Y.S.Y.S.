@@ -1,5 +1,5 @@
 /**
- * VEIL™ — Welcome Tour + Daily Lisa Message
+ * GENYSYS™ — Welcome Tour + Daily Lisa Message
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * First sign-in: guided tour + profile setup.
@@ -7,14 +7,14 @@
  * Message stored with today's date key — never canned, changes every day.
  */
 
-const PROFILE_KEY   = 'veil-user-profile';
-const TOUR_DONE_KEY = 'veil-tour-complete';
-const MSG_KEY_PREFIX = 'veil-daily-msg-';
+const PROFILE_KEY   = 'genysys-user-profile';
+const TOUR_DONE_KEY = 'genysys-tour-complete';
+const MSG_KEY_PREFIX = 'genysys-daily-msg-';
 
 // ── Profile helpers ───────────────────────────────────────────────────
 
 function migrateLegacyProfileKeys() {
-    // The 2026-09 rename (Axis → VEIL) left user state under `axis-*` keys.
+    // The 2026-09 rename (Axis → GENYSYS) left user state under `axis-*` keys.
     // Lift it once so profiles, tour completion, and the daily message
     // survive the rename.
     const legacyProfile = localStorage.getItem('axis-user-profile');
@@ -69,18 +69,18 @@ function buildStubMessage(profile) {
 
 function showDailyMessage(msg) {
     const banner = document.createElement('div');
-    banner.id = 'veil-daily-message';
+    banner.id = 'genysys-daily-message';
     banner.innerHTML = `
-        <span class="veil-daily-msg-icon">✦</span>
-        <span class="veil-daily-msg-text">${msg.text}</span>
-        <button class="veil-daily-msg-close" type="button" title="Dismiss">×</button>
+        <span class="genysys-daily-msg-icon">✦</span>
+        <span class="genysys-daily-msg-text">${msg.text}</span>
+        <button class="genysys-daily-msg-close" type="button" title="Dismiss">×</button>
     `;
     document.body.appendChild(banner);
-    banner.querySelector('.veil-daily-msg-close').addEventListener('click', () => {
-        banner.classList.add('veil-daily-msg-out');
+    banner.querySelector('.genysys-daily-msg-close').addEventListener('click', () => {
+        banner.classList.add('genysys-daily-msg-out');
         setTimeout(() => banner.remove(), 300);
     });
-    setTimeout(() => banner.classList.add('veil-daily-msg-visible'), 50);
+    setTimeout(() => banner.classList.add('genysys-daily-msg-visible'), 50);
 }
 
 // ── Welcome tour ──────────────────────────────────────────────────────
@@ -88,8 +88,8 @@ function showDailyMessage(msg) {
 const TOUR_STEPS = [
     {
         id: 'welcome',
-        title: 'Welcome to VEIL',
-        body: 'VEIL is your private workspace — built around Lisa, secured by the chain. Let\'s set up your profile so Lisa knows you.',
+        title: 'Welcome to GENYSYS',
+        body: 'GENYSYS is your private workspace — built around Lisa, secured by the chain. Let\'s set up your profile so Lisa knows you.',
         action: 'Begin',
     },
     {
@@ -121,21 +121,21 @@ const TOUR_STEPS = [
         id: 'finish',
         title: 'You\'re set.',
         body: 'Lisa has your profile. Every session she\'ll greet you with something specific to your day. You can update your profile anytime in Settings.',
-        action: 'Enter VEIL',
+        action: 'Enter GENYSYS',
     },
 ];
 
 function buildTourOverlay() {
     const overlay = document.createElement('div');
-    overlay.id = 'veil-tour-overlay';
+    overlay.id = 'genysys-tour-overlay';
     overlay.innerHTML = `
-        <div id="veil-tour-card">
-            <div class="veil-tour-progress"><div class="veil-tour-progress-bar" id="veil-tour-bar"></div></div>
-            <div id="veil-tour-title"></div>
-            <div id="veil-tour-body"></div>
-            <div id="veil-tour-field"></div>
-            <div id="veil-tour-choices"></div>
-            <button id="veil-tour-action" type="button"></button>
+        <div id="genysys-tour-card">
+            <div class="genysys-tour-progress"><div class="genysys-tour-progress-bar" id="genysys-tour-bar"></div></div>
+            <div id="genysys-tour-title"></div>
+            <div id="genysys-tour-body"></div>
+            <div id="genysys-tour-field"></div>
+            <div id="genysys-tour-choices"></div>
+            <button id="genysys-tour-action" type="button"></button>
         </div>
     `;
     document.body.appendChild(overlay);
@@ -144,11 +144,11 @@ function buildTourOverlay() {
 
 function renderStep(step, index, total, profile, overlay) {
     const pct = Math.round(((index + 1) / total) * 100);
-    overlay.querySelector('#veil-tour-bar').style.width = `${pct}%`;
-    overlay.querySelector('#veil-tour-title').textContent = step.title;
-    overlay.querySelector('#veil-tour-body').textContent = step.body || '';
+    overlay.querySelector('#genysys-tour-bar').style.width = `${pct}%`;
+    overlay.querySelector('#genysys-tour-title').textContent = step.title;
+    overlay.querySelector('#genysys-tour-body').textContent = step.body || '';
 
-    const fieldEl = overlay.querySelector('#veil-tour-field');
+    const fieldEl = overlay.querySelector('#genysys-tour-field');
     fieldEl.innerHTML = '';
     if (step.field) {
         fieldEl.innerHTML = `
@@ -157,21 +157,21 @@ function renderStep(step, index, total, profile, overlay) {
         `;
     }
 
-    const choicesEl = overlay.querySelector('#veil-tour-choices');
+    const choicesEl = overlay.querySelector('#genysys-tour-choices');
     choicesEl.innerHTML = '';
     if (step.choices) {
         choicesEl.innerHTML = step.choices.map(c => `
-            <button class="veil-tour-choice${profile.style === c.id ? ' selected' : ''}" data-choice="${c.id}" type="button">${c.label}</button>
+            <button class="genysys-tour-choice${profile.style === c.id ? ' selected' : ''}" data-choice="${c.id}" type="button">${c.label}</button>
         `).join('');
-        choicesEl.querySelectorAll('.veil-tour-choice').forEach(btn => {
+        choicesEl.querySelectorAll('.genysys-tour-choice').forEach(btn => {
             btn.addEventListener('click', () => {
-                choicesEl.querySelectorAll('.veil-tour-choice').forEach(b => b.classList.remove('selected'));
+                choicesEl.querySelectorAll('.genysys-tour-choice').forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
             });
         });
     }
 
-    overlay.querySelector('#veil-tour-action').textContent = step.action;
+    overlay.querySelector('#genysys-tour-action').textContent = step.action;
 }
 
 function collectStep(step, overlay, profile) {
@@ -180,7 +180,7 @@ function collectStep(step, overlay, profile) {
         if (input) profile[step.id] = input.value.trim();
     }
     if (step.choices) {
-        const selected = overlay.querySelector('.veil-tour-choice.selected');
+        const selected = overlay.querySelector('.genysys-tour-choice.selected');
         if (selected) profile.style = selected.dataset.choice;
     }
 }
@@ -196,7 +196,7 @@ export function startTour(onComplete) {
         if (index >= TOUR_STEPS.length) {
             saveProfile(profile);
             localStorage.setItem(TOUR_DONE_KEY, '1');
-            overlay.classList.add('veil-tour-out');
+            overlay.classList.add('genysys-tour-out');
             setTimeout(() => {
                 overlay.remove();
                 if (typeof onComplete === 'function') onComplete(profile);
@@ -207,7 +207,7 @@ export function startTour(onComplete) {
     }
 
     renderStep(TOUR_STEPS[0], 0, TOUR_STEPS.length, profile, overlay);
-    overlay.querySelector('#veil-tour-action').addEventListener('click', advance);
+    overlay.querySelector('#genysys-tour-action').addEventListener('click', advance);
 }
 
 // ── Entry point ───────────────────────────────────────────────────────

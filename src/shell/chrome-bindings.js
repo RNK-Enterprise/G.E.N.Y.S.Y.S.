@@ -1,12 +1,12 @@
 /**
- * VEIL™ — extracted from main.js
+ * GENYSYS™ — extracted from main.js
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
 import ToastManager from '../ui/toast.js';
 import LoadingManager from '../ui/loading.js';
 import PerformanceMonitor from '../perf/performance-monitor.js';
-import { veilRuntime } from '../engines/runtime.js';
+import { genysysRuntime } from '../engines/runtime.js';
 import TabManager from '../browser/tab-manager.js';
 
 // Early stubs — real impl in chrome-bindings-c.js
@@ -15,25 +15,25 @@ window.openSettings = window.openSettings || function openSettings() {};
 
 window.TabManager = TabManager;
 window.PerformanceMonitor = PerformanceMonitor;
-window.veilRuntime = veilRuntime;
+window.genysysRuntime = genysysRuntime;
 window.tabManager = new TabManager();
 window.toastManager = new ToastManager();
 window.loadingManager = new LoadingManager();
 window.tabManager.toast = window.toastManager;
-window.veilBridge = veilRuntime;
+window.genysysBridge = genysysRuntime;
 
 window.bindClickHandlers([
     ['new-tab-btn', () => {
-        if (!window.isVEILCapabilityAvailable('veil-browser-core')) return;
+        if (!window.isGENYSYSCapabilityAvailable('genysys-browser-core')) return;
         window.tabManager.createTab();
         window.toastManager.success('New Tab', 'Tab created successfully');
     }],
     ['recently-closed-btn', () => {
-        if (!window.isVEILCapabilityAvailable('veil-history')) return;
+        if (!window.isGENYSYSCapabilityAvailable('genysys-history')) return;
         window.openRecentlyClosedView();
     }],
     ['sessions-btn', () => {
-        if (!window.isVEILCapabilityAvailable('veil-browser-core')) return;
+        if (!window.isGENYSYSCapabilityAvailable('genysys-browser-core')) return;
         window.openSessionsView();
     }],
     ['save-session-btn', () => {
@@ -49,13 +49,13 @@ window.bindClickHandlers([
         showSessionsModal();
     }],
     ['search-provider-btn', () => {
-        if (!window.isVEILCapabilityAvailable('veil-search')) return;
+        if (!window.isGENYSYSCapabilityAvailable('genysys-search')) return;
         window.openSearchProviderModal();
     }],
     ['close-settings', closeSettings],
     ['menu-btn', openSettings],
     ['clear-history-btn', () => {
-        if (!window.isVEILCapabilityAvailable('veil-history')) return;
+        if (!window.isGENYSYSCapabilityAvailable('genysys-history')) return;
         if (confirm('Are you sure you want to clear your browsing history?')) {
             window.historyManager.clearHistory();
             updateStatusBar('Browsing history cleared');
@@ -69,11 +69,11 @@ window.bindClickHandlers([
         }
     }],
     ['fps-counter', () => {
-        if (!window.isVEILCapabilityAvailable('veil-performance-stack')) return;
+        if (!window.isGENYSYSCapabilityAvailable('genysys-performance-stack')) return;
         window.togglePerformancePanel();
     }],
     ['performance-panel .modal-close', () => {
-        if (!window.isVEILCapabilityAvailable('veil-performance-stack')) return;
+        if (!window.isGENYSYSCapabilityAvailable('genysys-performance-stack')) return;
         window.togglePerformancePanel();
     }]
 ]);
@@ -81,12 +81,12 @@ window.bindClickHandlers([
 function bindDensityControlListeners() {
     const controls = [
         ['tab-bar-compact-toggle', () => {
-            if (!window.isVEILCapabilityAvailable('veil-browser-core')) return;
+            if (!window.isGENYSYSCapabilityAvailable('genysys-browser-core')) return;
             window.toggleTabBarCompact();
             updateStatusBar(window.isDensityEffectivelyCompact(window.tabBarDensityState) ? 'Tab bar compacted' : 'Tab bar expanded');
         }],
         ['omnibox-compact-toggle', () => {
-            if (!window.isVEILCapabilityAvailable('veil-browser-core')) return;
+            if (!window.isGENYSYSCapabilityAvailable('genysys-browser-core')) return;
             window.toggleOmniboxCompact();
             updateStatusBar(window.isDensityEffectivelyCompact(window.omniboxDensityState) ? 'Omnibox compacted' : 'Omnibox expanded');
         }],
@@ -164,10 +164,10 @@ window.SETTINGS_SECTION_COLLAPSIBLE.forEach(({ key, toggleId }) => {
 });
 
 window.addEventListener('history-updated', () => {
-    window.refreshVEILSidebarFeeds();
+    window.refreshGENYSYSSidebarFeeds();
 });
 window.addEventListener('history-cleared', () => {
-    window.refreshVEILSidebarFeeds();
+    window.refreshGENYSYSSidebarFeeds();
 });
 window.addEventListener('bookmark-added', () => {
     window.renderBookmarksBar();

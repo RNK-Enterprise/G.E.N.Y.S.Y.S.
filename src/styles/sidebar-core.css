@@ -1,9 +1,9 @@
-/* VEIL SHELL sidebar removed — hard off regardless of any stale class toggles */
-#veil-sidebar {
+/* GENYSYS SHELL sidebar removed — hard off regardless of any stale class toggles */
+#genysys-sidebar {
     display: none !important;
 }
 
-#veil-sidebar.removed-width-safety {
+#genysys-sidebar.removed-width-safety {
     width: 300px;
     background: linear-gradient(180deg, rgba(26, 26, 46, 0.99), rgba(18, 18, 31, 0.99));
     border-left: 1px solid var(--border-color);
@@ -14,23 +14,23 @@
     gap: 12px;
 }
 
-#veil-sidebar.compact {
+#genysys-sidebar.compact {
     width: 270px;
     padding: 10px 10px;
     gap: 10px;
 }
 
-#veil-sidebar.roomy {
+#genysys-sidebar.roomy {
     width: 340px;
     padding: 16px 14px;
     gap: 14px;
 }
 
-.veil-sidebar.hidden {
+.genysys-sidebar.hidden {
     display: none;
 }
 
-.veil-sidebar-header {
+.genysys-sidebar-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -39,7 +39,7 @@
     border-bottom: 1px solid var(--border-color);
 }
 
-.veil-sidebar-header h3 {
+.genysys-sidebar-header h3 {
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -51,7 +51,7 @@
     color: var(--text-secondary);
 }
 
-.veil-sidebar-section {
+.genysys-sidebar-section {
     padding: 12px;
     border: 1px solid var(--border-color);
     border-radius: 8px;
@@ -61,32 +61,32 @@
     gap: 8px;
 }
 
-#veil-sidebar.compact .veil-sidebar-section {
+#genysys-sidebar.compact .genysys-sidebar-section {
     padding: 10px;
     gap: 6px;
 }
 
-#veil-sidebar.roomy .veil-sidebar-section {
+#genysys-sidebar.roomy .genysys-sidebar-section {
     padding: 14px;
     gap: 10px;
 }
 
-.veil-sidebar-section.collapsed {
+.genysys-sidebar-section.collapsed {
     gap: 0;
 }
 
-.veil-sidebar-section.collapsed > :not(h4) {
+.genysys-sidebar-section.collapsed > :not(h4) {
     display: none;
 }
 
-.veil-sidebar-section h4 {
+.genysys-sidebar-section h4 {
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: var(--toxic-green);
 }
 
-.veil-sidebar-section-heading {
+.genysys-sidebar-section-heading {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -94,15 +94,15 @@
     width: 100%;
 }
 
-#veil-sidebar.compact .veil-sidebar-section-heading {
+#genysys-sidebar.compact .genysys-sidebar-section-heading {
     gap: 6px;
 }
 
-#veil-sidebar.roomy .veil-sidebar-section-heading {
+#genysys-sidebar.roomy .genysys-sidebar-section-heading {
     gap: 10px;
 }
 
-.veil-sidebar-section-controls {
+.genysys-sidebar-section-controls {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -110,12 +110,12 @@
     flex-shrink: 0;
 }
 
-.veil-sidebar-section-controls .veil-sidebar-mini-action {
+.genysys-sidebar-section-controls .genysys-sidebar-mini-action {
     padding: 4px 8px;
     font-size: 9px;
 }
 
-.veil-sidebar-count {
+.genysys-sidebar-count {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -129,13 +129,13 @@
     line-height: 1;
 }
 
-.veil-sidebar-count.new {
+.genysys-sidebar-count.new {
     background: rgba(138, 180, 248, 0.2);
     border-color: rgba(138, 180, 248, 0.35);
     color: var(--dark-bg);
 }
 
-.veil-sidebar-state-badge {
+.genysys-sidebar-state-badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -151,111 +151,111 @@
     letter-spacing: 0.04em;
 }
 
-.veil-sidebar-state-badge[data-state="ready"],
-.veil-sidebar-state-badge[data-state="online"] {
+.genysys-sidebar-state-badge[data-state="ready"],
+.genysys-sidebar-state-badge[data-state="online"] {
     background: rgba(138, 180, 248, 0.12);
     border-color: rgba(138, 180, 248, 0.22);
     color: var(--text-primary);
 }
 
-.veil-sidebar-state-badge[data-state="new"] {
+.genysys-sidebar-state-badge[data-state="new"] {
     background: rgba(138, 180, 248, 0.2);
     border-color: rgba(138, 180, 248, 0.35);
     color: var(--dark-bg);
 }
 
-.veil-sidebar-state-badge[data-state="beta"] {
+.genysys-sidebar-state-badge[data-state="beta"] {
     background: rgba(255, 191, 0, 0.14);
     border-color: rgba(255, 191, 0, 0.28);
     color: var(--text-primary);
 }
 
-.veil-sidebar-state-badge[data-state="offline"] {
+.genysys-sidebar-state-badge[data-state="offline"] {
     opacity: 0.8;
 }
 
-.veil-sidebar-section p {
+.genysys-sidebar-section p {
     font-size: 12px;
     color: var(--text-secondary);
     line-height: 1.45;
 }
 
-.veil-sidebar-note {
+.genysys-sidebar-note {
     min-height: 36px;
 }
 
-.veil-sidebar-action-grid {
+.genysys-sidebar-action-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 8px;
 }
 
-#veil-sidebar-themes .veil-sidebar-action-grid,
-#veil-sidebar-search .veil-sidebar-action-grid,
-#veil-sidebar-bookmarks .veil-sidebar-action-grid,
-#veil-sidebar-history .veil-sidebar-action-grid,
-#veil-sidebar-extensions .veil-sidebar-action-grid,
-#veil-sidebar-security .veil-sidebar-action-grid,
-#veil-sidebar-accessibility .veil-sidebar-action-grid,
-#veil-sidebar-developer .veil-sidebar-action-grid,
-#veil-sidebar-cloud .veil-sidebar-action-grid,
-#veil-sidebar-sync .veil-sidebar-action-grid,
-#veil-sidebar-performance .veil-sidebar-action-grid,
-#veil-sidebar-automation .veil-sidebar-action-grid,
-#veil-sidebar-communication .veil-sidebar-action-grid,
-#veil-sidebar-ai .veil-sidebar-action-grid,
-#veil-sidebar-media .veil-sidebar-action-grid {
+#genysys-sidebar-themes .genysys-sidebar-action-grid,
+#genysys-sidebar-search .genysys-sidebar-action-grid,
+#genysys-sidebar-bookmarks .genysys-sidebar-action-grid,
+#genysys-sidebar-history .genysys-sidebar-action-grid,
+#genysys-sidebar-extensions .genysys-sidebar-action-grid,
+#genysys-sidebar-security .genysys-sidebar-action-grid,
+#genysys-sidebar-accessibility .genysys-sidebar-action-grid,
+#genysys-sidebar-developer .genysys-sidebar-action-grid,
+#genysys-sidebar-cloud .genysys-sidebar-action-grid,
+#genysys-sidebar-sync .genysys-sidebar-action-grid,
+#genysys-sidebar-performance .genysys-sidebar-action-grid,
+#genysys-sidebar-automation .genysys-sidebar-action-grid,
+#genysys-sidebar-communication .genysys-sidebar-action-grid,
+#genysys-sidebar-ai .genysys-sidebar-action-grid,
+#genysys-sidebar-media .genysys-sidebar-action-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-#veil-sidebar-downloads .veil-download-actions-panel {
+#genysys-sidebar-downloads .genysys-download-actions-panel {
     grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-#veil-sidebar-themes .veil-sidebar-action-grid.veil-theme-actions,
-#veil-sidebar-search .veil-sidebar-action-grid.veil-search-actions,
-#veil-sidebar-bookmarks .veil-sidebar-action-grid.veil-bookmark-actions,
-#veil-sidebar-history .veil-sidebar-action-grid.veil-history-actions,
-#veil-sidebar-extensions .veil-sidebar-action-grid.veil-extensions-actions,
-#veil-sidebar-security .veil-sidebar-action-grid.veil-security-actions,
-#veil-sidebar-accessibility .veil-sidebar-action-grid.veil-accessibility-actions,
-#veil-sidebar-developer .veil-sidebar-action-grid.veil-developer-actions,
-#veil-sidebar-cloud .veil-sidebar-action-grid.veil-cloud-actions,
-#veil-sidebar-sync .veil-sidebar-action-grid.veil-sync-actions,
-#veil-sidebar-performance .veil-sidebar-action-grid.veil-performance-actions,
-#veil-sidebar-automation .veil-sidebar-action-grid.veil-automation-actions,
-#veil-sidebar-communication .veil-sidebar-action-grid.veil-communication-actions,
-#veil-sidebar-ai .veil-sidebar-action-grid.veil-ai-actions,
-#veil-sidebar-media .veil-sidebar-action-grid.veil-media-actions {
+#genysys-sidebar-themes .genysys-sidebar-action-grid.genysys-theme-actions,
+#genysys-sidebar-search .genysys-sidebar-action-grid.genysys-search-actions,
+#genysys-sidebar-bookmarks .genysys-sidebar-action-grid.genysys-bookmark-actions,
+#genysys-sidebar-history .genysys-sidebar-action-grid.genysys-history-actions,
+#genysys-sidebar-extensions .genysys-sidebar-action-grid.genysys-extensions-actions,
+#genysys-sidebar-security .genysys-sidebar-action-grid.genysys-security-actions,
+#genysys-sidebar-accessibility .genysys-sidebar-action-grid.genysys-accessibility-actions,
+#genysys-sidebar-developer .genysys-sidebar-action-grid.genysys-developer-actions,
+#genysys-sidebar-cloud .genysys-sidebar-action-grid.genysys-cloud-actions,
+#genysys-sidebar-sync .genysys-sidebar-action-grid.genysys-sync-actions,
+#genysys-sidebar-performance .genysys-sidebar-action-grid.genysys-performance-actions,
+#genysys-sidebar-automation .genysys-sidebar-action-grid.genysys-automation-actions,
+#genysys-sidebar-communication .genysys-sidebar-action-grid.genysys-communication-actions,
+#genysys-sidebar-ai .genysys-sidebar-action-grid.genysys-ai-actions,
+#genysys-sidebar-media .genysys-sidebar-action-grid.genysys-media-actions {
     align-items: stretch;
 }
 
-#veil-sidebar.compact #veil-sidebar-themes .veil-sidebar-action-grid,
-#veil-sidebar.compact #veil-sidebar-search .veil-sidebar-action-grid,
-#veil-sidebar.compact #veil-sidebar-bookmarks .veil-sidebar-action-grid,
-#veil-sidebar.compact #veil-sidebar-history .veil-sidebar-action-grid,
-#veil-sidebar.compact #veil-sidebar-extensions .veil-sidebar-action-grid,
-#veil-sidebar.compact #veil-sidebar-security .veil-sidebar-action-grid,
-#veil-sidebar.compact #veil-sidebar-accessibility .veil-sidebar-action-grid,
-#veil-sidebar.compact #veil-sidebar-developer .veil-sidebar-action-grid,
-#veil-sidebar.compact #veil-sidebar-cloud .veil-sidebar-action-grid,
-#veil-sidebar.compact #veil-sidebar-sync .veil-sidebar-action-grid,
-#veil-sidebar.compact #veil-sidebar-performance .veil-sidebar-action-grid,
-#veil-sidebar.compact #veil-sidebar-automation .veil-sidebar-action-grid,
-#veil-sidebar.compact #veil-sidebar-communication .veil-sidebar-action-grid,
-#veil-sidebar.compact #veil-sidebar-ai .veil-sidebar-action-grid,
-#veil-sidebar.compact #veil-sidebar-media .veil-sidebar-action-grid,
-#veil-sidebar.compact #veil-sidebar-downloads .veil-download-actions-panel {
+#genysys-sidebar.compact #genysys-sidebar-themes .genysys-sidebar-action-grid,
+#genysys-sidebar.compact #genysys-sidebar-search .genysys-sidebar-action-grid,
+#genysys-sidebar.compact #genysys-sidebar-bookmarks .genysys-sidebar-action-grid,
+#genysys-sidebar.compact #genysys-sidebar-history .genysys-sidebar-action-grid,
+#genysys-sidebar.compact #genysys-sidebar-extensions .genysys-sidebar-action-grid,
+#genysys-sidebar.compact #genysys-sidebar-security .genysys-sidebar-action-grid,
+#genysys-sidebar.compact #genysys-sidebar-accessibility .genysys-sidebar-action-grid,
+#genysys-sidebar.compact #genysys-sidebar-developer .genysys-sidebar-action-grid,
+#genysys-sidebar.compact #genysys-sidebar-cloud .genysys-sidebar-action-grid,
+#genysys-sidebar.compact #genysys-sidebar-sync .genysys-sidebar-action-grid,
+#genysys-sidebar.compact #genysys-sidebar-performance .genysys-sidebar-action-grid,
+#genysys-sidebar.compact #genysys-sidebar-automation .genysys-sidebar-action-grid,
+#genysys-sidebar.compact #genysys-sidebar-communication .genysys-sidebar-action-grid,
+#genysys-sidebar.compact #genysys-sidebar-ai .genysys-sidebar-action-grid,
+#genysys-sidebar.compact #genysys-sidebar-media .genysys-sidebar-action-grid,
+#genysys-sidebar.compact #genysys-sidebar-downloads .genysys-download-actions-panel {
     grid-template-columns: 1fr;
 }
 
-.veil-theme-action {
+.genysys-theme-action {
     display: inline-flex;
     align-items: center;
     gap: 8px;
 }
 
-.veil-theme-action::before {
+.genysys-theme-action::before {
     content: '';
     width: 10px;
     height: 10px;
@@ -265,19 +265,19 @@
     flex: 0 0 auto;
 }
 
-.veil-theme-action[data-theme="dark-neutral"]::before {
+.genysys-theme-action[data-theme="dark-neutral"]::before {
     background: linear-gradient(135deg, #0f1316, #2c353b);
 }
 
-.veil-theme-action[data-theme="dark"]::before {
+.genysys-theme-action[data-theme="dark"]::before {
     background: linear-gradient(135deg, #07090b, #11181d);
 }
 
-.veil-theme-action[data-theme="light"]::before {
+.genysys-theme-action[data-theme="light"]::before {
     background: linear-gradient(135deg, #f9fbfc, #dce4ea);
 }
 
-.veil-theme-action-cta::before {
+.genysys-theme-action-cta::before {
     content: '↗';
     display: inline-flex;
     align-items: center;
@@ -292,15 +292,15 @@
     line-height: 1;
 }
 
-#veil-sidebar.compact .veil-sidebar-action-grid,
-#veil-sidebar.compact .veil-sidebar-results,
-#veil-sidebar.compact .veil-sidebar-cards {
+#genysys-sidebar.compact .genysys-sidebar-action-grid,
+#genysys-sidebar.compact .genysys-sidebar-results,
+#genysys-sidebar.compact .genysys-sidebar-cards {
     gap: 6px;
 }
 
-#veil-sidebar.roomy .veil-sidebar-action-grid,
-#veil-sidebar.roomy .veil-sidebar-results,
-#veil-sidebar.roomy .veil-sidebar-cards {
+#genysys-sidebar.roomy .genysys-sidebar-action-grid,
+#genysys-sidebar.roomy .genysys-sidebar-results,
+#genysys-sidebar.roomy .genysys-sidebar-cards {
     gap: 10px;
 }
 
@@ -320,69 +320,69 @@
     box-shadow: 0 0 8px var(--toxic-green-glow);
 }
 
-.veil-sidebar-results {
+.genysys-sidebar-results {
     display: grid;
     gap: 8px;
 }
 
-.veil-sidebar-launcher-row {
+.genysys-sidebar-launcher-row {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 8px;
     align-items: stretch;
 }
 
-#veil-sidebar.compact .veil-sidebar-launcher-row {
+#genysys-sidebar.compact .genysys-sidebar-launcher-row {
     gap: 6px;
 }
 
-#veil-sidebar.roomy .veil-sidebar-launcher-row {
+#genysys-sidebar.roomy .genysys-sidebar-launcher-row {
     gap: 10px;
 }
 
-.veil-sidebar-pinned-actions {
+.genysys-sidebar-pinned-actions {
     display: flex;
     gap: 6px;
     flex-wrap: wrap;
 }
 
-#veil-sidebar.compact .veil-sidebar-pinned-actions {
+#genysys-sidebar.compact .genysys-sidebar-pinned-actions {
     gap: 4px;
 }
 
-#veil-sidebar.roomy .veil-sidebar-pinned-actions {
+#genysys-sidebar.roomy .genysys-sidebar-pinned-actions {
     gap: 8px;
 }
 
-.veil-sidebar-pinned-item {
+.genysys-sidebar-pinned-item {
     display: flex;
     flex-direction: column;
     gap: 8px;
     cursor: grab;
 }
 
-#veil-sidebar.compact .veil-sidebar-pinned-item {
+#genysys-sidebar.compact .genysys-sidebar-pinned-item {
     gap: 6px;
 }
 
-#veil-sidebar.roomy .veil-sidebar-pinned-item {
+#genysys-sidebar.roomy .genysys-sidebar-pinned-item {
     gap: 10px;
 }
 
-.veil-sidebar-pinned-item .veil-sidebar-result {
+.genysys-sidebar-pinned-item .genysys-sidebar-result {
     width: 100%;
 }
 
-.veil-sidebar-pinned-item.dragging {
+.genysys-sidebar-pinned-item.dragging {
     opacity: 0.65;
 }
 
-.veil-sidebar-pinned-item.drop-target {
+.genysys-sidebar-pinned-item.drop-target {
     outline: 1px dashed var(--toxic-green);
     outline-offset: 2px;
 }
 
-.veil-sidebar-mini-action {
+.genysys-sidebar-mini-action {
     padding: 5px 8px;
     border: 1px solid var(--border-color);
     border-radius: 999px;
@@ -394,7 +394,7 @@
     cursor: pointer;
 }
 
-.veil-sidebar-launcher-pin {
+.genysys-sidebar-launcher-pin {
     align-self: stretch;
     padding: 8px 10px;
     border: 1px solid var(--border-color);
@@ -408,13 +408,13 @@
     min-width: 56px;
 }
 
-.veil-sidebar-mini-action:hover,
-.veil-sidebar-launcher-pin:hover {
+.genysys-sidebar-mini-action:hover,
+.genysys-sidebar-launcher-pin:hover {
     border-color: var(--toxic-green);
     background: rgba(138, 180, 248, 0.12);
 }
 
-.veil-sidebar-result {
+.genysys-sidebar-result {
     padding: 9px 10px;
     border: 1px solid var(--border-color);
     border-radius: 6px;
@@ -425,15 +425,15 @@
     transition: all 0.2s ease;
 }
 
-#veil-sidebar.compact .veil-sidebar-result {
+#genysys-sidebar.compact .genysys-sidebar-result {
     padding: 8px 9px;
 }
 
-#veil-sidebar.roomy .veil-sidebar-result {
+#genysys-sidebar.roomy .genysys-sidebar-result {
     padding: 10px 12px;
 }
 
-.veil-sidebar-result-badge {
+.genysys-sidebar-result-badge {
     display: inline-flex;
     align-items: center;
     width: fit-content;
@@ -448,18 +448,18 @@
     border: 1px solid rgba(138, 180, 248, 0.25);
 }
 
-.veil-sidebar-result:hover {
+.genysys-sidebar-result:hover {
     background: rgba(138, 180, 248, 0.12);
     border-color: var(--toxic-green);
 }
 
-.veil-sidebar-result.active {
+.genysys-sidebar-result.active {
     background: rgba(138, 180, 248, 0.18);
     border-color: var(--toxic-green);
     box-shadow: 0 0 0 1px rgba(138, 180, 248, 0.2);
 }
 
-.veil-sidebar-result.pinned {
+.genysys-sidebar-result.pinned {
     border-color: rgba(138, 180, 248, 0.45);
     background: rgba(138, 180, 248, 0.08);
 }

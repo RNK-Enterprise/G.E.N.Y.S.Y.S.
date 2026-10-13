@@ -139,19 +139,19 @@
     margin-bottom: 24px;
 }
 
-.settings-panel.dense .veil-capability-item {
+.settings-panel.dense .genysys-capability-item {
     padding: 10px;
 }
 
-.settings-panel.roomy .veil-capability-item {
+.settings-panel.roomy .genysys-capability-item {
     padding: 16px;
 }
 
-.settings-panel.dense .veil-capability-list {
+.settings-panel.dense .genysys-capability-list {
     gap: 10px;
 }
 
-.settings-panel.roomy .veil-capability-list {
+.settings-panel.roomy .genysys-capability-list {
     gap: 14px;
 }
 
@@ -256,18 +256,18 @@
     filter: grayscale(0.15);
 }
 
-.veil-summary {
+.genysys-summary {
     color: var(--text-primary);
     line-height: 1.5;
 }
 
-.veil-chip-list {
+.genysys-chip-list {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
 }
 
-.veil-chip {
+.genysys-chip {
     display: inline-flex;
     align-items: center;
     padding: 6px 10px;
@@ -279,45 +279,45 @@
     text-transform: capitalize;
 }
 
-.veil-chip-category {
+.genysys-chip-category {
     background: rgba(138, 180, 248, 0.08);
 }
 
-.veil-chip-surface {
+.genysys-chip-surface {
     background: rgba(255, 107, 0, 0.08);
 }
 
-.veil-capability-list {
+.genysys-capability-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 12px;
 }
 
-.veil-capability-item {
+.genysys-capability-item {
     padding: 14px;
     border: 1px solid var(--border-rusted);
     border-radius: 8px;
     background: rgba(0, 0, 0, 0.2);
 }
 
-.veil-capability-meta {
+.genysys-capability-meta {
     display: flex;
     justify-content: space-between;
     gap: 12px;
     margin-bottom: 8px;
 }
 
-.veil-capability-meta strong {
+.genysys-capability-meta strong {
     color: var(--text-primary);
 }
 
-.veil-capability-meta span,
-.veil-capability-details {
+.genysys-capability-meta span,
+.genysys-capability-details {
     color: var(--text-secondary);
     font-size: 12px;
 }
 
-.veil-capability-details {
+.genysys-capability-details {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
@@ -326,7 +326,7 @@
     letter-spacing: 0.04em;
 }
 
-.veil-capability-item p {
+.genysys-capability-item p {
     margin: 0;
     color: var(--text-primary);
     font-size: 13px;
@@ -348,7 +348,7 @@
     width: 100%;
 }
 
-.settings-section-heading .veil-sidebar-mini-action {
+.settings-section-heading .genysys-sidebar-mini-action {
     margin-left: auto;
     padding: 4px 8px;
     font-size: 9px;

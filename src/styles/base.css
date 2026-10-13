@@ -1,12 +1,12 @@
 ﻿/**
- * VEIL™
+ * GENYSYS™
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * PROPRIETARY AND CONFIDENTIAL
  */
 
 :root {
-    /* VEIL Theme — midnight blue surfaces, ice-blue accent */
+    /* GENYSYS Theme — midnight blue surfaces, ice-blue accent */
     --accent: #8ab4f8; --brand-gold: #8ab4f8; --toxic-green: #8ab4f8;
     --accent-dark: #6d9ae0; --brand-gold-dark: #6d9ae0; --toxic-green-dark: #6d9ae0;
     --accent-glow: rgba(138, 180, 248, 0.35); --brand-gold-glow: rgba(138, 180, 248, 0.35); --toxic-green-glow: rgba(138, 180, 248, 0.35);
@@ -29,7 +29,7 @@
     --transition-fast: 0.15s;
     --transition-normal: 0.25s;
     --transition-slow: 0.4s;
-    --veil-titlebar-h: 32px;
+    --genysys-titlebar-h: 32px;
 }
 
 * {
@@ -62,7 +62,7 @@ body.theme-dark {
 }
 
 body.theme-light {
-    /* VEIL Light — same brand in daylight: the dark theme's midnight ink
+    /* GENYSYS Light — same brand in daylight: the dark theme's midnight ink
        becomes the page text, the accent deepens for legibility (the pale
        ice #8ab4f8 is ~2.2:1 on white), and every accent alias is re-pointed
        together so no surface keeps its dark-theme value. */
@@ -105,15 +105,15 @@ body.theme-light #omnibox:focus {
 }
 
 body.theme-light .sidebar-action,
-body.theme-light .veil-sidebar-mini-action,
+body.theme-light .genysys-sidebar-mini-action,
 body.theme-light .titlebar-button,
 body.theme-light .statusbar-button,
 body.theme-light .bookmarks-bar-item,
-body.theme-light .veil-sidebar-card-activity {
+body.theme-light .genysys-sidebar-card-activity {
     color: var(--text-primary);
 }
 
-body.theme-light .veil-sidebar-card-open-hint {
+body.theme-light .genysys-sidebar-card-open-hint {
     background: rgba(255, 255, 255, 0.9);
 }
 
@@ -139,7 +139,7 @@ body.theme-light .veil-sidebar-card-open-hint {
 
 /* Custom Titlebar — always above the auth gate so close/min/max stay usable */
 #titlebar {
-    height: var(--veil-titlebar-h);
+    height: var(--genysys-titlebar-h);
     flex-shrink: 0;
     position: relative;
     z-index: 100000;
@@ -167,8 +167,8 @@ body.theme-light .veil-sidebar-card-open-hint {
 }
 
 #titlebar.roomy {
-    --veil-titlebar-h: 36px;
-    height: var(--veil-titlebar-h);
+    --genysys-titlebar-h: 36px;
+    height: var(--genysys-titlebar-h);
     padding: 0 10px;
 }
 

@@ -1,13 +1,13 @@
 /**
- * VEIL Engine Runtime — local registry; replaces VEIL Bridge.
+ * GENYSYS Engine Runtime — local registry; replaces GENYSYS Bridge.
  */
 
-import { loadVEILManifest, listLiveTurbos, catalogSummary } from './catalog-loader.js';
+import { loadGENYSYSManifest, listLiveTurbos, catalogSummary } from './catalog-loader.js';
 import { createLiveTurbos } from '../turbos/index.js';
 
-const STORAGE_KEY = 'rnk-veil-turbo-enabled';
+const STORAGE_KEY = 'rnk-genysys-turbo-enabled';
 
-export class VEILEngineRuntime {
+export class GENYSYSEngineRuntime {
   constructor() {
     this.connected = false;
     this.manifest = null;
@@ -44,12 +44,12 @@ export class VEILEngineRuntime {
       else turbo.stop?.(this);
     }
     window.dispatchEvent(
-      new CustomEvent('veil:turbo-toggled', { detail: { id, enabled: on } }),
+      new CustomEvent('genysys:turbo-toggled', { detail: { id, enabled: on } }),
     );
   }
 
   async start(ctx = {}) {
-    this.manifest = await loadVEILManifest();
+    this.manifest = await loadGENYSYSManifest();
     const liveDefs = listLiveTurbos(this.manifest);
     const impls = createLiveTurbos(ctx);
     for (const def of liveDefs) {
@@ -65,7 +65,7 @@ export class VEILEngineRuntime {
     this._setStatusIndicator(true);
     const summary = catalogSummary(this.manifest);
     window.dispatchEvent(
-      new CustomEvent('veil:runtime-ready', {
+      new CustomEvent('genysys:runtime-ready', {
         detail: {
           engines: summary.engines,
           turbos: summary.turbos,
@@ -85,9 +85,9 @@ export class VEILEngineRuntime {
   }
 
   _setStatusIndicator(connected) {
-    const el = document.getElementById('veil-status') || document.getElementById('veil-status');
+    const el = document.getElementById('genysys-status') || document.getElementById('genysys-status');
     if (!el) return;
-    el.textContent = connected ? 'VEIL Runtime' : 'Runtime Off';
+    el.textContent = connected ? 'GENYSYS Runtime' : 'Runtime Off';
     el.style.color = connected ? 'var(--accent, #8ab4f8)' : 'var(--text-secondary)';
   }
 
@@ -112,4 +112,4 @@ export class VEILEngineRuntime {
   }
 }
 
-export const veilRuntime = new VEILEngineRuntime();
+export const genysysRuntime = new GENYSYSEngineRuntime();

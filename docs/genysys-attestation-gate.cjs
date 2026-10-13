@@ -1,25 +1,25 @@
 /**
- * VEIL Attestation Gate — shared, dependency-free (CJS + ESM compatible).
+ * GENYSYS Attestation Gate — shared, dependency-free (CJS + ESM compatible).
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
- * The ONLY check RNK products are asked to make against non-VEIL clients:
- * an authenticated/login/API request must carry an VEIL attestation, or it
+ * The ONLY check RNK products are asked to make against non-GENYSYS clients:
+ * an authenticated/login/API request must carry an GENYSYS attestation, or it
  * is refused. No product feature work — this is a refuse-if-missing hook.
  *
- * Wire-up (see docs/VEIL_ATTESTATION.md for the full contract):
- *   const { requireveilAttestation } = require('<path>/veil-attestation-gate.cjs');
- *   app.use('/api', requireveilAttestation({ gatedPrefixes: [...] }));
+ * Wire-up (see docs/GENYSYS_ATTESTATION.md for the full contract):
+ *   const { requireGenysysAttestation } = require('<path>/genysys-attestation-gate.cjs');
+ *   app.use('/api', requireGenysysAttestation({ gatedPrefixes: [...] }));
  */
 'use strict';
 
-const CLIENT_HEADER = 'x-veil-client';
-const SESSION_HEADER = 'x-veil-session';
-const TIER_HEADER = 'x-veil-tier';
-const COOKIE_NAME = 'veil_attest';
+const CLIENT_HEADER = 'x-genysys-client';
+const SESSION_HEADER = 'x-genysys-session';
+const TIER_HEADER = 'x-genysys-tier';
+const COOKIE_NAME = 'genysys_attest';
 
-const REASON_MISSING = 'veil_attestation_missing';
-const REASON_EXPIRED = 'veil_attestation_expired';
-const REASON_FORBIDDEN = 'veil_attestation_forbidden';
+const REASON_MISSING = 'genysys_attestation_missing';
+const REASON_EXPIRED = 'genysys_attestation_expired';
+const REASON_FORBIDDEN = 'genysys_attestation_forbidden';
 
 function readCookie(req, name) {
   const raw = req.headers && req.headers.cookie;
@@ -52,7 +52,7 @@ function extractAttestation(req) {
       const exp = Number(rest.slice(0, underscore));
       if (Number.isFinite(exp)) {
         if (!session) session = cookie;
-        if (!client) client = '1'; // cookie only travels via VEIL bootstrap
+        if (!client) client = '1'; // cookie only travels via GENYSYS bootstrap
         if (!tier) tier = 'agent';
       }
     }
@@ -80,12 +80,12 @@ function attestationExpired(att, nowMs) {
  * opts.enforced (default true) — set false to log-only while products wire up.
  * opts.allowedTiers — array; default ['agent', 'full', 'dev'].
  */
-function requireveilAttestation(opts = {}) {
+function requireGenysysAttestation(opts = {}) {
   const enforced = opts.enforced !== false;
   const allowedTiers = (opts.allowedTiers || ['agent', 'full', 'dev']).map((t) => t.toLowerCase());
   const gatedPrefixes = opts.gatedPrefixes || null; // null = all /api paths
 
-  return function veilAttestationMiddleware(req, res, next) {
+  return function genysysAttestationMiddleware(req, res, next) {
     const path = req.path || (req.url || '').split('?')[0];
 
     // Explicit opt-out for surfaces that must stay public.
@@ -98,17 +98,17 @@ function requireveilAttestation(opts = {}) {
 
     if (!att) {
       if (!enforced) return next();
-      res.status(401).json({ error: 'VEIL client required', reason: REASON_MISSING });
+      res.status(401).json({ error: 'GENYSYS client required', reason: REASON_MISSING });
       return;
     }
     if (attestationExpired(att, now)) {
       if (!enforced) return next();
-      res.status(401).json({ error: 'VEIL attestation expired', reason: REASON_EXPIRED });
+      res.status(401).json({ error: 'GENYSYS attestation expired', reason: REASON_EXPIRED });
       return;
     }
     if (!allowedTiers.includes(att.tier.toLowerCase())) {
       if (!enforced) return next();
-      res.status(403).json({ error: 'VEIL tier not authorized', reason: REASON_FORBIDDEN });
+      res.status(403).json({ error: 'GENYSYS tier not authorized', reason: REASON_FORBIDDEN });
       return;
     }
     next();
@@ -116,7 +116,7 @@ function requireveilAttestation(opts = {}) {
 }
 
 module.exports = {
-  requireveilAttestation,
+  requireGenysysAttestation,
   extractAttestation,
   attestationExpired,
   CLIENT_HEADER,

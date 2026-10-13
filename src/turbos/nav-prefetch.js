@@ -37,13 +37,13 @@ export function navPrefetch() {
       onPolicyAllow = (e) => {
         if (e.detail?.url) prefetch(e.detail.url);
       };
-      window.addEventListener('veil:policy-allow', onPolicyAllow);
+      window.addEventListener('genysys:policy-allow', onPolicyAllow);
     },
     stop() {
       clearTimeout(timer);
       const input = document.getElementById('url-input') || document.getElementById('omnibox');
       input?.removeEventListener('input', onOmnibox);
-      if (onPolicyAllow) window.removeEventListener('veil:policy-allow', onPolicyAllow);
+      if (onPolicyAllow) window.removeEventListener('genysys:policy-allow', onPolicyAllow);
       onPolicyAllow = null;
     },
   };

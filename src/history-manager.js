@@ -1,5 +1,5 @@
 /**
- * RNK VEIL™
+ * RNK GENYSYS™
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * PROPRIETARY AND CONFIDENTIAL
@@ -16,7 +16,7 @@ export class HistoryManager {
 
     loadHistory() {
         try {
-            const saved = localStorage.getItem('rnk-veil-history') ?? localStorage.getItem('rnk-axis-history') ?? localStorage.getItem('rnk-atlas-history');
+            const saved = localStorage.getItem('rnk-genysys-history') ?? localStorage.getItem('rnk-axis-history') ?? localStorage.getItem('rnk-atlas-history');
             return saved ? JSON.parse(saved) : [];
         } catch {
             return [];
@@ -25,7 +25,7 @@ export class HistoryManager {
 
     saveHistory() {
         try {
-            localStorage.setItem('rnk-veil-history', JSON.stringify(this.history));
+            localStorage.setItem('rnk-genysys-history', JSON.stringify(this.history));
         } catch (error) {
             console.error('Failed to save history:', error);
         }

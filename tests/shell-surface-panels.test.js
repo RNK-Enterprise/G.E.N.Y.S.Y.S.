@@ -3,7 +3,7 @@
  */
 
 /**
- * VEIL™ — app shell coverage (welcome tour, cookies bar, server control,
+ * GENYSYS™ — app shell coverage (welcome tour, cookies bar, server control,
  * admin ops, performance monitor)
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
@@ -18,7 +18,7 @@ import {
 } from './helpers/shell-harness.js';
 
 function stopRuntime() {
-    try { window.veilRuntime?.stop(); } catch { /* not started */ }
+    try { window.genysysRuntime?.stop(); } catch { /* not started */ }
 }
 
 beforeEach(() => {
@@ -31,48 +31,48 @@ beforeEach(() => {
     drainListeners();
 });
 
-describe('veil-welcome-tour', () => {
+describe('genysys-welcome-tour', () => {
     test('first run: tour renders, collects profile, and shows the daily message', async () => {
         await bootShell();
-        const tour = await import('../src/veil-welcome-tour.js');
+        const tour = await import('../src/genysys-welcome-tour.js');
         tour.initWelcomeSystem({});
 
-        const overlay = document.getElementById('veil-tour-overlay');
+        const overlay = document.getElementById('genysys-tour-overlay');
         expect(overlay).not.toBeNull();
-        expect(document.getElementById('veil-tour-title').textContent).toBe('Welcome to VEIL');
+        expect(document.getElementById('genysys-tour-title').textContent).toBe('Welcome to GENYSYS');
 
-        overlay.querySelector('#veil-tour-action').click();
-        expect(document.getElementById('veil-tour-title').textContent).toBe('What should Lisa call you?');
+        overlay.querySelector('#genysys-tour-action').click();
+        expect(document.getElementById('genysys-tour-title').textContent).toBe('What should Lisa call you?');
         document.getElementById('tour-name').value = 'Odinn';
-        overlay.querySelector('#veil-tour-action').click();
+        overlay.querySelector('#genysys-tour-action').click();
         document.getElementById('tour-role').value = 'Architect';
-        overlay.querySelector('#veil-tour-action').click();
+        overlay.querySelector('#genysys-tour-action').click();
         overlay.querySelector('[data-choice="style-direct"]').click();
-        overlay.querySelector('#veil-tour-action').click();
-        overlay.querySelector('#veil-tour-action').click();
+        overlay.querySelector('#genysys-tour-action').click();
+        overlay.querySelector('#genysys-tour-action').click();
         await new Promise((resolve) => setTimeout(resolve, 500));
 
-        const profile = JSON.parse(localStorage.getItem('veil-user-profile'));
+        const profile = JSON.parse(localStorage.getItem('genysys-user-profile'));
         expect(profile.name).toBe('Odinn');
         expect(profile.role).toBe('Architect');
         expect(profile.style).toBe('style-direct');
-        expect(localStorage.getItem('veil-tour-complete')).toBe('1');
-        expect(document.getElementById('veil-daily-message')).not.toBeNull();
+        expect(localStorage.getItem('genysys-tour-complete')).toBe('1');
+        expect(document.getElementById('genysys-daily-message')).not.toBeNull();
     });
 
     test('returning user gets the stored daily message with dismissal', async () => {
-        localStorage.setItem('veil-tour-complete', '1');
-        localStorage.setItem('veil-user-profile', JSON.stringify({ name: 'Odinn', style: 'style-direct' }));
+        localStorage.setItem('genysys-tour-complete', '1');
+        localStorage.setItem('genysys-user-profile', JSON.stringify({ name: 'Odinn', style: 'style-direct' }));
         await bootShell();
-        const tour = await import('../src/veil-welcome-tour.js');
+        const tour = await import('../src/genysys-welcome-tour.js');
         tour.initWelcomeSystem({ tier: 'agent' });
 
-        const banner = document.getElementById('veil-daily-message');
+        const banner = document.getElementById('genysys-daily-message');
         expect(banner).not.toBeNull();
         expect(banner.textContent).toContain('Odinn');
-        banner.querySelector('.veil-daily-msg-close').dispatchEvent(new Event('click', { bubbles: true }));
+        banner.querySelector('.genysys-daily-msg-close').dispatchEvent(new Event('click', { bubbles: true }));
         await new Promise((resolve) => setTimeout(resolve, 350));
-        expect(document.getElementById('veil-daily-message')).toBeNull();
+        expect(document.getElementById('genysys-daily-message')).toBeNull();
         expect(tour.getProfile().name).toBe('Odinn');
         tour.saveProfile({ name: 'Updated' });
         expect(tour.getProfile().name).toBe('Updated');
@@ -80,47 +80,47 @@ describe('veil-welcome-tour', () => {
 
     test('startTour collects choices and persists on finish', async () => {
         await bootShell();
-        const tour = await import('../src/veil-welcome-tour.js');
+        const tour = await import('../src/genysys-welcome-tour.js');
         let completed = null;
         tour.startTour((profile) => { completed = profile; });
 
-        const overlay = document.getElementById('veil-tour-overlay');
-        overlay.querySelector('#veil-tour-action').click();
+        const overlay = document.getElementById('genysys-tour-overlay');
+        overlay.querySelector('#genysys-tour-action').click();
         document.getElementById('tour-name').value = 'Lisa';
-        overlay.querySelector('#veil-tour-action').click();
+        overlay.querySelector('#genysys-tour-action').click();
         document.getElementById('tour-role').value = 'Owner';
-        overlay.querySelector('#veil-tour-action').click();
+        overlay.querySelector('#genysys-tour-action').click();
         overlay.querySelector('[data-choice="style-brief"]').click();
-        overlay.querySelector('#veil-tour-action').click();
-        overlay.querySelector('#veil-tour-action').click();
+        overlay.querySelector('#genysys-tour-action').click();
+        overlay.querySelector('#genysys-tour-action').click();
         await new Promise((resolve) => setTimeout(resolve, 500));
         expect(completed).toMatchObject({ name: 'Lisa', role: 'Owner', style: 'style-brief' });
     });
 });
 
-describe('veil-cookies-bar', () => {
+describe('genysys-cookies-bar', () => {
     test('bar renders when not accepted and hides on accept', async () => {
         await bootShell();
-        await import('../src/veil-cookies-bar.js');
-        const bar = document.getElementById('veil-cookies-bar');
+        await import('../src/genysys-cookies-bar.js');
+        const bar = document.getElementById('genysys-cookies-bar');
         expect(bar).not.toBeNull();
         expect(bar.textContent).toContain('Privacy Policy');
 
-        document.getElementById('veil-cookies-accept').dispatchEvent(new Event('click', { bubbles: true }));
-        expect(localStorage.getItem('veil-cookies-accepted')).toBe('1');
+        document.getElementById('genysys-cookies-accept').dispatchEvent(new Event('click', { bubbles: true }));
+        expect(localStorage.getItem('genysys-cookies-accepted')).toBe('1');
         await new Promise((resolve) => setTimeout(resolve, 350));
-        expect(document.getElementById('veil-cookies-bar')).toBeNull();
+        expect(document.getElementById('genysys-cookies-bar')).toBeNull();
     });
 
     test('no bar when already accepted', async () => {
-        localStorage.setItem('veil-cookies-accepted', '1');
+        localStorage.setItem('genysys-cookies-accepted', '1');
         await bootShell();
-        await import('../src/veil-cookies-bar.js');
-        expect(document.getElementById('veil-cookies-bar')).toBeNull();
+        await import('../src/genysys-cookies-bar.js');
+        expect(document.getElementById('genysys-cookies-bar')).toBeNull();
     });
 });
 
-describe('veil-server-control', () => {
+describe('genysys-server-control', () => {
     test('mount renders resolute status, cards, and refresh loop', async () => {
         await bootShell();
         window.fetch = async (url) => ({
@@ -132,7 +132,7 @@ describe('veil-server-control', () => {
                 miabIssuer: 'UP', miabValidator: 'UP', testMode: 'IDLE',
             }),
         });
-        const { mountServerControl } = await import('../src/veil-server-control.js');
+        const { mountServerControl } = await import('../src/genysys-server-control.js');
         await mountServerControl('server-control-mount');
 
         const mount = document.getElementById('server-control-mount');
@@ -145,13 +145,13 @@ describe('veil-server-control', () => {
 
         document.getElementById('sc-lisa-url').value = 'http://127.0.0.1:9999';
         document.getElementById('sc-lisa-url-save').dispatchEvent(new Event('click', { bubbles: true }));
-        expect(localStorage.getItem('veil_resolute_url')).toBe('http://127.0.0.1:9999');
+        expect(localStorage.getItem('genysys_resolute_url')).toBe('http://127.0.0.1:9999');
     });
 
     test('unreachable authority renders the fail state', async () => {
         await bootShell();
         window.fetch = async () => { throw new Error('dark'); };
-        const { mountServerControl } = await import('../src/veil-server-control.js');
+        const { mountServerControl } = await import('../src/genysys-server-control.js');
         await mountServerControl('server-control-mount');
         expect(document.getElementById('server-control-mount').innerHTML).toContain('unreachable');
     });
@@ -171,7 +171,7 @@ describe('veil-server-control', () => {
             }
             return { ok: false, status: 404, json: async () => ({}) };
         };
-        const { mountServerControl } = await import('../src/veil-server-control.js');
+        const { mountServerControl } = await import('../src/genysys-server-control.js');
         await mountServerControl('server-control-mount');
 
         const toggle = document.getElementById('sc-tm-toggle');
@@ -198,7 +198,7 @@ describe('veil-server-control', () => {
             if (String(url).includes('/health')) return { ok: true, status: 200, json: async () => ({}) };
             return { ok: false, status: 503, json: async () => ({}) };
         };
-        const { mountServerControl } = await import('../src/veil-server-control.js');
+        const { mountServerControl } = await import('../src/genysys-server-control.js');
         await mountServerControl('server-control-mount');
         const toggle = document.getElementById('sc-tm-toggle');
         toggle.checked = true;
@@ -211,30 +211,30 @@ describe('veil-server-control', () => {
     test('unmount clears the timers', async () => {
         await bootShell();
         window.fetch = async () => ({ ok: true, status: 200, json: async () => ({}) });
-        const mod = await import('../src/veil-server-control.js');
+        const mod = await import('../src/genysys-server-control.js');
         await mod.mountServerControl('server-control-mount');
         expect(() => mod.unmountServerControl()).not.toThrow();
     });
 
     test('mount on a missing node is a no-op', async () => {
         await bootShell();
-        const { mountServerControl } = await import('../src/veil-server-control.js');
+        const { mountServerControl } = await import('../src/genysys-server-control.js');
         await mountServerControl('not-a-real-mount');
         expect(true).toBe(true);
     });
 });
 
-describe('veil-admin-ops', () => {
+describe('genysys-admin-ops', () => {
     test('gated tier renders the locked placeholder', async () => {
         await bootShell();
-        const { mountAdminOps } = await import('../src/veil-admin-ops.js');
+        const { mountAdminOps } = await import('../src/genysys-admin-ops.js');
         mountAdminOps(document.getElementById('admin-section-mount'), 'agent');
         expect(document.getElementById('admin-section-mount').innerHTML).toContain('Lisa authorization required');
     });
 
     test('super-admin tier renders the ops plane with tabs and audit trail', async () => {
         await bootShell();
-        const { mountAdminOps } = await import('../src/veil-admin-ops.js');
+        const { mountAdminOps } = await import('../src/genysys-admin-ops.js');
         const mount = document.getElementById('admin-section-mount');
         mountAdminOps(mount, 'super-admin');
         expect(mount.innerHTML).toContain('Ops Plane');
@@ -258,14 +258,14 @@ describe('veil-admin-ops', () => {
 
     test('dev tier also reaches the ops plane', async () => {
         await bootShell();
-        const { mountAdminOps } = await import('../src/veil-admin-ops.js');
+        const { mountAdminOps } = await import('../src/genysys-admin-ops.js');
         mountAdminOps(document.getElementById('admin-section-mount'), 'dev');
         expect(document.getElementById('admin-section-mount').innerHTML).toContain('Ops Plane');
     });
 
     test('mount on a missing node is a no-op', async () => {
         await bootShell();
-        const { mountAdminOps } = await import('../src/veil-admin-ops.js');
+        const { mountAdminOps } = await import('../src/genysys-admin-ops.js');
         expect(() => mountAdminOps(null, 'super-admin')).not.toThrow();
     });
 });
@@ -275,9 +275,9 @@ describe('perf/performance-monitor', () => {
         await bootShell();
         const { default: PerformanceMonitor } = await import('../src/perf/performance-monitor.js');
         const monitor = new PerformanceMonitor();
-        window.tabManager.tabs = [{ id: 1, url: 'veil://newtab', title: 'T' }];
+        window.tabManager.tabs = [{ id: 1, url: 'genysys://newtab', title: 'T' }];
         window.tabManager.activeTabId = 1;
-        window.veilBridge.listTurboStates = () => [{ id: 'x', enabled: true }, { id: 'y', enabled: false }];
+        window.genysysBridge.listTurboStates = () => [{ id: 'x', enabled: true }, { id: 'y', enabled: false }];
 
         jest.useFakeTimers();
         monitor.start();
@@ -300,8 +300,8 @@ describe('perf/performance-monitor', () => {
         await bootShell();
         const { default: PerformanceMonitor } = await import('../src/perf/performance-monitor.js');
         const monitor = new PerformanceMonitor();
-        window.veilBridge = undefined;
-        window.veilRuntime = undefined;
+        window.genysysBridge = undefined;
+        window.genysysRuntime = undefined;
         jest.useFakeTimers();
         monitor.start();
         monitor.update();
@@ -317,11 +317,11 @@ describe('perf/performance-monitor', () => {
         const monitor = new PerformanceMonitor();
         const panel = document.getElementById('performance-panel');
 
-        window.veilRuntime.capabilities = new Map();
+        window.genysysRuntime.capabilities = new Map();
         monitor.toggle();
         expect(panel.classList.contains('hidden')).toBe(true);
 
-        window.veilRuntime.capabilities = new Map([['veil-performance-stack', { id: 'veil-performance-stack', status: 'stable' }]]);
+        window.genysysRuntime.capabilities = new Map([['genysys-performance-stack', { id: 'genysys-performance-stack', status: 'stable' }]]);
         monitor.toggle();
         expect(panel.classList.contains('hidden')).toBe(false);
         monitor.toggle();

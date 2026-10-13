@@ -1,17 +1,17 @@
 /**
- * VEIL™ — extracted from main.js
+ * GENYSYS™ — extracted from main.js
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
-import { mountServerControl, unmountServerControl } from '../veil-server-control.js';
+import { mountServerControl, unmountServerControl } from '../genysys-server-control.js';
 import { mountProtectsHealth } from '../lisa/protects-health.js';
 import { mountRnkWebview } from './rnk-webviews.js';
-import { mountAdminOps } from '../veil-admin-ops.js';
+import { mountAdminOps } from '../genysys-admin-ops.js';
 
 window.activeSection = 'browser';
 
 function activateSection(sectionId) {
-    document.querySelectorAll('.veil-section').forEach(el => {
+    document.querySelectorAll('.genysys-section').forEach(el => {
         el.classList.toggle('active', el.id === `section-${sectionId}`);
         el.classList.toggle('hidden', el.id !== `section-${sectionId}`);
     });
@@ -31,12 +31,12 @@ function activateSection(sectionId) {
     }
     if (sectionId === 'admin') {
         // Local ops/audit plane (tier-gated inside mountAdminOps).
-        const tier = window.veilAuthSession?.tier ||
-            JSON.parse(sessionStorage.getItem('rnk-veil-auth-session') || '{}').tier;
+        const tier = window.genysysAuthSession?.tier ||
+            JSON.parse(sessionStorage.getItem('rnk-genysys-auth-session') || '{}').tier;
         mountAdminOps(document.getElementById('admin-section-mount'), tier);
     }
     if (['operations', 'people', 'comms'].includes(sectionId)) {
-        // Raven / Echonet open INSIDE VEIL — privileged product webviews.
+        // Raven / Echonet open INSIDE GENYSYS — privileged product webviews.
         mountRnkWebview(sectionId);
     }
     // Tab windows live above the chrome: hide them outside the Browser
@@ -48,11 +48,11 @@ function activateSection(sectionId) {
             window.tabWindowBridge.onSectionLeave();
         }
     }
-    if (typeof window.veilSectionChanged === 'function') {
-        window.veilSectionChanged(sectionId);
+    if (typeof window.genysysSectionChanged === 'function') {
+        window.genysysSectionChanged(sectionId);
     } else {
         // Hook is optional; keep legacy listeners working via the DOM event.
-        document.dispatchEvent(new CustomEvent('veil:section-changed', {
+        document.dispatchEvent(new CustomEvent('genysys:section-changed', {
             detail: { sectionId },
         }));
     }
@@ -76,8 +76,8 @@ if (document.readyState === 'loading') {
 async function setupWindowControls() {
     await window.initTauriAPI();
     const doSetup = () => {
-        if (window.__veilWindowControlsBound) return;
-        window.__veilWindowControlsBound = true;
+        if (window.__genysysWindowControlsBound) return;
+        window.__genysysWindowControlsBound = true;
         window.bindClickHandlers([
             ['minimize-btn', (e) => { e.stopPropagation(); return window.invoke('window_minimize'); }],
             ['maximize-btn', (e) => { e.stopPropagation(); return window.invoke('window_maximize'); }],

@@ -14,7 +14,7 @@ const lines = fs.readFileSync(MAIN, 'utf8').split(/\n/);
 const slice = (a, b) => lines.slice(a - 1, b).join('\n');
 
 const HEADER = `/**
- * VEIL™ — extracted from main.js
+ * GENYSYS™ — extracted from main.js
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 `;
@@ -41,7 +41,7 @@ const SHARED = new Set([
   'selectedSuggestionIndex', 'bookmarkBtn', 'ATLAS_HEALTH_URL',
   'frameCount', 'lastTime', 'lisaAssistantMounted', 'adminOpsMounted',
   'SessionManager', 'RecentlyClosedManager', 'TabManager',
-  'veilRuntime', 'normalizeUrl', 'navigateWithLISA', 'initLISABridge', 'initMessageListener',
+  'genysysRuntime', 'normalizeUrl', 'navigateWithLISA', 'initLISABridge', 'initMessageListener',
   'mountServerControl', 'unmountServerControl',
 ]);
 

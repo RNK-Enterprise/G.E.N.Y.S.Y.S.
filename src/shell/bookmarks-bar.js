@@ -1,8 +1,8 @@
 /**
- * VEIL™ — bookmarks bar renderer (omnibox toolbar)
+ * GENYSYS™ — bookmarks bar renderer (omnibox toolbar)
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
- * The old sidebar bookmark feed died with the VEIL SHELL sidebar; only the
+ * The old sidebar bookmark feed died with the GENYSYS SHELL sidebar; only the
  * real bookmarks bar renderer remains.
  */
 
@@ -15,8 +15,8 @@ function renderBookmarksBar() {
     const settings = window.settingsManager.getAll();
     const bookmarksVisible = Boolean(settings.general.showBookmarksBar);
 
-    bar.classList.toggle('hidden', !bookmarksVisible || !window.isVEILCapabilityAvailable('veil-bookmarks'));
-    if (!bookmarksVisible || !window.isVEILCapabilityAvailable('veil-bookmarks')) {
+    bar.classList.toggle('hidden', !bookmarksVisible || !window.isGENYSYSCapabilityAvailable('genysys-bookmarks'));
+    if (!bookmarksVisible || !window.isGENYSYSCapabilityAvailable('genysys-bookmarks')) {
         list.innerHTML = '';
         count.textContent = '0';
         window.applyBookmarksBarDensityState();

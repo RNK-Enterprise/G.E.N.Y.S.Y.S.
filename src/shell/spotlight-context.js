@@ -1,9 +1,9 @@
 /**
- * VEIL™ — extracted from main.js
+ * GENYSYS™ — extracted from main.js
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
-function getVEILSpotlightContext(host, title, url) {
+function getGENYSYSSpotlightContext(host, title, url) {
     const lowerHost = String(host || '').toLowerCase();
     const lowerTitle = String(title || '').toLowerCase();
     const lowerUrl = String(url || '').toLowerCase();
@@ -149,6 +149,6 @@ function getVEILSpotlightContext(host, title, url) {
 
     return 'general';
 }
-window.getVEILSpotlightContext = getVEILSpotlightContext;
+window.getGENYSYSSpotlightContext = getGENYSYSSpotlightContext;
 
-window.getVEILSpotlightContext = getVEILSpotlightContext;
+window.getGENYSYSSpotlightContext = getGENYSYSSpotlightContext;

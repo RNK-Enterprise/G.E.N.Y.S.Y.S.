@@ -3,7 +3,7 @@
  */
 
 /**
- * VEIL™ — LISA bridge coverage
+ * GENYSYS™ — LISA bridge coverage
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -18,7 +18,7 @@ import {
 } from './helpers/shell-harness.js';
 
 function stopRuntime() {
-    try { window.veilRuntime?.stop(); } catch { /* not started */ }
+    try { window.genysysRuntime?.stop(); } catch { /* not started */ }
 }
 
 beforeEach(() => {
@@ -35,12 +35,12 @@ describe('lisa-bridge', () => {
     test('normalizeUrl covers domains, queries, internal schemes, and garbage', async () => {
         await bootShell();
         expect(window.normalizeUrl('https://ok.test/a')).toBe('https://ok.test/a');
-        expect(window.normalizeUrl('veil://newtab')).toBe('veil://newtab');
+        expect(window.normalizeUrl('genysys://newtab')).toBe('genysys://newtab');
         expect(window.normalizeUrl('example.com')).toBe('https://example.com');
         expect(window.normalizeUrl('best browser')).toBe('https://duckduckgo.com/?q=best%20browser');
-        expect(window.normalizeUrl('')).toBe('veil://newtab');
-        expect(window.normalizeUrl(null)).toBe('veil://newtab');
-        expect(window.normalizeUrl('   ')).toBe('veil://newtab');
+        expect(window.normalizeUrl('')).toBe('genysys://newtab');
+        expect(window.normalizeUrl(null)).toBe('genysys://newtab');
+        expect(window.normalizeUrl('   ')).toBe('genysys://newtab');
     });
 
     test('navigateWithLISA allow/flag paths dispatch policy-allow', async () => {
@@ -48,7 +48,7 @@ describe('lisa-bridge', () => {
         await bootShell({ tauri });
         const { navigateWithLISA } = await import('../src/lisa-bridge.js');
         const events = [];
-        window.addEventListener('veil:policy-allow', (e) => events.push(e.detail.url));
+        window.addEventListener('genysys:policy-allow', (e) => events.push(e.detail.url));
         let allowed = 0;
         const policy = await navigateWithLISA(1, 'https://flag.test/', () => allowed++, () => { });
         expect(policy.decision).toBe('flag');
@@ -96,12 +96,12 @@ describe('lisa-bridge', () => {
         expect(result.decision).toBe('block');
         expect(result.reason).toBe('lisa_unreachable_fail_closed');
         expect(await tauriInvoke('unknown_command', {})).toBeNull();
-        await expect(tauriInvoke('auth_resolve_code', { code: 'x' })).rejects.toThrow('Auth requires VEIL native shell');
+        await expect(tauriInvoke('auth_resolve_code', { code: 'x' })).rejects.toThrow('Auth requires GENYSYS native shell');
     });
 
     test('tauriInvoke dev bypass allows when DEV and flag are set', async () => {
-        globalThis.__VEIL_DEV__ = true;
-        localStorage.setItem('veil_dev_bypass', 'true');
+        globalThis.__GENYSYS_DEV__ = true;
+        localStorage.setItem('genysys_dev_bypass', 'true');
         await bootShell();
         const { tauriInvoke } = await import('../src/lisa-bridge.js');
         window.__TAURI__ = undefined;
@@ -109,8 +109,8 @@ describe('lisa-bridge', () => {
         expect(bypassed.decision).toBe('allow');
         expect(bypassed.reason).toBe('dev_bypass_allow');
         await expect(tauriInvoke('auth_resolve_code', { code: 'x' })).resolves.toMatchObject({ tier: 'dev' });
-        localStorage.removeItem('veil_dev_bypass');
-        globalThis.__VEIL_DEV__ = undefined;
+        localStorage.removeItem('genysys_dev_bypass');
+        globalThis.__GENYSYS_DEV__ = undefined;
     });
 
     test('session lifecycle: refresh, get, set, clear', async () => {
@@ -127,7 +127,7 @@ describe('lisa-bridge', () => {
         window.__TAURI__ = stubTauri();
         await bridge.clearSession();
         expect(bridge.getSession().authenticated).toBe(false);
-        expect(document.getElementById('veil-auth-panel')).not.toBeNull();
+        expect(document.getElementById('genysys-auth-panel')).not.toBeNull();
 
         window.__TAURI__ = stubTauri({ invoke: async (cmd) => { if (cmd === 'clear_session') throw new Error('no'); return null; } });
         await bridge.clearSession();
@@ -141,11 +141,11 @@ describe('lisa-bridge', () => {
         await initLISABridge(window.tabManager);
         expect(window.tabWindowBridge).toBeDefined();
 
-        tauri.__emit('veil:navigate', { tabId: 1, url: 'https://emit.test/' });
-        tauri.__emit('veil:tab-meta', { tabId: 1, title: 'Emitted' });
+        tauri.__emit('genysys:navigate', { tabId: 1, url: 'https://emit.test/' });
+        tauri.__emit('genysys:tab-meta', { tabId: 1, title: 'Emitted' });
 
         const tab = window.tabManager.createTab();
-        window.dispatchEvent(new CustomEvent('veil:tab-loading', { detail: { tabId: tab.id, loading: true } }));
+        window.dispatchEvent(new CustomEvent('genysys:tab-loading', { detail: { tabId: tab.id, loading: true } }));
         expect(tab.loading).toBe(true);
 
         window.dispatchEvent(new Event('resize'));
@@ -163,17 +163,17 @@ describe('lisa-bridge', () => {
         const auth = await import('../src/lisa/lisa-bridge-auth-ui.js');
         auth.initAuthPanel();
         auth.initAuthPanel();
-        const panel = document.getElementById('veil-auth-panel');
+        const panel = document.getElementById('genysys-auth-panel');
         expect(panel).not.toBeNull();
-        expect(document.querySelectorAll('#veil-auth-panel').length).toBe(1);
+        expect(document.querySelectorAll('#genysys-auth-panel').length).toBe(1);
 
         auth.showAuthPanel();
         expect(panel.style.display).toBe('flex');
         auth.hideAuthPanel();
         expect(panel.style.display).toBe('none');
 
-        const input = panel.querySelector('#veil-shortcode-input');
-        const submit = panel.querySelector('#veil-auth-submit');
+        const input = panel.querySelector('#genysys-shortcode-input');
+        const submit = panel.querySelector('#genysys-auth-submit');
         input.value = 'good-code';
         submit.dispatchEvent(new Event('click', { bubbles: true }));
         await new Promise((resolve) => setTimeout(resolve, 0));
@@ -183,13 +183,13 @@ describe('lisa-bridge', () => {
         window.__TAURI__ = stubTauri({ invoke: async (cmd) => { if (cmd === 'auth_resolve_code') return {}; return null; } });
         submit.dispatchEvent(new Event('click', { bubbles: true }));
         await new Promise((resolve) => setTimeout(resolve, 0));
-        expect(panel.querySelector('#veil-auth-error').style.display).toBe('block');
+        expect(panel.querySelector('#genysys-auth-error').style.display).toBe('block');
 
         window.__TAURI__ = stubTauri({ invoke: async (cmd) => { if (cmd === 'auth_resolve_code') throw new Error('native only'); return null; } });
         input.value = 'throwing-code';
         submit.dispatchEvent(new Event('click', { bubbles: true }));
         await new Promise((resolve) => setTimeout(resolve, 5));
-        expect(panel.querySelector('#veil-auth-error').textContent).toContain('native only');
+        expect(panel.querySelector('#genysys-auth-error').textContent).toContain('native only');
 
         input.value = '';
         submit.dispatchEvent(new Event('click', { bubbles: true }));
@@ -203,8 +203,8 @@ describe('lisa-bridge', () => {
         window.tabManager.navigateActiveTab = (url) => calls.push(url);
         await bridge.initLISABridge(window.tabManager);
 
-        window.dispatchEvent(new MessageEvent('message', { data: { type: 'veil:access-request', domain: 'req.test', reason: 'work' } }));
-        window.dispatchEvent(new MessageEvent('message', { data: { type: 'veil:proceed-anyway', domain: 'override.test' } }));
+        window.dispatchEvent(new MessageEvent('message', { data: { type: 'genysys:access-request', domain: 'req.test', reason: 'work' } }));
+        window.dispatchEvent(new MessageEvent('message', { data: { type: 'genysys:proceed-anyway', domain: 'override.test' } }));
         window.dispatchEvent(new MessageEvent('message', { data: null }));
         await new Promise((resolve) => setTimeout(resolve, 0));
         expect(calls).toEqual(['override.test']);
@@ -218,7 +218,7 @@ describe('lisa-bridge', () => {
         expect(indicator).not.toBeNull();
         expect(indicator.textContent).toBe('LISA: agent');
         indicator.click();
-        expect(document.getElementById('veil-auth-panel')).toBeNull();
+        expect(document.getElementById('genysys-auth-panel')).toBeNull();
 
         window.__TAURI__ = stubTauri({ invoke: async () => ({ accessTier: 'locked', authenticated: false }) });
         const bridge = await import('../src/lisa-bridge.js');

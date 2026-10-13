@@ -6,7 +6,7 @@ export function imageLazyShell() {
   return {
     start() {
       const imgs = document.querySelectorAll(
-        '#veil-sidebar img, #settings-panel img, .sidebar img, img[data-veil-lazy]',
+        '#genysys-sidebar img, #settings-panel img, .sidebar img, img[data-genysys-lazy]',
       );
       if (!('IntersectionObserver' in window)) {
         imgs.forEach((img) => {

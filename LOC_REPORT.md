@@ -1,4 +1,4 @@
-# VEIL Platform — LOC Report
+# GENYSYS Platform — LOC Report
 **Generated:** 2026-09-16 (by scripts/audit-loc.mjs)
 **LOC Cap:** 500 lines per file (hard limit, hand-written files)
 **Scope:** all text files, excluding target/, node_modules/, dist/, vendor/
@@ -43,8 +43,8 @@
 | RNK Rules to Obide By.md | 25 | OK |
 | Rules and Guidelines for the Privacy sys.md | 450 | OK |
 | The Entire System.md | 52 | OK |
-| VEIL_TO_100_PROMPT.md | 120 | OK |
-| VEIL.md | 116 | OK |
+| GENYSYS_TO_100_PROMPT.md | 120 | OK |
+| GENYSYS.md | 116 | OK |
 | vite.config.js | 35 | OK |
 
 ## agent/
@@ -53,7 +53,7 @@
 |---|---|---|
 | .gitignore | 1 | OK |
 | README.md | 3 | OK |
-| VEIL.md | 8 | OK |
+| GENYSYS.md | 8 | OK |
 
 ## docs/
 
@@ -61,8 +61,8 @@
 |---|---|---|
 | .gitignore | 1 | OK |
 | README.md | 3 | OK |
-| VEIL_ATTESTATION.md | 57 | OK |
-| veil-attestation-gate.cjs | 129 | OK |
+| GENYSYS_ATTESTATION.md | 57 | OK |
+| genysys-attestation-gate.cjs | 129 | OK |
 
 ## e2e/
 
@@ -72,7 +72,7 @@
 | README.md | 3 | OK |
 | smoke.spec.js | 84 | OK |
 | tab-close.spec.js | 47 | OK |
-| veil-boot.js | 52 | OK |
+| genysys-boot.js | 52 | OK |
 
 ## memory/
 
@@ -88,7 +88,7 @@
 |---|---|---|
 | .gitignore | 1 | OK |
 | README.md | 3 | OK |
-| veil-manifest.json | 1 | AUTO-GENERATED — EXEMPT |
+| genysys-manifest.json | 1 | AUTO-GENERATED — EXEMPT |
 
 ## scripts/
 
@@ -101,7 +101,7 @@
 | audit-window-globals.mjs | 478 | OK |
 | build-appimage.sh | 63 | OK |
 | ci-verify.sh | 41 | OK |
-| generate-veil-catalog.mjs | 136 | OK |
+| generate-genysys-catalog.mjs | 136 | OK |
 | README.md | 7 | OK |
 | render-icons.mjs | 180 | OK |
 | smoke-suite.sh | 404 | OK |
@@ -171,12 +171,12 @@
 | README.md | 16 | OK |
 | settings-manager.js | 140 | OK |
 | styles.css | 23 | OK |
-| veil-admin-ops.js | 179 | OK |
-| veil-auth-gate.js | 360 | OK |
-| veil-cookies-bar.js | 45 | OK |
-| veil-manifest.json | 1 | AUTO-GENERATED — EXEMPT |
-| veil-server-control.js | 309 | OK |
-| veil-welcome-tour.js | 235 | OK |
+| genysys-admin-ops.js | 179 | OK |
+| genysys-auth-gate.js | 360 | OK |
+| genysys-cookies-bar.js | 45 | OK |
+| genysys-manifest.json | 1 | AUTO-GENERATED — EXEMPT |
+| genysys-server-control.js | 309 | OK |
+| genysys-welcome-tour.js | 235 | OK |
 
 ## src/assets/
 
@@ -353,4 +353,4 @@
 | README.md | 11 | OK |
 | shell-harness.js | 281 | OK |
 
-> Exempt (auto-generated): package-lock.json (6,503), public/veil-manifest.json (1), src-tauri/Cargo.lock (4,674), src/veil-manifest.json (1)
+> Exempt (auto-generated): package-lock.json (6,503), public/genysys-manifest.json (1), src-tauri/Cargo.lock (4,674), src/genysys-manifest.json (1)

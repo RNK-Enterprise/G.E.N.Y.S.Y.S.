@@ -1,4 +1,4 @@
-/** VEIL LoadingManager */
+/** GENYSYS LoadingManager */
 class LoadingManager {
     constructor() {
         this.overlay = null;

@@ -1,4 +1,4 @@
-/** VEIL ToastManager */
+/** GENYSYS ToastManager */
 class ToastManager {
     constructor() {
         this.container = document.getElementById('toast-container');

@@ -1,4 +1,4 @@
-//! VEIL misc commands — health probes, Raven access requests, DNS lookup.
+//! GENYSYS misc commands — health probes, Raven access requests, DNS lookup.
 //! Extracted from main.rs (LOC bar).
 
 use crate::AppState;
@@ -71,16 +71,16 @@ pub async fn request_site_access(
         .build()
         .map_err(|e| e.to_string())?;
 
-    // VEIL attests its own calls too — Raven's /api/veil/* gate refuses
-    // requests without the X-VEIL-Client / X-VEIL-Session headers.
+    // GENYSYS attests its own calls too — Raven's /api/genysys/* gate refuses
+    // requests without the X-GENYSYS-Client / X-GENYSYS-Session headers.
     let token = session.session_token.clone().unwrap_or_default();
     let resp = client
-        .post(format!("{}/api/veil/access-request", raven_url))
+        .post(format!("{}/api/genysys/access-request", raven_url))
         .header("Content-Type", "application/json")
         .header("Authorization", format!("Bearer {}", token))
-        .header("X-VEIL-Client", "1")
-        .header("X-VEIL-Session", &token)
-        .header("X-VEIL-Tier", &session.access_tier)
+        .header("X-GENYSYS-Client", "1")
+        .header("X-GENYSYS-Session", &token)
+        .header("X-GENYSYS-Tier", &session.access_tier)
         .json(&json!({
             "domain": domain,
             "accessTier": session.access_tier,

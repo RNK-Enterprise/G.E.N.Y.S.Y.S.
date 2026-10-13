@@ -1,4 +1,4 @@
-# VEIL™ — verification gate
+# GENYSYS™ — verification gate
 # Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
 #
 # Three jobs on every push:
@@ -7,7 +7,7 @@
 #      broken page, or a failing Rust test can never land.
 #   2. verify-live — scripts/verify-live.sh under Xvfb: builds the debug
 #      binary and drives a real tab open/close in a compositor, asserting
-#      the [veil:tabwin] create → close → destroyed journal lines + OS-level
+#      the [genysys:tabwin] create → close → destroyed journal lines + OS-level
 #      X-window teardown. A first-class job so branch protection can require
 #      it independently (required checks attach per job, not per step).
 #   3. package — builds the real .deb/.rpm/AppImage and runs the packaging
@@ -56,12 +56,12 @@ jobs:
         with:
           name: verify-logs
           path: |
-            /tmp/veil-verify/*.log
+            /tmp/genysys-verify/*.log
           if-no-files-found: ignore
 
   # The compositor-level proof as its own gate: builds the debug binary
-  # (cache-warmed), launches VEIL under Xvfb, drives a real tab open/close
-  # with xdotool, and asserts the [veil:tabwin] create → close → destroyed
+  # (cache-warmed), launches GENYSYS under Xvfb, drives a real tab open/close
+  # with xdotool, and asserts the [genysys:tabwin] create → close → destroyed
   # journal lines plus OS-level X-window teardown — the lifecycle the mock
   # runtime cannot observe. Runs on every push.
   verify-live:
@@ -121,8 +121,8 @@ jobs:
         with:
           name: verify-live-logs
           path: |
-            /tmp/veil-live.*/app.log
-            /tmp/veil-live.*/vite.log
+            /tmp/genysys-live.*/app.log
+            /tmp/genysys-live.*/vite.log
           if-no-files-found: ignore
 
   package:
@@ -177,7 +177,7 @@ jobs:
       - name: Dump smoke-suite launch logs (on failure)
         if: failure()
         run: |
-          for f in /tmp/veil-smoke-*/appimage.log /tmp/veil-smoke-*/bin.log /tmp/veil-smoke-*/installed.log; do
+          for f in /tmp/genysys-smoke-*/appimage.log /tmp/genysys-smoke-*/bin.log /tmp/genysys-smoke-*/installed.log; do
             [ -f "$f" ] || continue
             echo "=== $f ==="
             tail -25 "$f"
@@ -187,7 +187,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: veil-packages
+          name: genysys-packages
           path: |
             src-tauri/target/release/bundle/deb/*.deb
             src-tauri/target/release/bundle/rpm/*.rpm

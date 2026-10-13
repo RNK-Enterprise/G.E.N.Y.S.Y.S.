@@ -1,5 +1,5 @@
 /**
- * VEIL™ — BookmarkManager unit tests
+ * GENYSYS™ — BookmarkManager unit tests
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -36,7 +36,7 @@ describe('BookmarkManager', () => {
     expect(added.folder).toBe('work');
     expect(bm.isBookmarked('https://rnk-enterprise.us')).toBe(true);
     expect(events).toContain('bookmark-added');
-    expect(JSON.parse(store.get('rnk-veil-bookmarks'))).toHaveLength(3);
+    expect(JSON.parse(store.get('rnk-genysys-bookmarks'))).toHaveLength(3);
   });
 
   test('addBookmark defaults the folder to favorites', () => {
@@ -67,11 +67,11 @@ describe('BookmarkManager', () => {
   });
 
   test('survives corrupt stored bookmarks', () => {
-    store.set('rnk-veil-bookmarks', '[broken');
+    store.set('rnk-genysys-bookmarks', '[broken');
     expect(new BookmarkManager().getAllBookmarks()).toHaveLength(2);
   });
 
-  test('reads the legacy atlas key when the veil key is absent', () => {
+  test('reads the legacy atlas key when the genysys key is absent', () => {
     store.clear();
     store.set('rnk-atlas-bookmarks', JSON.stringify([{ id: 7, title: 'Legacy', url: 'https://legacy.test', folder: 'work' }]));
     const bm = new BookmarkManager();

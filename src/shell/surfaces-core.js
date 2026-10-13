@@ -1,5 +1,5 @@
 /**
- * VEIL™ — extracted from main.js
+ * GENYSYS™ — extracted from main.js
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -26,7 +26,7 @@ function getSearchProviderLabel(state) {
 window.getSearchProviderState = getSearchProviderState;
 window.getSearchProviderLabel = getSearchProviderLabel;
 
-function getVEILDownloadSummary() {
+function getGENYSYSDownloadSummary() {
     const downloads = window.downloadManager?.getDownloads?.() || [];
     const active = downloads.filter(download => download.status === 'downloading');
     const paused = downloads.filter(download => download.status === 'paused');
@@ -46,7 +46,7 @@ function isDownloadableUrl(url) {
 }
 
 function startDownloadFromActiveTab() {
-    if (!window.isVEILCapabilityAvailable('veil-downloads')) return false;
+    if (!window.isGENYSYSCapabilityAvailable('genysys-downloads')) return false;
     const activeTab = window.getActiveBrowserTab();
     if (!isDownloadableUrl(activeTab?.url)) {
         window.updateStatusBar('No active page available to download');
@@ -79,7 +79,7 @@ function applyThemeState(theme = settingsManager.getAll().appearance.theme) {
     return normalized;
 }
 
-function setThemeState(theme, { statusMessage = null, fromVEIL = false } = {}) {
+function setThemeState(theme, { statusMessage = null, fromGENYSYS = false } = {}) {
     const normalized = applyThemeState(theme);
     const themeSelect = document.getElementById('setting-theme');
     if (themeSelect) {
@@ -88,15 +88,15 @@ function setThemeState(theme, { statusMessage = null, fromVEIL = false } = {}) {
     window.settingsManager.set('appearance', 'theme', normalized);
     if (statusMessage) {
         window.updateStatusBar(statusMessage);
-    } else if (fromVEIL) {
+    } else if (fromGENYSYS) {
         window.updateStatusBar(`Theme set to ${getThemeLabel(normalized)}`);
     }
     return normalized;
 }
 
 // Single export block — the sidebar-surface renderers were removed with the
-// VEIL SHELL sidebar DOM; only live helpers are published.
-window.getVEILDownloadSummary = getVEILDownloadSummary;
+// GENYSYS SHELL sidebar DOM; only live helpers are published.
+window.getGENYSYSDownloadSummary = getGENYSYSDownloadSummary;
 window.startDownloadFromActiveTab = startDownloadFromActiveTab;
 window.getThemeLabel = getThemeLabel;
 window.applyThemeState = applyThemeState;

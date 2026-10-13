@@ -1,5 +1,5 @@
 /**
- * VEIL™ — extracted from main.js
+ * GENYSYS™ — extracted from main.js
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 function toggleOmniboxCompact() {
@@ -11,7 +11,7 @@ function toggleOmniboxCompact() {
 }
 
 function saveOmniboxDensityState() {
-    localStorage.setItem('rnk-veil-omnibox-density', window.omniboxDensityState);
+    localStorage.setItem('rnk-genysys-omnibox-density', window.omniboxDensityState);
 }
 
 function setOmniboxDensityState(mode) {
@@ -59,7 +59,7 @@ function toggleSettingsDense() {
 }
 
 function saveSettingsPanelDensityState() {
-    localStorage.setItem('rnk-veil-settings-panel-density', window.settingsPanelDensityState);
+    localStorage.setItem('rnk-genysys-settings-panel-density', window.settingsPanelDensityState);
 }
 
 function setSettingsPanelDensityState(mode) {
@@ -70,7 +70,7 @@ function setSettingsPanelDensityState(mode) {
 }
 
 function saveModalDensityState() {
-    localStorage.setItem('rnk-veil-modal-density', window.modalDensityState);
+    localStorage.setItem('rnk-genysys-modal-density', window.modalDensityState);
 }
 
 function setModalDensityState(mode) {
@@ -80,7 +80,7 @@ function setModalDensityState(mode) {
 }
 
 function saveLoadingDensityState() {
-    localStorage.setItem('rnk-veil-loading-density', window.loadingDensityState);
+    localStorage.setItem('rnk-genysys-loading-density', window.loadingDensityState);
 }
 
 function setLoadingDensityState(mode) {
@@ -127,7 +127,7 @@ function toggleStatusbarMinimal() {
 }
 
 function saveStatusbarDensityState() {
-    localStorage.setItem('rnk-veil-statusbar-density', window.statusbarDensityState);
+    localStorage.setItem('rnk-genysys-statusbar-density', window.statusbarDensityState);
 }
 
 function setStatusbarDensityState(mode) {
@@ -180,7 +180,7 @@ function toggleTitlebarCompact() {
 }
 
 function saveTitlebarDensityState() {
-    localStorage.setItem('rnk-veil-titlebar-density', window.titlebarDensityState);
+    localStorage.setItem('rnk-genysys-titlebar-density', window.titlebarDensityState);
 }
 
 function setTitlebarDensityState(mode) {
@@ -191,7 +191,7 @@ function setTitlebarDensityState(mode) {
 }
 
 function saveShellDensityState() {
-    localStorage.setItem('rnk-veil-shell-density', window.shellDensityState);
+    localStorage.setItem('rnk-genysys-shell-density', window.shellDensityState);
 }
 
 function updateShellDensityToggleLabel() {

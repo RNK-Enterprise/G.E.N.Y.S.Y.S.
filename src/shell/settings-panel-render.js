@@ -1,5 +1,5 @@
 /**
- * VEIL™ — Settings Panel surface (extracted from index.html)
+ * GENYSYS™ — Settings Panel surface (extracted from index.html)
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 

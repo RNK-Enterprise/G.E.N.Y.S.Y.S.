@@ -1,5 +1,5 @@
 /**
- * RNK VEIL™
+ * RNK GENYSYS™
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * PROPRIETARY AND CONFIDENTIAL

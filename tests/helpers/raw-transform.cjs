@@ -1,5 +1,5 @@
 /**
- * VEIL™ — Jest ?raw transform
+ * GENYSYS™ — Jest ?raw transform
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * Vite resolves `import x from './file.html?raw'` to the file's text; Jest has

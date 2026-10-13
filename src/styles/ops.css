@@ -169,7 +169,7 @@
    COOKIES BAR
    =================================================================== */
 
-#veil-cookies-bar {
+#genysys-cookies-bar {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -187,16 +187,16 @@
     transition: opacity 0.3s ease;
 }
 
-#veil-cookies-bar a {
+#genysys-cookies-bar a {
     color: var(--brand-gold);
     text-decoration: none;
 }
 
-#veil-cookies-bar a:hover {
+#genysys-cookies-bar a:hover {
     text-decoration: underline;
 }
 
-#veil-cookies-accept {
+#genysys-cookies-accept {
     flex-shrink: 0;
     padding: 6px 16px;
     background: var(--brand-gold);
@@ -208,11 +208,11 @@
     cursor: pointer;
 }
 
-#veil-cookies-accept:hover {
+#genysys-cookies-accept:hover {
     background: var(--brand-gold-dark);
 }
 
-.veil-cookies-hidden {
+.genysys-cookies-hidden {
     opacity: 0;
     pointer-events: none;
 }
@@ -359,16 +359,16 @@
 }
 
 /* ===================================================================
-   VEIL LIGHT THEME — ops surfaces (cookies bar, Lisa auth submit)
+   GENYSYS LIGHT THEME — ops surfaces (cookies bar, Lisa auth submit)
    Re-points the hard-coded midnight literals under body.theme-light.
    =================================================================== */
 
-body.theme-light #veil-cookies-bar {
+body.theme-light #genysys-cookies-bar {
     background: #ffffff;
     border-top-color: var(--border-color);
     color: var(--text-secondary);
 }
 
-body.theme-light #veil-cookies-accept { color: #ffffff; }
+body.theme-light #genysys-cookies-accept { color: #ffffff; }
 
 body.theme-light .lisa-auth-submit { color: #ffffff; }

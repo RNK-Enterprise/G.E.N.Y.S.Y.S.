@@ -1,5 +1,5 @@
 /**
- * VEIL™ — tab close regression E2E
+ * GENYSYS™ — tab close regression E2E
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * Guards the tab close path (the 2026-09-11 `window.tauriInvoke` class of
@@ -9,14 +9,14 @@
  */
 
 import { test, expect } from 'playwright/test';
-import { bootVEIL, problemReport } from './veil-boot.js';
+import { bootGENYSYS, problemReport } from './genysys-boot.js';
 
 test('opens two tabs and closes one with the × button', async ({ page }) => {
-  const problems = await bootVEIL(page);
+  const problems = await bootGENYSYS(page);
 
   // App booted: gate dismissed, exactly one initial tab, no overlays.
   const tabs = page.locator('#tabs .tab');
-  await expect(page.locator('#veil-auth-gate')).toHaveClass(/hidden/);
+  await expect(page.locator('#genysys-auth-gate')).toHaveClass(/hidden/);
   await expect(tabs).toHaveCount(1);
   const survivorId = await tabs.nth(0).getAttribute('data-tab-id');
 
@@ -37,7 +37,7 @@ test('opens two tabs and closes one with the × button', async ({ page }) => {
 
   // Omnibox follows the activation handoff.
   const savedTabs = await page.evaluate(() =>
-    JSON.parse(localStorage.getItem('rnk-veil-tabs') || '{"tabs":[]}'),
+    JSON.parse(localStorage.getItem('rnk-genysys-tabs') || '{"tabs":[]}'),
   );
   expect(savedTabs.tabs).toHaveLength(1);
   expect(savedTabs.tabs[0].title).toBeTruthy();

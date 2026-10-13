@@ -22,8 +22,8 @@ fn newtab_classifies_internal_allow() {
 }
 
 #[test]
-fn veil_newtab_alias_is_allowed() {
-    let p = classify_tab_navigation("veil://newtab", &session("agent", Some("t")));
+fn genysys_newtab_alias_is_allowed() {
+    let p = classify_tab_navigation("genysys://newtab", &session("agent", Some("t")));
     assert_eq!(p.decision, "allow");
 }
 
@@ -31,7 +31,7 @@ fn veil_newtab_alias_is_allowed() {
 fn app_origin_exact_only_loopback_ports_dont_sneak_in() {
     assert!(is_app_origin(&newtab_url()));
     assert!(is_app_origin("http://127.0.0.1:1420/newtab.html"));
-    assert!(is_app_origin("veil://newtab"));
+    assert!(is_app_origin("genysys://newtab"));
     assert!(!is_app_origin("http://localhost:1420/newtab.html"));
     assert!(!is_app_origin("http://localhost:9999/evil"));
     assert!(!is_app_origin("http://evil.com/?x=http://127.0.0.1:1420"));
@@ -113,7 +113,7 @@ fn internal_loader_refuses_external_urls() {
 
 use tauri::Manager;
 
-fn mock_veil_app() -> tauri::App<tauri::test::MockRuntime> {
+fn mock_genysys_app() -> tauri::App<tauri::test::MockRuntime> {
     let app = tauri::test::mock_app();
     app.manage(TabWindows::default());
     app
@@ -121,7 +121,7 @@ fn mock_veil_app() -> tauri::App<tauri::test::MockRuntime> {
 
 #[test]
 fn close_tab_window_clears_bookkeeping_and_registry() {
-    let app = mock_veil_app();
+    let app = mock_genysys_app();
     let handle = app.handle();
 
     // Create a tab window through the REAL create path.
@@ -155,7 +155,7 @@ fn close_tab_window_clears_bookkeeping_and_registry() {
 
 #[test]
 fn close_tab_window_is_idempotent() {
-    let app = mock_veil_app();
+    let app = mock_genysys_app();
     let handle = app.handle();
 
     create_tab_window(&handle, 9, &newtab_url(), false).expect("create tab window 9");
@@ -168,7 +168,7 @@ fn close_tab_window_is_idempotent() {
 
 #[test]
 fn close_tab_window_on_never_created_tab_is_safe() {
-    let app = mock_veil_app();
+    let app = mock_genysys_app();
     let handle = app.handle();
     // Closing a tab id that never had a window must be a no-op, not a panic.
     close_tab_window(&handle, 4242);
@@ -177,7 +177,7 @@ fn close_tab_window_on_never_created_tab_is_safe() {
 
 #[test]
 fn created_window_label_and_bookkeeping_metadata_match() {
-    let app = mock_veil_app();
+    let app = mock_genysys_app();
     let handle = app.handle();
 
     create_tab_window(&handle, 11, &newtab_url(), true).expect("create privileged tab window");

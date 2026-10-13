@@ -1,5 +1,5 @@
 /**
- * VEIL™ — extracted from main.js
+ * GENYSYS™ — extracted from main.js
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 window.bookmarkBtn = document.getElementById('bookmark-btn');
@@ -47,19 +47,19 @@ function updateStatusBar(text) {
     document.getElementById('status-text').textContent = text;
 }
 
-function setVEILStatusIndicator(connected, disconnectedTone = 'var(--text-secondary)') {
-    // Status indicator is owned by the VEIL engine runtime; this only restyles
+function setGENYSYSStatusIndicator(connected, disconnectedTone = 'var(--text-secondary)') {
+    // Status indicator is owned by the GENYSYS engine runtime; this only restyles
     // the badge when other surfaces toggle it.
-    const status = document.getElementById('veil-status');
+    const status = document.getElementById('genysys-status');
     if (!status) return;
     status.classList.toggle('connected', connected);
     status.style.color = connected ? 'var(--toxic-green)' : disconnectedTone;
 }
 
-function setVEILBridgePerformanceState(connected) {
-    const perfVEIL = document.getElementById('perf-veil');
-    if (!perfVEIL) return;
-    perfVEIL.textContent = connected ? 'Connected' : 'Disconnected';
+function setGENYSYSBridgePerformanceState(connected) {
+    const perfGENYSYS = document.getElementById('perf-genysys');
+    if (!perfGENYSYS) return;
+    perfGENYSYS.textContent = connected ? 'Connected' : 'Disconnected';
 }
 
 // FPS Counter
@@ -128,7 +128,7 @@ document.addEventListener('keydown', (e) => {
     // Ctrl+Shift+T: Reopen Closed Tab
     if (e.ctrlKey && e.shiftKey && e.key === 'T') {
         e.preventDefault();
-        if (!window.isVEILCapabilityAvailable('veil-history')) {
+        if (!window.isGENYSYSCapabilityAvailable('genysys-history')) {
             return;
         }
         const closed = window.recentlyClosedManager.getRecentlyClosed();
@@ -144,7 +144,7 @@ document.addEventListener('keydown', (e) => {
     // Ctrl+Shift+S: Save Session
     if (e.ctrlKey && e.shiftKey && e.key === 'S') {
         e.preventDefault();
-        if (!window.isVEILCapabilityAvailable('veil-browser-core')) {
+        if (!window.isGENYSYSCapabilityAvailable('genysys-browser-core')) {
             return;
         }
         const name = prompt('Enter session name:');
@@ -165,7 +165,7 @@ document.addEventListener('keydown', (e) => {
     // Ctrl+K: Toggle header Spotlight (contextual actions)
     if (e.ctrlKey && e.key === 'k') {
         e.preventDefault();
-        window.toggleVEILSpotlight?.();
+        window.toggleGENYSYSSpotlight?.();
     }
     
     // Alt+Left: Back
@@ -232,7 +232,7 @@ function loadSettings() {
     
     // Performance
     document.getElementById('setting-hardware-accel').checked = settings.performance.enableHardwareAcceleration;
-    document.getElementById('setting-veil-engines').checked = settings.performance.enableVEILEngines ?? true;
+    document.getElementById('setting-genysys-engines').checked = settings.performance.enableGENYSYSEngines ?? true;
     document.getElementById('setting-preload-pages').checked = settings.performance.preloadPages;
     document.getElementById('setting-cache-size').value = settings.performance.maxCacheSize;
     
@@ -262,7 +262,7 @@ function saveSettings() {
     
     // Performance
     window.settingsManager.set('performance', 'enableHardwareAcceleration', document.getElementById('setting-hardware-accel').checked);
-    window.settingsManager.set('performance', 'enableVEILEngines', document.getElementById('setting-veil-engines').checked);
+    window.settingsManager.set('performance', 'enableGENYSYSEngines', document.getElementById('setting-genysys-engines').checked);
     window.settingsManager.set('performance', 'preloadPages', document.getElementById('setting-preload-pages').checked);
     window.settingsManager.set('performance', 'maxCacheSize', parseInt(document.getElementById('setting-cache-size').value));
     
@@ -302,19 +302,19 @@ settingInputs.forEach(input => {
 });
 
 
-function applyVEILRuntimeStatus(connected, statusMessage = null) {
-    setVEILStatusIndicator(connected, connected ? undefined : 'var(--text-secondary)');
-    setVEILBridgePerformanceState(connected);
+function applyGENYSYSRuntimeStatus(connected, statusMessage = null) {
+    setGENYSYSStatusIndicator(connected, connected ? undefined : 'var(--text-secondary)');
+    setGENYSYSBridgePerformanceState(connected);
     if (statusMessage) updateStatusBar(statusMessage);
 }
 
 window.bindClickHandlers([
-    ['veil-status', () => {
-        if (window.veilRuntime.connected) {
-            window.veilRuntime.stop();
-            applyVEILRuntimeStatus(false, 'VEIL Runtime stopped');
-        } else {                window.veilRuntime.start({ getTabs: () => window.tabManager?.tabs || [] }).then(() => {
-                    applyVEILRuntimeStatus(true, 'VEIL Runtime online');
+    ['genysys-status', () => {
+        if (window.genysysRuntime.connected) {
+            window.genysysRuntime.stop();
+            applyGENYSYSRuntimeStatus(false, 'GENYSYS Runtime stopped');
+        } else {                window.genysysRuntime.start({ getTabs: () => window.tabManager?.tabs || [] }).then(() => {
+                    applyGENYSYSRuntimeStatus(true, 'GENYSYS Runtime online');
                 });
         }
     }]
@@ -330,10 +330,10 @@ window.perfMonitor = new window.PerformanceMonitor();
 
 
 
-// Single export block — duplicate fragments left by the VEIL SHELL sidebar
+// Single export block — duplicate fragments left by the GENYSYS SHELL sidebar
 // removal are collapsed here so each name is published exactly once.
 window.navigateToUrl = navigateToUrl;
-window.setVEILStatusIndicator = setVEILStatusIndicator;
+window.setGENYSYSStatusIndicator = setGENYSYSStatusIndicator;
 window.updateBookmarkButton = updateBookmarkButton;
 window.updateStatusBar = updateStatusBar;
 window.updateFPS = updateFPS;
@@ -342,4 +342,4 @@ window.closeSettings = closeSettings;
 window.loadSettings = loadSettings;
 window.saveSettings = saveSettings;
 window.settingInputs = settingInputs;
-window.applyVEILRuntimeStatus = applyVEILRuntimeStatus;
+window.applyGENYSYSRuntimeStatus = applyGENYSYSRuntimeStatus;

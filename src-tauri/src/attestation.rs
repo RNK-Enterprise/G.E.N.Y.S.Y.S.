@@ -1,25 +1,25 @@
-//! VEIL attestation — pure validation logic (unit-testable).
-//! Header names are documented in docs/VEIL_ATTESTATION.md; the session token
+//! GENYSYS attestation — pure validation logic (unit-testable).
+//! Header names are documented in docs/GENYSYS_ATTESTATION.md; the session token
 //! is per-session and is not a secret in git.
 
 use serde_json::json;
 
-// Part of the documented contract (docs/VEIL_ATTESTATION.md); products and
-// tests consume these even when the VEIL binary itself does not.
+// Part of the documented contract (docs/GENYSYS_ATTESTATION.md); products and
+// tests consume these even when the GENYSYS binary itself does not.
 #[allow(dead_code)]
-pub const CLIENT_HEADER: &str = "x-veil-client";
+pub const CLIENT_HEADER: &str = "x-genysys-client";
 #[allow(dead_code)]
-pub const SESSION_HEADER: &str = "x-veil-session";
+pub const SESSION_HEADER: &str = "x-genysys-session";
 #[allow(dead_code)]
-pub const TIER_HEADER: &str = "x-veil-tier";
-pub const COOKIE_NAME: &str = "veil_attest";
+pub const TIER_HEADER: &str = "x-genysys-tier";
+pub const COOKIE_NAME: &str = "genysys_attest";
 
 /// Refuse reasons are stable strings products can log.
-pub const REASON_MISSING: &str = "veil_attestation_missing";
+pub const REASON_MISSING: &str = "genysys_attestation_missing";
 #[allow(dead_code)]
-pub const REASON_EXPIRED: &str = "veil_attestation_expired";
+pub const REASON_EXPIRED: &str = "genysys_attestation_expired";
 #[allow(dead_code)]
-pub const REASON_FORBIDDEN: &str = "veil_attestation_forbidden";
+pub const REASON_FORBIDDEN: &str = "genysys_attestation_forbidden";
 
 #[derive(Debug, PartialEq)]
 pub struct Attestation {
@@ -58,7 +58,7 @@ fn header_value(headers: &serde_json::Value, name: &str) -> Option<String> {
     headers.get(name).and_then(|v| v.as_str()).map(|s| s.trim().to_string()).filter(|s| !s.is_empty())
 }
 
-/// Validate a request's VEIL attestation from headers (server-side mirror of
+/// Validate a request's GENYSYS attestation from headers (server-side mirror of
 /// the JS check used by Raven/Echonet/Mail).
 #[allow(dead_code)] // server-side mirror; see module docs
 pub fn validate(
@@ -83,7 +83,7 @@ pub fn validate(
     Ok(att)
 }
 
-/// Build the JSON body VEIL serves on an attestation bootstrap page.
+/// Build the JSON body GENYSYS serves on an attestation bootstrap page.
 /// The products' JS sets this as a cookie so every subsequent request
 /// (including iframe subresource loads) carries the attestation.
 /// Value format: `axb_<expiry_ms>_<token>`.
@@ -110,9 +110,9 @@ mod tests {
     #[test]
     fn valid_attestation_passes() {
         let headers = json!({
-            "x-veil-client": "1",
-            "x-veil-session": "tok-123",
-            "x-veil-tier": "agent"
+            "x-genysys-client": "1",
+            "x-genysys-session": "tok-123",
+            "x-genysys-tier": "agent"
         });
         let att = validate(&headers, NOW, &["agent", "full"]).unwrap();
         assert_eq!(att.session, "tok-123");
@@ -127,9 +127,9 @@ mod tests {
     #[test]
     fn wrong_client_value_refused() {
         let headers = json!({
-            "x-veil-client": "0",
-            "x-veil-session": "tok",
-            "x-veil-tier": "agent"
+            "x-genysys-client": "0",
+            "x-genysys-session": "tok",
+            "x-genysys-tier": "agent"
         });
         assert_eq!(validate(&headers, NOW, &["agent"]).unwrap_err(), REASON_MISSING);
     }
@@ -137,9 +137,9 @@ mod tests {
     #[test]
     fn expired_session_refused() {
         let headers = json!({
-            "x-veil-client": "1",
-            "x-veil-session": "axb_1799999999000_bootstrap",
-            "x-veil-tier": "agent"
+            "x-genysys-client": "1",
+            "x-genysys-session": "axb_1799999999000_bootstrap",
+            "x-genysys-tier": "agent"
         });
         assert_eq!(validate(&headers, NOW, &["agent"]).unwrap_err(), REASON_EXPIRED);
     }
@@ -147,9 +147,9 @@ mod tests {
     #[test]
     fn bootstrap_session_valid_until_expiry() {
         let headers = json!({
-            "x-veil-client": "1",
-            "x-veil-session": "axb_1800036000000_bootstrap",
-            "x-veil-tier": "agent"
+            "x-genysys-client": "1",
+            "x-genysys-session": "axb_1800036000000_bootstrap",
+            "x-genysys-tier": "agent"
         });
         assert!(validate(&headers, NOW, &["agent"]).is_ok());
     }
@@ -157,9 +157,9 @@ mod tests {
     #[test]
     fn wrong_tier_refused() {
         let headers = json!({
-            "x-veil-client": "1",
-            "x-veil-session": "tok",
-            "x-veil-tier": "agency"
+            "x-genysys-client": "1",
+            "x-genysys-session": "tok",
+            "x-genysys-tier": "agency"
         });
         assert_eq!(validate(&headers, NOW, &["agent", "full"]).unwrap_err(), REASON_FORBIDDEN);
     }

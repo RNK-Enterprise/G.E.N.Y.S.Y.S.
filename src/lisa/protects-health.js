@@ -1,5 +1,5 @@
 /**
- * VEIL™ — P.R.O.T.E.C.T.S. Health Panel (Lisa section)
+ * GENYSYS™ — P.R.O.T.E.C.T.S. Health Panel (Lisa section)
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * The Lisa section is NOT a chatbot. It renders P.R.O.T.E.C.T.S. organ health
@@ -9,13 +9,13 @@
  */
 
 const RESOLUTE_URL = () =>
-    localStorage.getItem('veil_resolute_url')     || localStorage.getItem('axis_resolute_url') || 'http://127.0.0.1:7781';
+    localStorage.getItem('genysys_resolute_url')     || localStorage.getItem('axis_resolute_url') || 'http://127.0.0.1:7781';
 
 const ORGANS = [
     { key: 'resolute', label: 'Resolute Authentication Core', icon: '🔑', note: 'Handshake organ — C.O.M.M.A.N.D. master key' },
     { key: 'policyEngine', label: 'Policy Engine', icon: '🛡', note: 'Embedded, fail-closed — clears every navigation' },
-    { key: 'attestation', label: 'VEIL Attestation', icon: '🪪', note: 'X-VEIL-Client / X-VEIL-Session on RNK hosts' },
-    { key: 'chainRouting', label: 'Ghost Chain Routing', icon: '⛓', note: 'Pentest surface only; off unless VEIL_CHAIN_ROUTING=on' },
+    { key: 'attestation', label: 'GENYSYS Attestation', icon: '🪪', note: 'X-GENYSYS-Client / X-GENYSYS-Session on RNK hosts' },
+    { key: 'chainRouting', label: 'Ghost Chain Routing', icon: '⛓', note: 'Pentest surface only; off unless GENYSYS_CHAIN_ROUTING=on' },
     { key: 'heartbeat', label: 'Heartbeat', icon: '♥', note: 'Session liveness' },
 ];
 
@@ -47,7 +47,7 @@ export function mountProtectsHealth(mountEl) {
                     <button id="protects-url-save" class="sc-btn">Save</button>
     </div>
                 <p class="sc-panel-desc" style="margin-top:.5rem">
-                    The handshake URL is configuration, not doctrine. If Resolute is dark, VEIL holds
+                    The handshake URL is configuration, not doctrine. If Resolute is dark, GENYSYS holds
                     fail-closed: shortcodes are dev/bootstrap only and production sessions come from
                     C.O.M.M.A.N.D.
                 </p>
@@ -59,7 +59,7 @@ export function mountProtectsHealth(mountEl) {
         mountEl.querySelector('#protects-url-save')?.addEventListener('click', () => {
             const val = mountEl.querySelector('#protects-url-input')?.value.trim();
             if (val) {
-                localStorage.setItem('veil_resolute_url', val);
+                localStorage.setItem('genysys_resolute_url', val);
                 refreshAll();
             }
         });

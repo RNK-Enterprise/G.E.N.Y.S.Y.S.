@@ -1,4 +1,4 @@
-# src/ — VEIL frontend
+# src/ — GENYSYS frontend
 
 Browser shell: HTML surfaces, JS modules, and the stylesheet manifest.
 

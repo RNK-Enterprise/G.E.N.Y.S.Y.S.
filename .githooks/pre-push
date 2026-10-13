@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# VEIL — pre-push full-history secret scan (fail closed)
+# GENYSYS — pre-push full-history secret scan (fail closed)
 # Last local line of defense: scans every commit on every branch (patches
 # included, so removed files are still scanned). Local hooks are a guardrail,
 # not a tamper-proof control — the push target should also run secret

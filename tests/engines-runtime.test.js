@@ -1,5 +1,5 @@
 /**
- * VEIL™ — engine runtime + catalog loader unit tests
+ * GENYSYS™ — engine runtime + catalog loader unit tests
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -20,16 +20,16 @@ global.localStorage = {
 
 const loader = await import('../src/engines/catalog-loader.js');
 const { describe, expect, test, afterEach, jest } = await import('@jest/globals');
-const { VEILEngineRuntime } = await import('../src/engines/runtime.js');
+const { GENYSYSEngineRuntime } = await import('../src/engines/runtime.js');
 const { createLiveTurbos } = await import('../src/turbos/index.js');
 
 describe('catalog-loader', () => {
   test('getManifest starts null; fallback manifest is well-formed', async () => {
     expect(loader.getManifest()).toBeNull();
     global.fetch = async () => { throw new Error('offline'); };
-    const manifest = await loader.loadVEILManifest();
+    const manifest = await loader.loadGENYSYSManifest();
     expect(manifest.manifest_version).toBe('2.0');
-    expect(manifest.product).toBe('VEIL');
+    expect(manifest.product).toBe('GENYSYS');
     expect(manifest.capabilities).toEqual([]);
     expect(loader.getManifest()).toBe(manifest);
   });
@@ -42,7 +42,7 @@ describe('catalog-loader', () => {
   });
 });
 
-describe('VEILEngineRuntime', () => {
+describe('GENYSYSEngineRuntime', () => {
   afterEach(() => localStorage.clear());
 
   test('createLiveTurbos registers every implementation (both key styles)', () => {
@@ -54,7 +54,7 @@ describe('VEILEngineRuntime', () => {
 
   test('start() with an empty manifest stays connected with no turbos', async () => {
     global.fetch = async () => { throw new Error('offline'); };
-    const rt = new VEILEngineRuntime();
+    const rt = new GENYSYSEngineRuntime();
     const manifest = await rt.start({});
     expect(rt.connected).toBe(true);
     expect(rt.turbos.size).toBe(0);
@@ -68,8 +68,8 @@ describe('VEILEngineRuntime', () => {
       ok: true,
       json: async () => ({
         manifest_version: '2.0',
-        product: 'VEIL',
-        catalog_summary: { engines: '1', turbos: '2', mode: 'local', source: 'VEIL' },
+        product: 'GENYSYS',
+        catalog_summary: { engines: '1', turbos: '2', mode: 'local', source: 'GENYSYS' },
         capabilities: [],
         engines: [{ id: 'engine-a', name: 'A' }],
         turbos: [
@@ -78,7 +78,7 @@ describe('VEILEngineRuntime', () => {
         ],
       }),
     });
-    const rt = new VEILEngineRuntime();
+    const rt = new GENYSYSEngineRuntime();
     await rt.start({});
     expect(rt.turbos.size).toBe(2);
     expect(rt.getStatus().liveEnabled).toBe(2);
@@ -89,21 +89,21 @@ describe('VEILEngineRuntime', () => {
   });
 
   test('isTurboEnabled defaults to true; setTurboEnabled persists and toggles start/stop', async () => {
-    const rt = new VEILEngineRuntime();
+    const rt = new GENYSYSEngineRuntime();
     expect(rt.isTurboEnabled('anything')).toBe(true);
     rt.turbos.set('t1', { def: { id: 't1' }, start: jest.fn(), stop: jest.fn() });
     rt.setTurboEnabled('t1', false);
     expect(rt.isTurboEnabled('t1')).toBe(false);
-    expect(JSON.parse(localStorage.getItem('rnk-veil-turbo-enabled')).t1).toBe(false);
+    expect(JSON.parse(localStorage.getItem('rnk-genysys-turbo-enabled')).t1).toBe(false);
     rt.setTurboEnabled('t1', true);
     expect(rt.turbos.get('t1').stop).toHaveBeenCalled();
     expect(rt.turbos.get('t1').start).toHaveBeenCalled();
-    expect(JSON.parse(localStorage.getItem('rnk-veil-turbo-enabled')).t1).toBe(true);
+    expect(JSON.parse(localStorage.getItem('rnk-genysys-turbo-enabled')).t1).toBe(true);
   });
 
   test('stop() disconnects and halts turbos', async () => {
     global.fetch = async () => { throw new Error('offline'); };
-    const rt = new VEILEngineRuntime();
+    const rt = new GENYSYSEngineRuntime();
     await rt.start({});
     const started = { def: { id: 't1' }, start: jest.fn(), stop: jest.fn() };
     rt.turbos.set('t1', started);
@@ -117,7 +117,7 @@ describe('VEILEngineRuntime', () => {
       ok: true,
       json: async () => ({ turbos: [{ id: 'turbo-tab-suspend', status: 'live' }] }),
     });
-    const rt = new VEILEngineRuntime();
+    const rt = new GENYSYSEngineRuntime();
     rt.setTurboEnabled('turbo-tab-suspend', false);
     await rt.start({});
     expect(rt.turbos.size).toBe(1);

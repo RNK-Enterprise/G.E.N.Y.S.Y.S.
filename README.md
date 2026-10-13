@@ -1,17 +1,17 @@
-<p align="center"><img src="veil-icon.svg" width="96" alt="V.E.I.L. icon"></p>
+<p align="center"><img src="genysys-icon.svg" width="96" alt="G.E.N.Y.S.Y.S. icon"></p>
 
-# V.E.I.L. — RNK's browser, the only access environment
+# G.E.N.Y.S.Y.S. — RNK's browser, the only access environment
 
-**VEIL** is a Tauri desktop browser with embedded P.R.O.T.E.C.T.S. policy (fail-closed),
-C.O.M.M.A.N.D.-gated sessions, and a small, real engine/turbo runtime. **VEIL is the only
-client**: Raven, Echonet, Mail, and RNK product surfaces run inside VEIL, and their
+**GENYSYS** is a Tauri desktop browser with embedded P.R.O.T.E.C.T.S. policy (fail-closed),
+C.O.M.M.A.N.D.-gated sessions, and a small, real engine/turbo runtime. **GENYSYS is the only
+client**: Raven, Echonet, Mail, and RNK product surfaces run inside GENYSYS, and their
 authenticated APIs refuse a normal browser. Public marketing on `rnk-enterprise.us` may
 stay world-readable; login/API surfaces may not.
 
 Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
 RNK Enterprise — Proprietary and Confidential. Do not distribute.
 
-Stack fit and doctrine: `VEIL.md`.
+Stack fit and doctrine: `GENYSYS.md`.
 
 ## Quick start
 
@@ -31,21 +31,21 @@ repo carries the fix: `scripts/with-webkit-pc.sh` + `src-tauri/.cargo/config.tom
   (`COMMAND_URL` / `RESOLUTE_URL`). A production build without it prints a fail-closed
   HOLD and creates **no sessions**.
 - **Exchange flow:** `POST {COMMAND_URL}/api/v1/owner/session/start` → `session/verify`
-  with the C.O.M.M.A.N.D.-minted grant (four-layer Mother handshake evidence; VEIL never
+  with the C.O.M.M.A.N.D.-minted grant (four-layer Mother handshake evidence; GENYSYS never
   fabricates it) → verified session mirrored into the policy engine. Explicit `session/end`.
 - **Heartbeat:** every 5 s; B1 owns the 15/10/5 warning tiers; 3 consecutive failed
-  beats = link drop → session dropped → **VEIL re-locks** (fail closed). Only a fresh
+  beats = link drop → session dropped → **GENYSYS re-locks** (fail closed). Only a fresh
   grant exchange re-arms.
-- **Shortcodes are DEV/bootstrap only** (`veil-odinn` full/creator, `veil-agent` agent);
+- **Shortcodes are DEV/bootstrap only** (`genysys-odinn` full/creator, `genysys-agent` agent);
   refused in production builds.
 - **Biosig stubs never succeed** — `__lisa_handshake__` / `__mother_lisa__` / `__biosig__`
   / `__fido__` are refused until Mother Lisa ships.
 
-## VEIL-only attestation
+## GENYSYS-only attestation
 
-After a session exists, VEIL attaches `X-VEIL-Client: 1`, `X-VEIL-Session`, and
-`X-VEIL-Tier` (`full` / `agent` / `dev`) to RNK product hosts. Header names are
-documented, not secret; tokens are per-session. Details: `docs/VEIL_ATTESTATION.md`.
+After a session exists, GENYSYS attaches `X-GENYSYS-Client: 1`, `X-GENYSYS-Session`, and
+`X-GENYSYS-Tier` (`full` / `agent` / `dev`) to RNK product hosts. Header names are
+documented, not secret; tokens are per-session. Details: `docs/GENYSYS_ATTESTATION.md`.
 
 ## Architecture
 
@@ -53,7 +53,7 @@ documented, not secret; tokens are per-session. Details: `docs/VEIL_ATTESTATION.
 - **P.R.O.T.E.C.T.S. policy** → Rust in-process + optional remote overlay; fail-closed;
   loopback/metadata destinations blocked; `sec.rnk-enterprise.us` fail-closed until
   Ghost chain routing is wired.
-- **Engine runtime** → `src/engines` + `src/turbos` + `veil-manifest.json`.
+- **Engine runtime** → `src/engines` + `src/turbos` + `genysys-manifest.json`.
 - **Live turbos** → tab suspend, memory reclaim, prefetch, DNS cache, render throttle,
   image lazy, cache budget, startup defer, network idle.
 - **Catalog** → 8 engines + 9 live turbos. **Zero stubs** — the 800-engine/4000-turbo
@@ -64,7 +64,7 @@ documented, not secret; tokens are per-session. Details: `docs/VEIL_ATTESTATION.
 ## Sweep 2026-09-17
 
 `coverage/` and the stale `dist/` build removed (rebuilt with the standard build);
-`.gitignore` hardened. Git remote migrated to private `RNK-Enterprise/V.E.I.L.` — the old
+`.gitignore` hardened. Git remote migrated to private `RNK-Enterprise/G.E.N.Y.S.Y.S.` — the old
 `lisasdungeon/axis` GitHub remote is retired from this tree (history preserved there;
 nothing pushed to it in this sweep).
 

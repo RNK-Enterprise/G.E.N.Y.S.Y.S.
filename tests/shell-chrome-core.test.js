@@ -3,7 +3,7 @@
  */
 
 /**
- * VEIL™ — chrome core coverage (actions, spotlight, capabilities, surfaces)
+ * GENYSYS™ — chrome core coverage (actions, spotlight, capabilities, surfaces)
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -18,7 +18,7 @@ import {
 } from './helpers/shell-harness.js';
 
 function stopRuntime() {
-    try { window.veilRuntime?.stop(); } catch { /* not started */ }
+    try { window.genysysRuntime?.stop(); } catch { /* not started */ }
 }
 
 beforeEach(() => {
@@ -55,8 +55,8 @@ describe('shell: chrome-actions', () => {
         expect(selectSpy).toHaveBeenCalled();
         expect(document.getElementById('search-provider-modal').classList.contains('hidden')).toBe(false);
 
-        window.setOmniboxValueAndFocus('veil://newtab');
-        expect(omnibox.value).toBe('veil://newtab');
+        window.setOmniboxValueAndFocus('genysys://newtab');
+        expect(omnibox.value).toBe('genysys://newtab');
         window.hideModal(document.getElementById('search-provider-modal'));
         expect(document.getElementById('search-provider-modal').classList.contains('hidden')).toBe(true);
         window.hideElement('search-provider-modal');
@@ -66,12 +66,12 @@ describe('shell: chrome-actions', () => {
         expect(window.setElementHidden('#nope', true)).toBeUndefined();
     });
 
-    test('openVEILSettingsSection opens settings and scrolls the section', async () => {
+    test('openGENYSYSSettingsSection opens settings and scrolls the section', async () => {
         await bootShell();
         const scrollSpy = jest.fn();
         const section = document.querySelector('#settings-panel');
         section.scrollIntoView = scrollSpy;
-        window.openVEILSettingsSection('#settings-panel');
+        window.openGENYSYSSettingsSection('#settings-panel');
         expect(scrollSpy).toHaveBeenCalled();
         window.focusTabSearch();
     });
@@ -87,7 +87,7 @@ describe('shell: chrome-actions', () => {
     test('pin helper returns false without an active tab, true with one', async () => {
         await bootShell();
         expect(window.toggleActiveTabPinnedState()).toBe(false);
-        window.tabManager.tabs.push({ id: 2, url: 'veil://newtab', title: 'New Tab', pinned: false });
+        window.tabManager.tabs.push({ id: 2, url: 'genysys://newtab', title: 'New Tab', pinned: false });
         window.tabManager.activeTabId = 2;
         expect(window.toggleActiveTabPinnedState()).toBe(true);
         expect(window.tabManager.tabs[0].pinned).toBe(true);
@@ -97,7 +97,7 @@ describe('shell: chrome-actions', () => {
 describe('shell: spotlight-context', () => {
     test.each([
         ['github.com/x/pull/1', 'PR #1', 'dev'],
-        ['github.com/rnk/veil', 'Our repository', 'code'],
+        ['github.com/rnk/genysys', 'Our repository', 'code'],
         ['docs.rust-lang.org', 'The book', 'docs'],
         ['stackoverflow.com', 'How to jsdom', 'docs'],
         ['chat.openai.com', 'Chat', 'ai'],
@@ -112,14 +112,14 @@ describe('shell: spotlight-context', () => {
         ['google.com', 'Search', 'search'],
         ['example.org', 'Anything else', 'general'],
     ])('%p → %p', (url, title, expected) => {
-        expect(window.getVEILSpotlightContext(url, title, `https://${url}`)).toBe(expected);
+        expect(window.getGENYSYSSpotlightContext(url, title, `https://${url}`)).toBe(expected);
     });
 });
 
 describe('shell: spotlight-suggestions', () => {
     test('suggests a new tab when nothing is active', async () => {
         await bootShell();
-        const suggestions = window.getVEILSpotlightSuggestions();
+        const suggestions = window.getGENYSYSSpotlightSuggestions();
         expect(suggestions[0].title).toBe('Open a new tab');
         expect(suggestions.length).toBeGreaterThan(0);
     });
@@ -127,7 +127,7 @@ describe('shell: spotlight-suggestions', () => {
     test('resumes latest history entry when present', async () => {
         await bootShell();
         window.historyManager.addEntry('Earlier page', 'https://earlier.test/');
-        const suggestions = window.getVEILSpotlightSuggestions();
+        const suggestions = window.getGENYSYSSpotlightSuggestions();
         expect(suggestions[0].title).toBe('Resume latest page');
         suggestions[0].action();
         expect(window.tabManager.tabs.length).toBe(1);
@@ -137,7 +137,7 @@ describe('shell: spotlight-suggestions', () => {
         await bootShell();
         window.tabManager.tabs.push({ id: 7, url: 'https://mail.google.com/u/0', title: 'Mail' });
         window.tabManager.activeTabId = 7;
-        const suggestions = window.getVEILSpotlightSuggestions();
+        const suggestions = window.getGENYSYSSpotlightSuggestions();
         const titles = suggestions.map((s) => s.title);
         expect(titles).toContain('Focus omnibox');
         expect(titles).toContain('New tab');
@@ -151,9 +151,9 @@ describe('shell: spotlight-suggestions', () => {
         await bootShell();
         window.tabManager.tabs.push({ id: 8, url: 'https://mail.google.com', title: 'Mail' });
         window.tabManager.activeTabId = 8;
-        window.toggleVEILSpotlight();
+        window.toggleGENYSYSSpotlight();
         expect(document.getElementById('spotlight-dropdown').dataset.open).toBe('1');
-        window.renderVEILSpotlight();
+        window.renderGENYSYSSpotlight();
         const feed = document.getElementById('spotlight-feed');
         expect(feed.querySelectorAll('.spotlight-item').length).toBeGreaterThan(0);
 
@@ -167,14 +167,14 @@ describe('shell: spotlight-suggestions', () => {
         feed.querySelector('.spotlight-item').click();
         expect(document.getElementById('spotlight-dropdown').dataset.open).toBe('0');
 
-        window.toggleVEILSpotlight();
+        window.toggleGENYSYSSpotlight();
         document.getElementById('spotlight-close').dispatchEvent(new Event('mousedown', { bubbles: true }));
         expect(document.getElementById('spotlight-dropdown').dataset.open).toBe('0');
 
-        window.toggleVEILSpotlight();
+        window.toggleGENYSYSSpotlight();
         document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
         expect(document.getElementById('spotlight-dropdown').dataset.open).toBe('0');
-        window.closeVEILSpotlight();
+        window.closeGENYSYSSpotlight();
     });
 
     test('copy URL action reports failure through the status bar', async () => {
@@ -182,7 +182,7 @@ describe('shell: spotlight-suggestions', () => {
         navigator.clipboard = { writeText: async () => { throw new Error('denied'); } };
         window.tabManager.tabs.push({ id: 9, url: 'https://copy.test/page', title: 'C' });
         window.tabManager.activeTabId = 9;
-        const suggestions = window.getVEILSpotlightSuggestions();
+        const suggestions = window.getGENYSYSSpotlightSuggestions();
         const copyEntry = suggestions.find((s) => s.title === 'Copy page URL');
         expect(copyEntry).toBeDefined();
         await copyEntry.action();
@@ -193,16 +193,16 @@ describe('shell: spotlight-suggestions', () => {
 describe('shell: capabilities + surfaces-core', () => {
     test('capability map lookups and chip creation', async () => {
         await bootShell();
-        expect(window.getVEILCapability('veil-browser-core')).not.toBeNull();
-        expect(window.isVEILCapabilityAvailable('veil-browser-core')).toBe(true);
-        const chip = window.createVEILChip('Cat', 'category');
-        expect(chip.className).toBe('veil-chip veil-chip-category');
+        expect(window.getGENYSYSCapability('genysys-browser-core')).not.toBeNull();
+        expect(window.isGENYSYSCapabilityAvailable('genysys-browser-core')).toBe(true);
+        const chip = window.createGENYSYSChip('Cat', 'category');
+        expect(chip.className).toBe('genysys-chip genysys-chip-category');
     });
 
-    test('renderVEILCapabilities populates summary, categories, surfaces, items', async () => {
+    test('renderGENYSYSCapabilities populates summary, categories, surfaces, items', async () => {
         await bootShell();
         const manifest = {
-            product: 'VEIL',
+            product: 'GENYSYS',
             catalog_summary: { engines: 8, turbos: 9 },
             surface_defaults: ['window'],
             capabilities: [
@@ -210,14 +210,14 @@ describe('shell: capabilities + surfaces-core', () => {
                 { id: 'b', name: 'Beta', category: 'security', surface: 'policy', status: 'stable', priority: 'low', description: '' },
             ],
         };
-        window.renderVEILCapabilities(manifest);
-        expect(document.getElementById('veil-manifest-summary').textContent).toContain('2 capabilities');
-        expect(document.getElementById('veil-category-list').children.length).toBe(2);
-        expect(document.getElementById('veil-surface-list').children.length).toBe(2);
-        expect(document.getElementById('veil-capability-list').children.length).toBe(2);
+        window.renderGENYSYSCapabilities(manifest);
+        expect(document.getElementById('genysys-manifest-summary').textContent).toContain('2 capabilities');
+        expect(document.getElementById('genysys-category-list').children.length).toBe(2);
+        expect(document.getElementById('genysys-surface-list').children.length).toBe(2);
+        expect(document.getElementById('genysys-capability-list').children.length).toBe(2);
     });
 
-    test('getVEILDownloadSummary partitions by status; non-downloadable URLs refuse', async () => {
+    test('getGENYSYSDownloadSummary partitions by status; non-downloadable URLs refuse', async () => {
         await bootShell();
         window.downloadManager.getDownloads = () => [
             { status: 'downloading' },
@@ -225,17 +225,17 @@ describe('shell: capabilities + surfaces-core', () => {
             { status: 'completed' },
             { status: 'failed' },
         ];
-        const summary = window.getVEILDownloadSummary();
+        const summary = window.getGENYSYSDownloadSummary();
         expect(summary.active).toHaveLength(1);
         expect(summary.paused).toHaveLength(1);
         expect(summary.completed).toHaveLength(1);
         expect(summary.failed).toHaveLength(1);
 
         expect(window.startDownloadFromActiveTab()).toBe(false);
-        window.tabManager.tabs.push({ id: 3, url: 'veil://newtab', title: 'New Tab' });
+        window.tabManager.tabs.push({ id: 3, url: 'genysys://newtab', title: 'New Tab' });
         window.tabManager.activeTabId = 3;
         expect(window.startDownloadFromActiveTab()).toBe(false);
-        window.tabManager.tabs[0].url = 'https://veil.test/page';
+        window.tabManager.tabs[0].url = 'https://genysys.test/page';
         window.downloadManager.startDownload = () => ({ filename: 'page' });
         expect(window.startDownloadFromActiveTab()).toBe(true);
     });
@@ -259,7 +259,7 @@ describe('shell: capabilities + surfaces-core', () => {
         expect(window.setThemeState('dark', { statusMessage: 'Theme set' })).toBe('dark');
         expect(select.value).toBe('dark');
         expect(document.getElementById('status-text').textContent).toBe('Theme set');
-        expect(window.setThemeState('light', { fromVEIL: true })).toBe('light');
+        expect(window.setThemeState('light', { fromGENYSYS: true })).toBe('light');
         expect(document.getElementById('status-text').textContent).toContain('Light');
     });
 
@@ -278,31 +278,31 @@ describe('shell: sidebar-render', () => {
     test('state badge helpers set text and dataset', async () => {
         await bootShell();
         const el = document.createElement('span');
-        window.setVEILSidebarStateBadge(el, 'Ready', 'ready');
+        window.setGENYSYSSidebarStateBadge(el, 'Ready', 'ready');
         expect(el.textContent).toBe('Ready');
         expect(el.dataset.state).toBe('ready');
-        window.setVEILSidebarStateBadgeFromCapability(el, 'veil-browser-core');
+        window.setGENYSYSSidebarStateBadgeFromCapability(el, 'genysys-browser-core');
         expect(el.textContent).toBe('Ready');
-        window.setVEILSidebarStateBadgeFromCapability(el, 'no-such-capability', 'Ready', 'ready', 'Offline');
+        window.setGENYSYSSidebarStateBadgeFromCapability(el, 'no-such-capability', 'Ready', 'ready', 'Offline');
         expect(el.textContent).toBe('Offline');
     });
 
     test('surface availability hides and disables per the rules', async () => {
         await bootShell();
-        window.veilRuntime.manifest = { capabilities: [] };
-        window.veilRuntime.capabilities = new Map();
-        window.updateVEILSurfaceAvailability(window.veilRuntime.manifest);
+        window.genysysRuntime.manifest = { capabilities: [] };
+        window.genysysRuntime.capabilities = new Map();
+        window.updateGENYSYSSurfaceAvailability(window.genysysRuntime.manifest);
         expect(document.getElementById('new-tab-btn').hidden).toBe(true);
         expect(document.getElementById('clear-history-btn').disabled).toBe(true);
-        window.veilRuntime.capabilities = new Map([
-            ['veil-browser-core', stableCapability('veil-browser-core', 'browser', 'browser')],
-            ['veil-history', stableCapability('veil-history', 'browser', 'sidebar')],
+        window.genysysRuntime.capabilities = new Map([
+            ['genysys-browser-core', stableCapability('genysys-browser-core', 'browser', 'browser')],
+            ['genysys-history', stableCapability('genysys-history', 'browser', 'sidebar')],
         ]);
-        window.updateVEILSurfaceAvailability(window.veilRuntime.manifest);
+        window.updateGENYSYSSurfaceAvailability(window.genysysRuntime.manifest);
         expect(document.getElementById('new-tab-btn').hidden).toBe(false);
         expect(document.getElementById('clear-history-btn').disabled).toBe(false);
-        window.refreshVEILSidebarConnectionState();
-        window.refreshVEILSidebarFeeds();
+        window.refreshGENYSYSSidebarConnectionState();
+        window.refreshGENYSYSSidebarFeeds();
     });
 
     test('settings section availability activates the first enabled tab', async () => {
@@ -320,11 +320,11 @@ describe('shell: sidebar-render', () => {
         sections.forEach(() => { });
     });
 
-    test('hasAnyVEILCapability matches through the runtime map', async () => {
+    test('hasAnyGENYSYSCapability matches through the runtime map', async () => {
         await bootShell();
-        window.veilRuntime.capabilities = new Map([['veil-search', { id: 'veil-search', status: 'stable' }]]);
-        expect(window.hasAnyVEILCapability(['veil-nope', 'veil-search'])).toBe(true);
-        expect(window.hasAnyVEILCapability(['veil-nope'])).toBe(false);
+        window.genysysRuntime.capabilities = new Map([['genysys-search', { id: 'genysys-search', status: 'stable' }]]);
+        expect(window.hasAnyGENYSYSCapability(['genysys-nope', 'genysys-search'])).toBe(true);
+        expect(window.hasAnyGENYSYSCapability(['genysys-nope'])).toBe(false);
     });
 });
 

@@ -20,7 +20,7 @@ export function memoryReclaim() {
         window.gc();
       } catch { /* ignore */ }
     }
-    window.dispatchEvent(new CustomEvent('veil:memory-reclaim'));
+    window.dispatchEvent(new CustomEvent('genysys:memory-reclaim'));
   }
 
   return {

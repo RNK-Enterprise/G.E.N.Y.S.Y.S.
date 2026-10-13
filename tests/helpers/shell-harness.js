@@ -1,5 +1,5 @@
 /**
- * VEIL™ — jsdom shell harness
+ * GENYSYS™ — jsdom shell harness
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * Boots the real index.html markup inside jsdom, stubs the Tauri bridge and
@@ -85,7 +85,7 @@ export function stubTauri(overrides = {}) {
                 case 'get_session_info':
                     return { accessTier: 'agent', shortcode: 'stub', deviceVerified: true, authenticated: true };
                 case 'check_lisa_health':
-                case 'check_veil_health':
+                case 'check_genysys_health':
                     return { connected: true, mode: 'local', localPolicy: true, lisaUrl: '' };
                 case 'command_session_status':
                     return { phase: 'closed' };
@@ -137,8 +137,8 @@ const __originalAdd = EventTarget.prototype.addEventListener;
 const __originalRemove = EventTarget.prototype.removeEventListener;
 const __tracked = [];
 
-if (!globalThis.__veilListenerAuditInstalled) {
-    globalThis.__veilListenerAuditInstalled = true;
+if (!globalThis.__genysysListenerAuditInstalled) {
+    globalThis.__genysysListenerAuditInstalled = true;
     EventTarget.prototype.addEventListener = function (type, handler, opts) {
         __tracked.push({ target: this, type, handler, opts });
         return __originalAdd.call(this, type, handler, opts);
@@ -153,37 +153,37 @@ export function drainListeners() {
             __originalRemove.call(target, type, handler, opts);
         } catch { /* target already gone */ }
     }
-    for (const key of ['__veilWindowControlsBound', '__veilBooted', '__veilAuthenticated', 'veilAuthSession', 'tabWindowBridge']) {
+    for (const key of ['__genysysWindowControlsBound', '__genysysBooted', '__genysysAuthenticated', 'genysysAuthSession', 'tabWindowBridge']) {
         try { delete window[key]; } catch { /* non-configurable */ }
     }
 }
 
 export function stableCapability(id, category, surface) {
-    return { id, name: id, kind: 'engine', category, status: 'stable', surface, priority: 'core', description: id, requires_auth: false, requires_network: false, dependencies: [], fallback: 'local', owner: 'veil-local', version: '0.1.0', tags: [] };
+    return { id, name: id, kind: 'engine', category, status: 'stable', surface, priority: 'core', description: id, requires_auth: false, requires_network: false, dependencies: [], fallback: 'local', owner: 'genysys-local', version: '0.1.0', tags: [] };
 }
 
 export function catalogManifest() {
     return {
         manifest_version: '3.0',
-        product: 'VEIL',
-        catalog_summary: { engines: '8', turbos: '9', live_turbos: '9', stubs: '0', mode: 'catalog', source: 'VEIL' },
+        product: 'GENYSYS',
+        catalog_summary: { engines: '8', turbos: '9', live_turbos: '9', stubs: '0', mode: 'catalog', source: 'GENYSYS' },
         capabilities: [
-            stableCapability('veil-browser-core', 'browser', 'browser'),
-            stableCapability('veil-security-stack', 'security', 'policy'),
-            stableCapability('veil-performance-stack', 'performance', 'performance-panel'),
-            stableCapability('veil-privacy-stack', 'privacy', 'browser'),
-            stableCapability('veil-downloads', 'browser', 'sidebar'),
-            stableCapability('veil-bookmarks', 'browser', 'sidebar'),
-            stableCapability('veil-history', 'browser', 'sidebar'),
-            stableCapability('veil-settings', 'browser', 'settings'),
+            stableCapability('genysys-browser-core', 'browser', 'browser'),
+            stableCapability('genysys-security-stack', 'security', 'policy'),
+            stableCapability('genysys-performance-stack', 'performance', 'performance-panel'),
+            stableCapability('genysys-privacy-stack', 'privacy', 'browser'),
+            stableCapability('genysys-downloads', 'browser', 'sidebar'),
+            stableCapability('genysys-bookmarks', 'browser', 'sidebar'),
+            stableCapability('genysys-history', 'browser', 'sidebar'),
+            stableCapability('genysys-settings', 'browser', 'settings'),
         ],
         engines: [],
         turbos: [],
     };
 }
 
-export function realVEILManifest() {
-    return JSON.parse(fs.readFileSync(path.join(ROOT, 'public', 'veil-manifest.json'), 'utf8'));
+export function realGENYSYSManifest() {
+    return JSON.parse(fs.readFileSync(path.join(ROOT, 'public', 'genysys-manifest.json'), 'utf8'));
 }
 
 export async function bootShell({ tauri = null, fetchImpl = null, skipModules = [] } = {}) {
@@ -238,11 +238,11 @@ export async function bootShell({ tauri = null, fetchImpl = null, skipModules = 
         await import(url.pathToFileURL(path.join(ROOT, 'src', mod)).href);
     }
 
-    const runtime = window.veilRuntime;
+    const runtime = window.genysysRuntime;
     const manifest = await runtime.start({ getTabs: () => window.tabManager?.tabs || [] });
     runtime.manifest = manifest;
     runtime.capabilities = new Map((manifest.capabilities || []).map((capability) => [capability.id, capability]));
-    window.veilManifest = manifest;
+    window.genysysManifest = manifest;
 
     return {
         tauri: window.__TAURI__,
@@ -258,7 +258,7 @@ export async function bootShell({ tauri = null, fetchImpl = null, skipModules = 
         loading: window.loadingManager,
         tabManager: window.tabManager,
         perfMonitor: window.perfMonitor,
-        runtime: window.veilRuntime,
+        runtime: window.genysysRuntime,
     };
 }
 

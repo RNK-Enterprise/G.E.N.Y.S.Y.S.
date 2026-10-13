@@ -1,12 +1,12 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 /**
- * RNK VEIL™ — P.R.O.T.E.C.T.S.-Governed Privacy Browser (standalone)
+ * RNK GENYSYS™ — P.R.O.T.E.C.T.S.-Governed Privacy Browser (standalone)
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * Every navigation is cleared through embedded P.R.O.T.E.C.T.S. policy
- * (fail-closed). Remote overlay is optional. VEIL stands alone.
- * VEIL is RNK's ONLY client; C.O.M.M.A.N.D. (Resolute) is the master key.
+ * (fail-closed). Remote overlay is optional. GENYSYS stands alone.
+ * GENYSYS is RNK's ONLY client; C.O.M.M.A.N.D. (Resolute) is the master key.
  */
 
 mod attestation;
@@ -189,7 +189,7 @@ async fn navigate_tab(
     }
 
     let _ = window.emit(
-        "veil:navigate",
+        "genysys:navigate",
         serde_json::json!({
             "tabId": tab_id,
             "url": url,
@@ -211,7 +211,7 @@ fn create_tab(state: State<'_, AppState>) -> Result<Tab, String> {
 
     let tab = Tab {
         id,
-        url: "veil://newtab".into(),
+        url: "genysys://newtab".into(),
         title: "New Tab".into(),
         context: TabContext::Normal,
         loading: false,
@@ -291,7 +291,7 @@ fn set_session(
 #[tauri::command]
 fn get_session_info(state: State<'_, AppState>) -> Result<serde_json::Value, String> {
     // NOTE: get_policy_headers (command_gate.rs) is the attestation issuer;
-    // RNK products refuse requests lacking X-VEIL-Client / X-VEIL-Session.
+    // RNK products refuse requests lacking X-GENYSYS-Client / X-GENYSYS-Session.
     let s = state.session.lock().map_err(|e| e.to_string())?;
     Ok(serde_json::json!({
         "accessTier": s.access_tier,
@@ -345,7 +345,7 @@ fn window_minimize(window: Window) -> Result<(), String> {
 /// "webview never loaded the page" from "page loaded but JS is broken".
 #[tauri::command]
 fn log_boot(marker: String) {
-    eprintln!("[veil:boot] frontend ready ({})", marker);
+    eprintln!("[genysys:boot] frontend ready ({})", marker);
 }
 
 #[tauri::command]
@@ -375,7 +375,7 @@ fn main() {
     // creation happens before the setup hook runs, and on GPU-less CI runners
     // WebKitGTK init can wedge there — headless verification must observe the
     // gate without depending on webview init succeeding.
-    println!("VEIL™ v0.1.0 — P.R.O.T.E.C.T.S.-governed browser (RNK's only client)");
+    println!("GENYSYS™ v0.1.0 — P.R.O.T.E.C.T.S.-governed browser (RNK's only client)");
     let gate_lisa_url = resolve_lisa_url();
     if gate_lisa_url.is_empty() {
         println!("P.R.O.T.E.C.T.S. mode: embedded local policy (fail-closed)");
@@ -456,7 +456,7 @@ fn main() {
             // the __initialized handshake, so seeing this line means the page
             // loaded AND tauri IPC is alive in that window.
             eprintln!(
-                "[veil:page] {} page initialized: {}",
+                "[genysys:page] {} page initialized: {}",
                 window.label(),
                 payload.url()
             );
@@ -465,7 +465,7 @@ fn main() {
             if let Some(window) = tauri::Manager::get_window(_app, "main") {
                 let size = window.outer_size().unwrap_or_default();
                 eprintln!(
-                    "[veil:mainwin] main window live ({}x{} visible={})",
+                    "[genysys:mainwin] main window live ({}x{} visible={})",
                     size.width,
                     size.height,
                     window.is_visible().unwrap_or(false)
@@ -481,5 +481,5 @@ fn main() {
             Ok(())
         })
         .run(tauri::generate_context!())
-        .expect("error running VEIL");
+        .expect("error running GENYSYS");
 }

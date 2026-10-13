@@ -139,29 +139,31 @@ How she factors into the whole: Lisa is the mind of the stack. Standalone first,
 
 Sources used (additive, not overwritten): Evidence Package Canonical Source of Truth / LISA_COMPLETE_SYSTEM_PROFILE.md; LISA_ATLAS_TECHNICAL_DEFINITION.md; Lisa/STACK_FULL_CONTEXT.md; Lisa/README.md; Docs/CURRENT_TRUTH.md; Docs/02_Technical/RNK_Whitepaper.md; Docs/11_Sales_Marketing/RNK_HALO_CAPABILITY_BRIEF.md; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md; lisa-personality-profile.md.
 
-06: What is Axis
+06: What is G.E.N.Y.S.Y.S. (Genysys)
 
-Axis is a web browser. That is the definition.
+Genysys is a web browser. That is the definition.
 
-It is RNK’s own desktop browser: tabs, omnibox, bookmarks, history, downloads, settings, and a system webview that loads pages. Package name is rnk-axis. It is a Tauri client (Rust + JS, Edge/Safari/Chrome webview). Thin-client target is 8–10MB. The first section in the live UI is labeled Browser. It is the trusted browser so agents do not open Raven or Echonet in Chrome.
+It is RNK’s own desktop browser: tabs, omnibox, bookmarks, history, downloads, settings, and a system webview that loads pages. Package name is `rnk-genysys`. Bundle id `com.rnk.genysys`. Tree: `/media/odinn/privacy-sys/G.E.N.Y.S.Y.S.`. It is a Tauri client (Rust + JS / WebKit). The first section in the live UI is labeled Browser. It is the trusted browser so agents do not open Raven or Echonet in Chrome.
 
-It is also the single controlled access environment for the platform, because this browser is the only intended client. Mother Lisa is the gate on the browser, not a replacement for the browser. After auth, the same window holds Lisa, Operations, People, Comms, Server Control, and Admin. Raven and Echonet are pages/webviews inside this browser. Lisa-bridge logs every tab, navigation, and action.
+It is also the single controlled access environment for the platform, because this browser is the only intended client. C.O.M.M.A.N.D. / Resolute grants the session; P.R.O.T.E.C.T.S. policy clears every navigation fail-closed. After auth, the same window holds P.R.O.T.E.C.T.S. health, Operations, People, Comms, Server Control, and Admin. Raven and Echonet are pages/webviews inside this browser.
+
+**Naming history (locked 2026-10-12):** Atlas Browser → Axis → V.E.I.L. → **G.E.N.Y.S.Y.S. / Genysys** (the beginning). Do not conflate with **Obfuscation Veil Array** (P.R.O.T.E.C.T.S. Seat-2 organ). Wire scheme `genysys://`; attestation headers `X-GENYSYS-*`; cookie `genysys_attest`.
 
 Who uses this browser:
-- Creator: full browser + full ops plane. 4-layer biosig (fingerprint → jump drive → face/voice → session). HeartbeatMonitor armed. Session is Mother Lisa’s session; heartbeat drop closes every tab.
-- Agents in the field: tenant-scoped Axis browser. Biosig via Field App over UWB / BLE / QR. Their Raven and Echonet only.
-- Agencies do not use the Axis browser. They use a normal browser against Raven and Echonet (FIDO2 or biosig by tier).
+- Creator: full browser + full ops plane. 4-layer biosig (fingerprint → jump drive → face/voice → session). HeartbeatMonitor armed. Session is C.O.M.M.A.N.D.-gated; heartbeat drop closes every tab.
+- Agents in the field: tenant-scoped Genysys browser. Biosig via Field App over UWB / BLE / QR. Their Raven and Echonet only.
+- Agencies use Genysys for RNK product surfaces (Odinn 2026-09-06 supersede). Public marketing may stay world-readable; login/API refuse a normal browser.
 
 What it is not:
 - Not Chrome/Firefox/Brave with a skin. It is RNK’s browser.
-- Not DoomsDay / Atlas / VQ runtime. Older “Atlas Browser” README language is historical naming for this same Axis browser.
-- Not Mother Lisa (Q08). Mother Lisa lives in the browser; Axis is the browser.
-- Not the Foundry public performance browser. That is a split product. Shared physical server only. Nothing else shared — not paths, not ports.
+- Not DoomsDay / Atlas / VQ runtime. Older “Atlas Browser” / Axis / V.E.I.L. README language is historical naming for this same browser.
+- Not Mother Lisa / C.O.M.M.A.N.D. (Q08). The key app opens the session; Genysys is the browser.
+- Not Obfuscation Veil Array (Seat-2 gauntlet / honeypot).
+- Not the Foundry public performance browser. That is a split product.
 
-How it factors into the whole: Axis is the browser the stack is used through. Lisa is the mind behind it. Raven and Echonet are sites/apps it opens under that session. Built and fixed only inside the Axis directory. Standalone first, then combined under Echonet.
+How it factors into the whole: Genysys is the browser the stack is used through. P.R.O.T.E.C.T.S. is the mind/policy behind it. Raven and Echonet are sites/apps it opens under that session. Built and fixed only inside the `G.E.N.Y.S.Y.S.` directory.
 
-Sources used (additive, not overwritten): Evidence Package Canonical Source of Truth / AXIS_ARCHITECTURE.md; Axis/package.json; Axis/src/index.html; Axis/src/main.js; Axis/README.md (historical Atlas-browser naming); Docs/02_Technical/RNK_System_Architecture.md; Lisa/STACK_FULL_CONTEXT.md; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md.
-[Tree note: the browser tree V.E.I.L. carries the Axis→VEIL rebrand (package rnk-veil) with Odinn's 2026-09-06 attestation supersede — see V.E.I.L./Rules and Guidelines.md Q06. Fleet-wide VEIL naming is pending Odinn's ruling; this canonical keeps Axis until then.]
+Sources used (additive, not overwritten): GENYSYS.md; package.json (`rnk-genysys`); Evidence Package AXIS_ARCHITECTURE.md (historical); Docs/02_Technical/RNK_System_Architecture.md.
 
 12: What is Mail
 
@@ -287,7 +289,7 @@ What it is:
 - Collectors in the Halo directory: UI tree, file system, events, runtime, network, media, credentials, location.
 - Exfil goes out through the Ghost / Cyphur / Phantom chain. Lisa shreds/watches on the far side. Data is meant to live off-device, memory-only on the target, then wipe.
 - Kill-chain is part of the product. Not a comms client.
-- Locked name in threads: Genysys Halo after other names were rejected. Product surface is Halo. Do not call the product Genysys.
+- Locked name in threads: Halo (older “Veil Halo” trial name rejected). Product surface is Halo. Do not call Halo “Genysys” — Genysys is the browser (Q06).
 
 What it is not:
 - Not Ghost Comms. Ghost is the pipe Halo exfils through.

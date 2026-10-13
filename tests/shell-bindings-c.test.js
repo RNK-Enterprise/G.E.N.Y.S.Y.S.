@@ -3,7 +3,7 @@
  */
 
 /**
- * VEIL™ — bindings coverage (chrome-bindings-c, section-nav, bind-helpers)
+ * GENYSYS™ — bindings coverage (chrome-bindings-c, section-nav, bind-helpers)
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -18,7 +18,7 @@ import {
 } from './helpers/shell-harness.js';
 
 function stopRuntime() {
-    try { window.veilRuntime?.stop(); } catch { /* not started */ }
+    try { window.genysysRuntime?.stop(); } catch { /* not started */ }
 }
 
 beforeEach(() => {
@@ -49,18 +49,18 @@ describe('shell: chrome-bindings-c', () => {
         expect(document.getElementById('bookmark-btn').textContent).toBe('☆');
     });
 
-    test('veil-status click stops and starts the runtime with status text', async () => {
+    test('genysys-status click stops and starts the runtime with status text', async () => {
         await bootShell();
-        const status = document.getElementById('veil-status');
-        window.veilRuntime.connected = true;
+        const status = document.getElementById('genysys-status');
+        window.genysysRuntime.connected = true;
         status.click();
-        expect(window.veilRuntime.connected).toBe(false);
-        expect(document.getElementById('status-text').textContent).toBe('VEIL Runtime stopped');
-        window.veilRuntime.connected = false;
+        expect(window.genysysRuntime.connected).toBe(false);
+        expect(document.getElementById('status-text').textContent).toBe('GENYSYS Runtime stopped');
+        window.genysysRuntime.connected = false;
         await status.click();
         await new Promise((resolve) => setTimeout(resolve, 0));
-        expect(window.veilRuntime.connected).toBe(true);
-        expect(document.getElementById('status-text').textContent).toBe('VEIL Runtime online');
+        expect(window.genysysRuntime.connected).toBe(true);
+        expect(document.getElementById('status-text').textContent).toBe('GENYSYS Runtime online');
     });
 
     test('keyboard shortcuts drive tab lifecycle and helpers', async () => {
@@ -115,9 +115,9 @@ describe('shell: chrome-bindings-c', () => {
         press({ key: 'I', ctrlKey: true, shiftKey: true, bubbles: true });
         expect(window.invoke).toHaveBeenCalledWith('open_devtools');
 
-        window.toggleVEILSpotlight = jest.fn();
+        window.toggleGENYSYSSpotlight = jest.fn();
         press({ key: 'k', ctrlKey: true, bubbles: true });
-        expect(window.toggleVEILSpotlight).toHaveBeenCalled();
+        expect(window.toggleGENYSYSSpotlight).toHaveBeenCalled();
     });
 
     test('loadSettings populates every settings input from defaults', async () => {
@@ -131,7 +131,7 @@ describe('shell: chrome-bindings-c', () => {
     test('saveSettings writes changed inputs back through settingsManager', async () => {
         await bootShell();
         window.openSettings();
-        document.getElementById('setting-homepage').value = 'veil://home';
+        document.getElementById('setting-homepage').value = 'genysys://home';
         document.getElementById('setting-theme').value = 'light';
         document.getElementById('setting-font-size').value = 'large';
         document.getElementById('setting-show-status-bar').checked = false;
@@ -140,12 +140,12 @@ describe('shell: chrome-bindings-c', () => {
         document.getElementById('setting-enable-dnt').checked = true;
         document.getElementById('setting-clear-history').checked = true;
         document.getElementById('setting-hardware-accel').checked = false;
-        document.getElementById('setting-veil-engines').checked = false;
+        document.getElementById('setting-genysys-engines').checked = false;
         document.getElementById('setting-preload-pages').checked = false;
         document.getElementById('setting-cache-size').value = '256';
         document.getElementById('setting-dev-tools').checked = true;
         document.getElementById('setting-experimental').checked = true;
-        document.getElementById('setting-user-agent').value = 'VEILTest/1.0';
+        document.getElementById('setting-user-agent').value = 'GENYSYSTest/1.0';
         document.getElementById('setting-show-bookmarks-bar').checked = false;
         document.getElementById('setting-search-engine').value = 'bing';
         document.getElementById('setting-new-tab').value = 'blank';
@@ -154,7 +154,7 @@ describe('shell: chrome-bindings-c', () => {
         input.dispatchEvent(new Event('change', { bubbles: true }));
 
         const settings = window.settingsManager.getAll();
-        expect(settings.general.homepage).toBe('veil://home');
+        expect(settings.general.homepage).toBe('genysys://home');
         expect(settings.appearance.theme).toBe('light');
         expect(settings.appearance.fontSize).toBe('large');
         expect(settings.appearance.showStatusBar).toBe(false);
@@ -163,12 +163,12 @@ describe('shell: chrome-bindings-c', () => {
         expect(settings.privacy.enableDNT).toBe(true);
         expect(settings.privacy.clearHistoryOnExit).toBe(true);
         expect(settings.performance.enableHardwareAcceleration).toBe(false);
-        expect(settings.performance.enableVEILEngines).toBe(false);
+        expect(settings.performance.enableGENYSYSEngines).toBe(false);
         expect(settings.performance.preloadPages).toBe(false);
         expect(settings.performance.maxCacheSize).toBe(256);
         expect(settings.advanced.enableDevTools).toBe(true);
         expect(settings.advanced.enableExperimentalFeatures).toBe(true);
-        expect(settings.advanced.customUserAgent).toBe('VEILTest/1.0');
+        expect(settings.advanced.customUserAgent).toBe('GENYSYSTest/1.0');
         expect(settings.general.showBookmarksBar).toBe(false);
         expect(settings.general.searchEngine).toBe('bing');
         expect(settings.general.newTabBehavior).toBe('blank');
@@ -183,16 +183,16 @@ describe('shell: chrome-bindings-c', () => {
         expect(document.querySelector('.settings-section[data-section="appearance"]').classList.contains('active')).toBe(true);
     });
 
-    test('applyVEILRuntimeStatus styles indicator, perf veil, and status text', async () => {
+    test('applyGENYSYSRuntimeStatus styles indicator, perf genysys, and status text', async () => {
         await bootShell();
-        window.applyVEILRuntimeStatus(true, 'All good');
+        window.applyGENYSYSRuntimeStatus(true, 'All good');
         expect(document.getElementById('status-text').textContent).toBe('All good');
-        expect(document.getElementById('perf-veil').textContent).toBe('Connected');
-        window.applyVEILRuntimeStatus(false);
-        expect(document.getElementById('perf-veil').textContent).toBe('Disconnected');
-        const status = document.getElementById('veil-status');
+        expect(document.getElementById('perf-genysys').textContent).toBe('Connected');
+        window.applyGENYSYSRuntimeStatus(false);
+        expect(document.getElementById('perf-genysys').textContent).toBe('Disconnected');
+        const status = document.getElementById('genysys-status');
         expect(status.classList.contains('connected')).toBe(false);
-        window.setVEILStatusIndicator(true);
+        window.setGENYSYSStatusIndicator(true);
         expect(status.classList.contains('connected')).toBe(true);
     });
 });
@@ -214,7 +214,7 @@ describe('shell: section-nav + bind-helpers', () => {
         expect(document.getElementById('lisa-section-mount').innerHTML).toContain('P.R.O.T.E.C.T.S.');
         window.activateSection('admin');
         expect(document.getElementById('admin-section-mount').innerHTML).toContain('Lisa authorization required');
-        window.veilAuthSession = { tier: 'dev' };
+        window.genysysAuthSession = { tier: 'dev' };
         window.activateSection('admin');
         expect(document.getElementById('admin-section-mount').innerHTML).toContain('Ops Plane');
     });
@@ -229,10 +229,10 @@ describe('shell: section-nav + bind-helpers', () => {
         expect(document.getElementById('rnk-webview-comms').innerHTML).toContain('echonet.rnk-enterprise.us');
     });
 
-    test('section-nav click routing and the veil:section-changed event', async () => {
+    test('section-nav click routing and the genysys:section-changed event', async () => {
         await bootShell();
         const events = [];
-        document.addEventListener('veil:section-changed', (e) => events.push(e.detail.sectionId));
+        document.addEventListener('genysys:section-changed', (e) => events.push(e.detail.sectionId));
         const btn = document.querySelector('.section-nav-btn[data-section="server-control"]');
         btn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
         expect(window.activeSection).toBe('server-control');

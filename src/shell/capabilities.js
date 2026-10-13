@@ -1,31 +1,31 @@
 /**
- * VEIL™ — extracted from main.js
+ * GENYSYS™ — extracted from main.js
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
-function getVEILCapability(capabilityId) {
-    return window.veilRuntime.capabilities.get(capabilityId) || null;
+function getGENYSYSCapability(capabilityId) {
+    return window.genysysRuntime.capabilities.get(capabilityId) || null;
 }
 
-window.isVEILCapabilityAvailable = function isVEILCapabilityAvailable(capabilityId) {
-    const capability = getVEILCapability(capabilityId);
+window.isGENYSYSCapabilityAvailable = function isGENYSYSCapabilityAvailable(capabilityId) {
+    const capability = getGENYSYSCapability(capabilityId);
     return Boolean(capability && capability.status !== 'experimental');
 }
 
-window.getVEILCapability = getVEILCapability;
+window.getGENYSYSCapability = getGENYSYSCapability;
 
-function createVEILChip(label, tone = 'neutral') {
+function createGENYSYSChip(label, tone = 'neutral') {
     const chip = document.createElement('span');
-    chip.className = `veil-chip veil-chip-${tone}`;
+    chip.className = `genysys-chip genysys-chip-${tone}`;
     chip.textContent = label;
     return chip;
 }
 
-function renderVEILCapabilities(manifest) {
-    const summary = document.getElementById('veil-manifest-summary');
-    const categoryList = document.getElementById('veil-category-list');
-    const surfaceList = document.getElementById('veil-surface-list');
-    const capabilityList = document.getElementById('veil-capability-list');
+function renderGENYSYSCapabilities(manifest) {
+    const summary = document.getElementById('genysys-manifest-summary');
+    const categoryList = document.getElementById('genysys-category-list');
+    const surfaceList = document.getElementById('genysys-surface-list');
+    const capabilityList = document.getElementById('genysys-capability-list');
 
     if (!summary || !categoryList || !surfaceList || !capabilityList) return;
 
@@ -36,16 +36,16 @@ function renderVEILCapabilities(manifest) {
         ...capabilities.map(capability => capability.surface).filter(Boolean)
     ])].sort();
 
-    summary.textContent = `${capabilities.length} capabilities loaded from ${manifest.product || 'VEIL'} (${manifest.catalog_summary?.engines || 'unknown'} engines, ${manifest.catalog_summary?.turbos || 'unknown'} turbos)`;
+    summary.textContent = `${capabilities.length} capabilities loaded from ${manifest.product || 'GENYSYS'} (${manifest.catalog_summary?.engines || 'unknown'} engines, ${manifest.catalog_summary?.turbos || 'unknown'} turbos)`;
 
     categoryList.innerHTML = '';
     categories.forEach(category => {
-        categoryList.appendChild(createVEILChip(category, 'category'));
+        categoryList.appendChild(createGENYSYSChip(category, 'category'));
     });
 
     surfaceList.innerHTML = '';
     surfaces.forEach(surface => {
-        surfaceList.appendChild(createVEILChip(surface, 'surface'));
+        surfaceList.appendChild(createGENYSYSChip(surface, 'surface'));
     });
 
     capabilityList.innerHTML = '';
@@ -56,13 +56,13 @@ function renderVEILCapabilities(manifest) {
 
     sortedCapabilities.forEach(capability => {
         const item = document.createElement('div');
-        item.className = 'veil-capability-item';
+        item.className = 'genysys-capability-item';
         item.innerHTML = `
-            <div class="veil-capability-meta">
+            <div class="genysys-capability-meta">
                 <strong>${capability.name}</strong>
                 <span>${capability.id}</span>
             </div>
-            <div class="veil-capability-details">
+            <div class="genysys-capability-details">
                 <span>${capability.category}</span>
                 <span>${capability.surface}</span>
                 <span>${capability.status}</span>
@@ -74,8 +74,8 @@ function renderVEILCapabilities(manifest) {
     });
 }
 
-// Single export block — createSidebarCapabilityCard was removed with the VEIL
+// Single export block — createSidebarCapabilityCard was removed with the GENYSYS
 // SHELL sidebar DOM (it was its only consumer).
-window.getVEILCapability = getVEILCapability;
-window.createVEILChip = createVEILChip;
-window.renderVEILCapabilities = renderVEILCapabilities;
+window.getGENYSYSCapability = getGENYSYSCapability;
+window.createGENYSYSChip = createGENYSYSChip;
+window.renderGENYSYSCapabilities = renderGENYSYSCapabilities;

@@ -49,25 +49,25 @@
 }
 
 /* Section panels */
-.veil-section {
+.genysys-section {
     display: flex;
     flex-direction: column;
     flex: 1;
     overflow: hidden;
 }
 
-.veil-section.hidden {
+.genysys-section.hidden {
     display: none !important;
 }
 
-.veil-section-inner {
+.genysys-section-inner {
     flex: 1;
     display: flex;
     flex-direction: column;
     overflow: auto;
 }
 
-.veil-section-placeholder {
+.genysys-section-placeholder {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -78,25 +78,25 @@
     padding: 40px;
 }
 
-.veil-section-icon {
+.genysys-section-icon {
     font-size: 48px;
     opacity: 0.3;
 }
 
-.veil-section-placeholder h2 {
+.genysys-section-placeholder h2 {
     font-size: 20px;
     font-weight: 600;
     color: var(--text-primary);
     margin: 0;
 }
 
-.veil-section-placeholder p {
+.genysys-section-placeholder p {
     font-size: 13px;
     margin: 0;
     opacity: 0.7;
 }
 
-.veil-section-coming-soon {
+.genysys-section-coming-soon {
     font-size: 11px !important;
     color: var(--brand-gold) !important;
     opacity: 1 !important;

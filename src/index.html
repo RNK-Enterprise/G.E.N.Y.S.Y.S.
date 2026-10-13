@@ -3,45 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VEIL</title>
-    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+    <title>GENYSYS</title>
+    <link rel="icon" type="image/svg+xml" href="assets/GENYSYS.svg">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <!-- Startup Auth Gate — shown before browser loads -->
-    <div id="veil-auth-gate">
-        <div class="veil-auth-card" id="veil-auth-card">
-            <div class="veil-auth-brand">
-                <div class="veil-auth-logo"><img src="assets/logo.svg" alt="" width="28" height="28"></div>
-                <div class="veil-auth-title">VEIL</div>
-                <div class="veil-auth-subtitle">Secure Access Required</div>
+    <div id="genysys-auth-gate">
+        <div class="genysys-auth-card" id="genysys-auth-card">
+            <div class="genysys-auth-brand">
+                <div class="genysys-auth-logo"><img src="assets/GENYSYS.svg" alt="" width="28" height="28"></div>
+                <div class="genysys-auth-title">GENYSYS</div>
+                <div class="genysys-auth-subtitle">Secure Access Required</div>
             </div>
-            <form class="veil-auth-form" id="veil-auth-form" autocomplete="off">
-                <div class="veil-auth-input-wrap">
+            <form class="genysys-auth-form" id="genysys-auth-form" autocomplete="off">
+                <div class="genysys-auth-input-wrap">
                     <input
                         type="password"
-                        id="veil-auth-input"
+                        id="genysys-auth-input"
                         placeholder="Enter access code…"
                         autocomplete="new-password"
                         spellcheck="false"
                     />
-                    <button type="button" class="veil-auth-toggle-vis" id="veil-auth-vis-btn" title="Show/hide">👁</button>
+                    <button type="button" class="genysys-auth-toggle-vis" id="genysys-auth-vis-btn" title="Show/hide">👁</button>
                 </div>
-                <div id="veil-auth-error"></div>
-                <button type="submit" id="veil-auth-submit">Authenticate</button>
+                <div id="genysys-auth-error"></div>
+                <button type="submit" id="genysys-auth-submit">Authenticate</button>
             </form>
-            <div class="veil-auth-footer">VEIL · Authorized Personnel Only</div>
+            <div class="genysys-auth-footer">GENYSYS · Authorized Personnel Only</div>
         </div>
     </div>
 
     <!-- Custom Window Chrome. Drag only the left brand strip so min/max/close stay clickable. -->
     <div id="titlebar">
         <div class="titlebar-left" data-tauri-drag-region>
-            <img src="assets/logo.svg" alt="VEIL" class="logo">
-            <span class="window-title">VEIL</span>
+            <img src="assets/GENYSYS.svg" alt="GENYSYS" class="logo">
+            <span class="window-title">GENYSYS</span>
         </div>
         <div class="titlebar-center">
-            <nav id="section-nav" aria-label="VEIL sections">
+            <nav id="section-nav" aria-label="GENYSYS sections">
                 <div class="section-nav-group">
                     <button class="section-nav-btn active" data-section="browser" title="Browser">Browser</button>
                     <button class="section-nav-btn" data-section="lisa" title="Lisa">Lisa</button>
@@ -63,7 +63,7 @@
                         <input type="text" id="spotlight-search" placeholder="Filter actions…" autocomplete="off" spellcheck="false" />
                         <button type="button" id="spotlight-close" class="spotlight-close" title="Close" aria-label="Close">×</button>
                     </div>
-                    <p id="spotlight-context-line" class="spotlight-context-line">VEIL watches the active tab and suggests the best next action.</p>
+                    <p id="spotlight-context-line" class="spotlight-context-line">GENYSYS watches the active tab and suggests the best next action.</p>
                     <div id="spotlight-feed" class="spotlight-feed"></div>
                 </div>
             </div>
@@ -81,7 +81,7 @@
     </div>
 
     <!-- Section: Browser (wraps existing browser chrome) -->
-    <div id="section-browser" class="veil-section active">
+    <div id="section-browser" class="genysys-section active">
 
     <!-- Tab Bar (Week 2) -->
     <div id="tab-bar">
@@ -118,7 +118,7 @@
     </div>
 
     <div id="workspace">
-        <!-- VEIL Sidebar -->
+        <!-- GENYSYS Sidebar -->
 
         <!-- WebView Container -->
         <div id="webview-container"></div>
@@ -127,41 +127,41 @@
     </div><!-- /#section-browser -->
 
     <!-- Section: Lisa -->
-    <div id="section-lisa" class="veil-section hidden">
-        <div class="veil-section-inner" id="lisa-section-mount"></div>
+    <div id="section-lisa" class="genysys-section hidden">
+        <div class="genysys-section-inner" id="lisa-section-mount"></div>
     </div>
 
-    <!-- Section: Operations (Raven CRM inside VEIL) -->
-    <div id="section-operations" class="veil-section hidden">
-        <div class="veil-section-inner">
+    <!-- Section: Operations (Raven CRM inside GENYSYS) -->
+    <div id="section-operations" class="genysys-section hidden">
+        <div class="genysys-section-inner">
             <div id="rnk-webview-operations"></div>
         </div>
     </div>
 
-    <!-- Section: People (Raven HR inside VEIL) -->
-    <div id="section-people" class="veil-section hidden">
-        <div class="veil-section-inner">
+    <!-- Section: People (Raven HR inside GENYSYS) -->
+    <div id="section-people" class="genysys-section hidden">
+        <div class="genysys-section-inner">
             <div id="rnk-webview-people"></div>
         </div>
     </div>
 
-    <!-- Section: Comms (Echonet inside VEIL) -->
-    <div id="section-comms" class="veil-section hidden">
-        <div class="veil-section-inner">
+    <!-- Section: Comms (Echonet inside GENYSYS) -->
+    <div id="section-comms" class="genysys-section hidden">
+        <div class="genysys-section-inner">
             <div id="rnk-webview-comms"></div>
         </div>
     </div>
 
     <!-- Section: Server Control -->
-    <div id="section-server-control" class="veil-section hidden">
-        <div class="veil-section-inner" id="server-control-mount"></div>
+    <div id="section-server-control" class="genysys-section hidden">
+        <div class="genysys-section-inner" id="server-control-mount"></div>
     </div>
 
     <!-- Section: Admin -->
-    <div id="section-admin" class="veil-section hidden">
-        <div class="veil-section-inner" id="admin-section-mount">
-            <div class="veil-section-placeholder">
-                <span class="veil-section-icon">🔐</span>
+    <div id="section-admin" class="genysys-section hidden">
+        <div class="genysys-section-inner" id="admin-section-mount">
+            <div class="genysys-section-placeholder">
+                <span class="genysys-section-icon">🔐</span>
                 <h2>Admin</h2>
                 <p>Loading ops plane…</p>
             </div>
@@ -173,7 +173,7 @@
         <span id="status-text">Ready</span>
         <div class="statusbar-right">
             <button id="statusbar-minimal-toggle" class="statusbar-button" type="button" title="Minimal Status Bar">Mini</button>
-            <span id="veil-status" class="status-indicator">VEIL: Disconnected</span>
+            <span id="genysys-status" class="status-indicator">GENYSYS: Disconnected</span>
             <span id="fps-counter">0 FPS</span>
         </div>
     </div>
@@ -256,13 +256,13 @@
                 <span id="perf-network" class="perf-value">Idle</span>
             </div>
             <div class="perf-metric">
-                <span class="perf-label">VEIL Connection:</span>
-                <span id="perf-veil" class="perf-value">Disconnected</span>
+                <span class="perf-label">GENYSYS Connection:</span>
+                <span id="perf-genysys" class="perf-value">Disconnected</span>
             </div>
         </div>
         <div class="perf-summary">
             <span id="perf-summary-state" class="perf-summary-state">Ready</span>
-            <span id="perf-summary-text" class="perf-summary-text">VEIL performance is standing by.</span>
+            <span id="perf-summary-text" class="perf-summary-text">GENYSYS performance is standing by.</span>
         </div>
         <div class="perf-chart">
             <canvas id="perf-canvas" width="400" height="150"></canvas>
@@ -302,7 +302,7 @@
                         <kbd>Ctrl+F</kbd><span>Search Tabs</span>
                     </div>
                     <div class="shortcut-item">
-                        <kbd>Ctrl+K</kbd><span>Open VEIL Launcher</span>
+                        <kbd>Ctrl+K</kbd><span>Open GENYSYS Launcher</span>
                     </div>
                     <div class="shortcut-item">
                         <kbd>Alt+Enter</kbd><span>Pin or unpin launcher result</span>
@@ -341,15 +341,15 @@
 
     <script type="module">
         // Inline initialization to ensure it loads
-        console.log('VEIL initializing...');
+        console.log('GENYSYS initializing...');
         // CI diagnostics: report the shell's own JS execution to the native log.
         if (window.__TAURI__?.invoke) {
             window.__TAURI__.invoke('log_boot', { marker: 'inline module' })
                 .catch(() => {});
         }
     </script>
-    <script type="module" src="./veil-auth-gate.js"></script>
-    <script type="module" src="./veil-cookies-bar.js"></script>
+    <script type="module" src="./genysys-auth-gate.js"></script>
+    <script type="module" src="./genysys-cookies-bar.js"></script>
     <script type="module" src="./main.js"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 /**
- * VEIL™ — extracted from main.js
+ * GENYSYS™ — extracted from main.js
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -11,7 +11,7 @@ class RecentlyClosedManager {
 
     loadClosedTabs() {
         try {
-            const saved = localStorage.getItem('rnk-veil-closed-tabs') ?? localStorage.getItem('rnk-axis-closed-tabs') ?? localStorage.getItem('rnk-atlas-closed-tabs');
+            const saved = localStorage.getItem('rnk-genysys-closed-tabs') ?? localStorage.getItem('rnk-axis-closed-tabs') ?? localStorage.getItem('rnk-atlas-closed-tabs');
             return saved ? JSON.parse(saved) : [];
         } catch (e) {
             return [];
@@ -19,7 +19,7 @@ class RecentlyClosedManager {
     }
 
     saveClosedTabs() {
-        localStorage.setItem('rnk-veil-closed-tabs', JSON.stringify(this.closedTabs));
+        localStorage.setItem('rnk-genysys-closed-tabs', JSON.stringify(this.closedTabs));
     }
 
     addClosedTab(tab) {

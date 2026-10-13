@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * VEIL™ — regenerate the Tauri icon set from src/assets/logo.svg
+ * GENYSYS™ — regenerate the Tauri icon set from src/assets/logo.svg
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * Rasterizes the SVG with the repo's own Playwright Chromium (system

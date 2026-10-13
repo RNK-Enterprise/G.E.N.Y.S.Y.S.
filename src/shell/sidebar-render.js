@@ -1,18 +1,18 @@
 /**
- * VEIL™ — extracted from main.js
+ * GENYSYS™ — extracted from main.js
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
-window.setVEILSidebarStateBadge = function setVEILSidebarStateBadge(element, label, state = 'offline') {
+window.setGENYSYSSidebarStateBadge = function setGENYSYSSidebarStateBadge(element, label, state = 'offline') {
     if (!element) return;
     element.textContent = label;
     element.dataset.state = state;
 }
 
-window.setVEILSidebarStateBadgeFromCapability = function setVEILSidebarStateBadgeFromCapability(element, capabilityId, availableLabel = null, availableState = null, unavailableLabel = 'Offline') {
+window.setGENYSYSSidebarStateBadgeFromCapability = function setGENYSYSSidebarStateBadgeFromCapability(element, capabilityId, availableLabel = null, availableState = null, unavailableLabel = 'Offline') {
     if (!element) return;
-    const available = window.isVEILCapabilityAvailable(capabilityId);
-    setVEILSidebarStateBadge(
+    const available = window.isGENYSYSCapabilityAvailable(capabilityId);
+    setGENYSYSSidebarStateBadge(
         element,
         available
             ? (availableLabel ?? 'Ready')
@@ -28,26 +28,26 @@ window.SETTINGS_SECTION_RULES = {
     appearance: ['productivity', 'extensions'],
     privacy: ['security', 'privacy'],
     performance: ['performance'],
-    veil: [],
+    genysys: [],
     advanced: ['developer', 'automation', 'accessibility']
 };
 
-window.VEIL_SURFACE_RULES = [
-    { selector: '#search-provider-btn', capability: 'veil-search', mode: 'hide' },
-    { selector: '#search-provider-modal', capability: 'veil-search', mode: 'hide' },
-    { selector: '#bookmarks-bar', capability: 'veil-bookmarks', mode: 'hide' },
-    { selector: '#bookmark-btn', capability: 'veil-bookmarks', mode: 'hide' },
-    { selector: '#sessions-btn', capability: 'veil-browser-core', mode: 'hide' },
-    { selector: '#performance-panel', capability: 'veil-performance-stack', mode: 'hide' },
-    { selector: '#fps-counter', capability: 'veil-performance-stack', mode: 'hide' },
-    { selector: '#clear-history-btn', capability: 'veil-history', mode: 'disable' },
-    { selector: '#setting-clear-history', capability: 'veil-history', mode: 'disable' },
-    { selector: '#setting-show-bookmarks-bar', capability: 'veil-bookmarks', mode: 'disable' },
-    { selector: '#new-tab-btn', capability: 'veil-browser-core', mode: 'hide' },
-    { selector: '#tab-bar', capability: 'veil-browser-core', mode: 'hide' }
+window.GENYSYS_SURFACE_RULES = [
+    { selector: '#search-provider-btn', capability: 'genysys-search', mode: 'hide' },
+    { selector: '#search-provider-modal', capability: 'genysys-search', mode: 'hide' },
+    { selector: '#bookmarks-bar', capability: 'genysys-bookmarks', mode: 'hide' },
+    { selector: '#bookmark-btn', capability: 'genysys-bookmarks', mode: 'hide' },
+    { selector: '#sessions-btn', capability: 'genysys-browser-core', mode: 'hide' },
+    { selector: '#performance-panel', capability: 'genysys-performance-stack', mode: 'hide' },
+    { selector: '#fps-counter', capability: 'genysys-performance-stack', mode: 'hide' },
+    { selector: '#clear-history-btn', capability: 'genysys-history', mode: 'disable' },
+    { selector: '#setting-clear-history', capability: 'genysys-history', mode: 'disable' },
+    { selector: '#setting-show-bookmarks-bar', capability: 'genysys-bookmarks', mode: 'disable' },
+    { selector: '#new-tab-btn', capability: 'genysys-browser-core', mode: 'hide' },
+    { selector: '#tab-bar', capability: 'genysys-browser-core', mode: 'hide' }
 ];
 
-function setVEILElementAvailability(element, available, mode = 'hide') {
+function setGENYSYSElementAvailability(element, available, mode = 'hide') {
     if (!element) return;
 
     const supportsDisabled = 'disabled' in element;
@@ -79,8 +79,8 @@ function setVEILElementAvailability(element, available, mode = 'hide') {
     }
 }
 
-function hasAnyVEILCapability(capabilityIds = []) {
-    return capabilityIds.some(capabilityId => window.isVEILCapabilityAvailable(capabilityId));
+function hasAnyGENYSYSCapability(capabilityIds = []) {
+    return capabilityIds.some(capabilityId => window.isGENYSYSCapabilityAvailable(capabilityId));
 }
 
 function updateSettingsSectionAvailability(manifest) {
@@ -118,25 +118,25 @@ function updateSettingsSectionAvailability(manifest) {
     }
 }
 
-function updateVEILSurfaceAvailability(manifest) {
-    window.VEIL_SURFACE_RULES.forEach(({ selector, capability, anyOf, mode }) => {
+function updateGENYSYSSurfaceAvailability(manifest) {
+    window.GENYSYS_SURFACE_RULES.forEach(({ selector, capability, anyOf, mode }) => {
         const element = document.querySelector(selector);
-        const available = anyOf ? hasAnyVEILCapability(anyOf) : window.isVEILCapabilityAvailable(capability);
-        setVEILElementAvailability(element, available, mode);
+        const available = anyOf ? hasAnyGENYSYSCapability(anyOf) : window.isGENYSYSCapabilityAvailable(capability);
+        setGENYSYSElementAvailability(element, available, mode);
     });
 }
 
-window.hasAnyVEILCapability = hasAnyVEILCapability;
-window.updateVEILSurfaceAvailability = updateVEILSurfaceAvailability;
+window.hasAnyGENYSYSCapability = hasAnyGENYSYSCapability;
+window.updateGENYSYSSurfaceAvailability = updateGENYSYSSurfaceAvailability;
 
-// VEIL SHELL sidebar removed — the removed sidebar DOM's refresh fan-out
+// GENYSYS SHELL sidebar removed — the removed sidebar DOM's refresh fan-out
 // (state badges, per-section surfaces, feeds) no longer has targets.
 // Live consumers keep working:
-//   refreshVEILSidebarConnectionState → no-op (perf + status surfaces are
+//   refreshGENYSYSSidebarConnectionState → no-op (perf + status surfaces are
 //     updated directly by performance-monitor / chrome-bindings-c now)
-//   refreshVEILSidebarFeeds → tab-manager create/close/activate fan-out,
+//   refreshGENYSYSSidebarFeeds → tab-manager create/close/activate fan-out,
 //     kept as a stable extension point
-window.refreshVEILSidebarConnectionState = function refreshVEILSidebarConnectionState() {};
-window.refreshVEILSidebarFeeds = function refreshVEILSidebarFeeds() {};
+window.refreshGENYSYSSidebarConnectionState = function refreshGENYSYSSidebarConnectionState() {};
+window.refreshGENYSYSSidebarFeeds = function refreshGENYSYSSidebarFeeds() {};
 window.updateSettingsSectionAvailability = updateSettingsSectionAvailability;
-window.updateVEILSurfaceAvailability = updateVEILSurfaceAvailability;
+window.updateGENYSYSSurfaceAvailability = updateGENYSYSSurfaceAvailability;

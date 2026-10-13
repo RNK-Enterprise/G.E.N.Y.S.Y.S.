@@ -2550,7 +2550,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "rnk-veil"
+name = "rnk-genysys"
 version = "0.1.0"
 dependencies = [
  "reqwest",

@@ -1,8 +1,8 @@
 /**
- * VEIL catalog loader — engines + turbos from local manifest.
+ * GENYSYS catalog loader — engines + turbos from local manifest.
  */
 
-const MANIFEST_URLS = ['./veil-manifest.json', './veil-manifest.json'];
+const MANIFEST_URLS = ['./genysys-manifest.json', './genysys-manifest.json'];
 
 let _manifest = null;
 
@@ -10,7 +10,7 @@ export function getManifest() {
   return _manifest;
 }
 
-export async function loadVEILManifest() {
+export async function loadGENYSYSManifest() {
   for (const url of MANIFEST_URLS) {
     try {
       const response = await fetch(url, { cache: 'no-store' });
@@ -23,8 +23,8 @@ export async function loadVEILManifest() {
   }
   _manifest = {
     manifest_version: '2.0',
-    product: 'VEIL',
-    catalog_summary: { engines: '0', turbos: '0', mode: 'fallback', source: 'VEIL' },
+    product: 'GENYSYS',
+    catalog_summary: { engines: '0', turbos: '0', mode: 'fallback', source: 'GENYSYS' },
     capabilities: [],
     engines: [],
     turbos: [],

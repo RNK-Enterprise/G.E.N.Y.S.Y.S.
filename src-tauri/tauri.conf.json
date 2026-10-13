@@ -7,7 +7,7 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "VEIL",
+    "productName": "GENYSYS",
     "version": "0.1.0"
   },
   "tauri": {
@@ -40,7 +40,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.rnk.veil",
+      "identifier": "com.rnk.genysys",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -63,7 +63,7 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "VEIL",
+        "title": "GENYSYS",
         "width": 1280,
         "height": 800,
         "minWidth": 800,

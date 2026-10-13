@@ -8,13 +8,13 @@
 //! - `POST {base}/api/v1/owner/session/start`  — begin exchange; B1 returns
 //!   `{ sessionId, ok }` and, when live, per-layer challenges.
 //! - `POST {base}/api/v1/owner/session/verify` — carry the four-layer Mother
-//!   handshake evidence gathered by C.O.M.M.A.N.D. (the phone app). VEIL never
-//!   fabricates evidence: booleans carry zero authority on B1 and VEIL does
-//!   not try. VEIL submits the C.O.M.M.A.N.D.-minted grant and B1 judges it.
+//!   handshake evidence gathered by C.O.M.M.A.N.D. (the phone app). GENYSYS never
+//!   fabricates evidence: booleans carry zero authority on B1 and GENYSYS does
+//!   not try. GENYSYS submits the C.O.M.M.A.N.D.-minted grant and B1 judges it.
 //! - `POST {base}/api/v1/owner/session/end`    — explicit end.
 //! - `POST {base}/gateway/v1/heartbeat`        — beat; B1 owns 15/10/5
 //!   warning tiers. On the client we mirror drop detection: 3 consecutive
-//!   failed beats → session dropped → VEIL re-locks (fail closed). Only a
+//!   failed beats → session dropped → GENYSYS re-locks (fail closed). Only a
 //!   fresh exchange re-arms.
 //!
 //! Dormant by design: until COMMAND_URL/RESOLUTE_URL is configured, exchange
@@ -87,7 +87,7 @@ impl CommandClient {
 
     /// Step 1+2 of the wire path: session/start then session/verify.
     /// `grant` is the C.O.M.M.A.N.D.-minted evidence bundle (produced by the
-    /// Mother app handshake). VEIL forwards it verbatim; it never fakes it.
+    /// Mother app handshake). GENYSYS forwards it verbatim; it never fakes it.
     pub async fn exchange(&mut self, base_url: &str, grant: &serde_json::Value) -> Result<serde_json::Value, String> {
         if base_url.trim().is_empty() {
             self.state.phase = GatePhase::Dark;
@@ -101,7 +101,7 @@ impl CommandClient {
 
         let start = client
             .post(format!("{}/api/v1/owner/session/start", Self::base(base_url)))
-            .json(&json!({ "client": "veil", "tier": "request" }))
+            .json(&json!({ "client": "genysys", "tier": "request" }))
             .send()
             .await
             .map_err(|_| "command_unreachable_fail_closed".to_string())?;
@@ -119,7 +119,7 @@ impl CommandClient {
 
         let verify = client
             .post(format!("{}/api/v1/owner/session/verify", Self::base(base_url)))
-            .json(&json!({ "sessionId": session_id, "grant": grant, "client": "veil" }))
+            .json(&json!({ "sessionId": session_id, "grant": grant, "client": "genysys" }))
             .send()
             .await
             .map_err(|_| "command_unreachable_fail_closed".to_string())?;
@@ -160,7 +160,7 @@ impl CommandClient {
         }))
     }
 
-    /// One heartbeat beat. Mirrors B1's 15/10/5 ownership client-side: VEIL
+    /// One heartbeat beat. Mirrors B1's 15/10/5 ownership client-side: GENYSYS
     /// tracks consecutive failures and drops the session after MAX_MISSED_BEATS.
     pub async fn beat(&mut self, base_url: &str) -> Result<serde_json::Value, String> {
         if self.state.phase != GatePhase::Open {
@@ -175,7 +175,7 @@ impl CommandClient {
         match client
             .post(format!("{}/gateway/v1/heartbeat", Self::base(base_url)))
             .header("Authorization", format!("Bearer {}", token))
-            .json(&json!({ "sessionId": session_id, "channel": "veil", "ts": now_ms() }))
+            .json(&json!({ "sessionId": session_id, "channel": "genysys", "ts": now_ms() }))
             .send()
             .await
         {
@@ -187,7 +187,7 @@ impl CommandClient {
                 self.state.missed_beats += 1;
                 let missed = self.state.missed_beats;
                 if missed >= MAX_MISSED_BEATS {
-                    // Link drop → drop session → VEIL re-locks (fail closed).
+                    // Link drop → drop session → GENYSYS re-locks (fail closed).
                     self.reset("heartbeat_link_drop");
                     return Err("command_heartbeat_link_drop".into());
                 }
@@ -240,7 +240,7 @@ pub async fn command_session_status(state: State<'_, AppState>) -> Result<serde_
     }))
 }
 
-/// Exchange a C.O.M.M.A.N.D. grant for an VEIL session.
+/// Exchange a C.O.M.M.A.N.D. grant for an GENYSYS session.
 /// Refuses in dev mode when no URL is configured (still fail-closed there —
 /// shortcode bootstrap remains the dev path).
 #[tauri::command]
@@ -260,7 +260,7 @@ pub async fn command_exchange(
             return result;
         }
     }
-    // Mirror the verified session into the VEIL session/policy engine.
+    // Mirror the verified session into the GENYSYS session/policy engine.
     let exchange = state.command_session.lock().await;
     let tier = exchange.state.tier.clone().unwrap_or_else(|| "full".into());
     let owner_id = exchange.state.owner_id.clone();
@@ -278,7 +278,7 @@ pub async fn command_exchange(
     }))
 }
 
-/// Explicit end (owner action) — also drops the VEIL session.
+/// Explicit end (owner action) — also drops the GENYSYS session.
 #[tauri::command]
 pub async fn command_end(state: State<'_, AppState>, app: AppHandle) -> Result<serde_json::Value, String> {
     let base_url = state.command_url.lock().map_err(|e| e.to_string())?.clone();
@@ -313,7 +313,7 @@ pub async fn command_heartbeat(state: State<'_, AppState>, app: AppHandle) -> Re
     }
     let result = exchange.beat(&base_url).await;
     if result.is_err() {
-        // Link drop → re-lock the VEIL session AND every tab window.
+        // Link drop → re-lock the GENYSYS session AND every tab window.
         crate::auth::auth_clear_session(&state);
         crate::tab_windows::lock_all(&app);
         return result;

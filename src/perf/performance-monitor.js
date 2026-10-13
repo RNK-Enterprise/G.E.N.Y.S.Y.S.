@@ -1,4 +1,4 @@
-/** VEIL PerformanceMonitor — expects veilBridge, tabManager, setVEILSidebarStateBadge globals */
+/** GENYSYS PerformanceMonitor — expects genysysBridge, tabManager, setGENYSYSSidebarStateBadge globals */
 class PerformanceMonitor {
     constructor() {
         this.history = {
@@ -30,25 +30,25 @@ class PerformanceMonitor {
         // Simulate CPU (would need actual measurement)
         const cpu = Math.floor(Math.random() * 20 + 10);
         const tabs = window.tabManager?.tabs?.length || 0;
-        const bridge = window.veilBridge || window.veilRuntime;
-        const veilConnected = Boolean(bridge && bridge.connected);
+        const bridge = window.genysysBridge || window.genysysRuntime;
+        const genysysConnected = Boolean(bridge && bridge.connected);
         const liveTurbos = bridge?.listTurboStates?.()?.filter((t) => t.enabled).length ?? 0;
         const perfSummaryState = document.getElementById('perf-summary-state');
         const perfSummaryText = document.getElementById('perf-summary-text');
-        const perfStatusTone = Number.isFinite(memoryValue) && (memoryValue > 700 || cpu > 60) ? 'busy' : veilConnected ? 'ready' : 'idle';
+        const perfStatusTone = Number.isFinite(memoryValue) && (memoryValue > 700 || cpu > 60) ? 'busy' : genysysConnected ? 'ready' : 'idle';
         
         // Update displays
         document.getElementById('perf-memory').textContent = `${memory} MB`;
         document.getElementById('perf-cpu').textContent = `${cpu}%`;
         document.getElementById('perf-tabs').textContent = tabs;
-        document.getElementById('perf-network').textContent = veilConnected ? 'Active' : 'Idle';
-        window.setVEILSidebarStateBadge?.(perfSummaryState, perfStatusTone === 'busy' ? 'Busy' : veilConnected ? 'Ready' : 'Idle', perfStatusTone);
+        document.getElementById('perf-network').textContent = genysysConnected ? 'Active' : 'Idle';
+        window.setGENYSYSSidebarStateBadge?.(perfSummaryState, perfStatusTone === 'busy' ? 'Busy' : genysysConnected ? 'Ready' : 'Idle', perfStatusTone);
         if (perfSummaryText) {
             perfSummaryText.textContent = perfStatusTone === 'busy'
-                ? `VEIL under load with ${tabs} tabs and ${memory === 'N/A' ? 'unknown' : `${memory} MB`} memory.`
-                : veilConnected
-                    ? `VEIL runtime online · ${liveTurbos} live turbos · ${tabs} tabs.`
-                    : `VEIL runtime offline — start it from the status indicator.`;
+                ? `GENYSYS under load with ${tabs} tabs and ${memory === 'N/A' ? 'unknown' : `${memory} MB`} memory.`
+                : genysysConnected
+                    ? `GENYSYS runtime online · ${liveTurbos} live turbos · ${tabs} tabs.`
+                    : `GENYSYS runtime offline — start it from the status indicator.`;
         }
         
         // Update history
@@ -132,7 +132,7 @@ class PerformanceMonitor {
     }
 
     toggle() {
-        if (!window.isVEILCapabilityAvailable?.('veil-performance-stack')) {
+        if (!window.isGENYSYSCapabilityAvailable?.('genysys-performance-stack')) {
             return;
         }
 

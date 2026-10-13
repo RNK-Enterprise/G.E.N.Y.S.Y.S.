@@ -3,7 +3,7 @@
  */
 
 /**
- * VEIL™ — tab manager coverage (core + extras)
+ * GENYSYS™ — tab manager coverage (core + extras)
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -18,7 +18,7 @@ import {
 } from './helpers/shell-harness.js';
 
 function stopRuntime() {
-    try { window.veilRuntime?.stop(); } catch { /* not started */ }
+    try { window.genysysRuntime?.stop(); } catch { /* not started */ }
 }
 
 beforeEach(() => {
@@ -40,7 +40,7 @@ describe('browser: tab-manager core', () => {
         const tauri = stubTauri({ invoke: (cmd) => (cmd === 'navigate_tab' ? allowPolicy('https://ok.test/page') : null) });
         await bootShell({ tauri });
         const tab = window.tabManager.createTab();
-        expect(tab.url).toBe('veil://newtab');
+        expect(tab.url).toBe('genysys://newtab');
         expect(window.tabManager.activeTabId).toBe(tab.id);
 
         const external = window.tabManager.createTab('ok.test/page');
@@ -73,7 +73,7 @@ describe('browser: tab-manager core', () => {
         window.tabManager.activateTab(tab.id);
         expect(tab.blockedView.view).toBe('access-request');
         expect(tab.title).toBe('Access Request');
-        expect(document.getElementById('veil-blocked-view')).not.toBeNull();
+        expect(document.getElementById('genysys-blocked-view')).not.toBeNull();
         window.tabManager.hideBlockedView();
 
         window.tabManager.onPolicyBlocked(tab.id, { decision: 'quarantine', quarantined: true, reason: 'malware', domain: 'y.test' });
@@ -91,12 +91,12 @@ describe('browser: tab-manager core', () => {
         const tab = window.tabManager.createTab();
         window.tabManager.onPolicyBlocked(tab.id, { decision: 'block', reason: 'r', domain: 'b.test' });
         window.tabManager.activateTab(tab.id);
-        const frame = document.getElementById('veil-blocked-view');
+        const frame = document.getElementById('genysys-blocked-view');
         expect(frame).not.toBeNull();
         expect(frame.src).toContain('/newtab.html?');
 
         const other = window.tabManager.createTab();
-        expect(document.getElementById('veil-blocked-view')).toBeNull();
+        expect(document.getElementById('genysys-blocked-view')).toBeNull();
         expect(other.id).toBeGreaterThan(tab.id);
     });
 
@@ -151,7 +151,7 @@ describe('browser: tab-manager extras', () => {
         const tab = window.tabManager.createTab();
         window.tabManager.pinTab(tab.id);
         expect(tab.pinned).toBe(true);
-        const saved = JSON.parse(localStorage.getItem('rnk-veil-tabs'));
+        const saved = JSON.parse(localStorage.getItem('rnk-genysys-tabs'));
         expect(saved.tabs[0].pinned).toBe(true);
         expect(saved.activeIndex).toBe(0);
         window.tabManager.pinTab(999);
@@ -160,7 +160,7 @@ describe('browser: tab-manager extras', () => {
     test('restoreTabs restores from storage and is idempotent', async () => {
         const tauri = stubTauri({ invoke: (cmd) => (cmd === 'navigate_tab' ? allowPolicy('https://r.test/') : null) });
         await bootShell({ tauri });
-        localStorage.setItem('rnk-veil-tabs', JSON.stringify({
+        localStorage.setItem('rnk-genysys-tabs', JSON.stringify({
             tabs: [{ url: 'https://r.test/', title: 'R', favicon: null, pinned: true }],
             activeIndex: 0,
         }));
@@ -170,11 +170,11 @@ describe('browser: tab-manager extras', () => {
         expect(window.tabManager.restoreTabs()).toBe(true);
         expect(window.tabManager.tabs.length).toBe(1);
 
-        localStorage.setItem('rnk-veil-tabs', JSON.stringify({ tabs: [], activeIndex: -1 }));
+        localStorage.setItem('rnk-genysys-tabs', JSON.stringify({ tabs: [], activeIndex: -1 }));
         expect(window.tabManager.restoreTabs()).toBe(false);
-        localStorage.setItem('rnk-veil-tabs', 'not-json{{');
+        localStorage.setItem('rnk-genysys-tabs', 'not-json{{');
         expect(window.tabManager.restoreTabs()).toBe(false);
-        localStorage.removeItem('rnk-veil-tabs');
+        localStorage.removeItem('rnk-genysys-tabs');
         expect(window.tabManager.restoreTabs()).toBe(false);
     });
 
@@ -192,7 +192,7 @@ describe('browser: tab-manager extras', () => {
         window.tabManager.onPolicyBlocked(blocked.id, { decision: 'block', reason: 'r', domain: 'd.test' });
         window.tabManager.closeTab(blocked.id);
         expect(window.tabManager.blockedViews.has(blocked.id)).toBe(false);
-        expect(document.getElementById('veil-blocked-view')).toBeNull();
+        expect(document.getElementById('genysys-blocked-view')).toBeNull();
 
         window.tabManager.closeTab(a.id);
         expect(window.tabManager.tabs.length).toBe(1);

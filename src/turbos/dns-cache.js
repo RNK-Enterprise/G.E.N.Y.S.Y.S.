@@ -42,11 +42,11 @@ export function dnsCache() {
 
   return {
     start() {
-      window.addEventListener('veil:policy-allow', onNav);
-      window.veilDnsCache = { lookup, cache };
+      window.addEventListener('genysys:policy-allow', onNav);
+      window.genysysDnsCache = { lookup, cache };
     },
     stop() {
-      window.removeEventListener('veil:policy-allow', onNav);
+      window.removeEventListener('genysys:policy-allow', onNav);
       cache.clear();
     },
   };

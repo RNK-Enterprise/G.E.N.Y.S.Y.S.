@@ -1,5 +1,5 @@
 /**
- * VEIL™ — extracted from main.js
+ * GENYSYS™ — extracted from main.js
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -26,25 +26,25 @@ function isDensityEffectivelyCompact(densityState) {
         (densityState === 'shell' && window.shellDensityState === 'compact');
 }
 
-window.tabBarDensityState = readEffectiveDensityMode('rnk-veil-tab-bar-density', 'rnk-veil-tab-bar-compact');
-window.omniboxDensityState = readEffectiveDensityMode('rnk-veil-omnibox-density', 'rnk-veil-omnibox-compact');
-window.settingsPanelDensityState = readEffectiveDensityMode('rnk-veil-settings-panel-density', 'rnk-veil-settings-dense');
-window.statusbarDensityState = readEffectiveDensityMode('rnk-veil-statusbar-density', 'rnk-veil-statusbar-minimal');
-window.titlebarDensityState = readEffectiveDensityMode('rnk-veil-titlebar-density', 'rnk-veil-titlebar-compact');
-window.shellDensityState = localStorage.getItem('rnk-veil-shell-density') || 'custom';
-window.shortcutsDensityState = localStorage.getItem('rnk-veil-shortcuts-density') || 'shell';
-window.toastDensityState = localStorage.getItem('rnk-veil-toast-density') || 'shell';
-window.performancePanelDensityState = localStorage.getItem('rnk-veil-performance-panel-density') || 'shell';
-window.searchProviderDensityState = localStorage.getItem('rnk-veil-search-provider-density') || 'shell';
-window.bookmarksBarDensityState = localStorage.getItem('rnk-veil-bookmarks-bar-density') || 'shell';
-window.veilSidebarDensityState = localStorage.getItem('rnk-veil-sidebar-density') || 'shell';
-window.sessionsDensityState = localStorage.getItem('rnk-veil-sessions-density') || 'shell';
-window.modalDensityState = localStorage.getItem('rnk-veil-modal-density') || 'shell';
-window.loadingDensityState = localStorage.getItem('rnk-veil-loading-density') || 'shell';
+window.tabBarDensityState = readEffectiveDensityMode('rnk-genysys-tab-bar-density', 'rnk-genysys-tab-bar-compact');
+window.omniboxDensityState = readEffectiveDensityMode('rnk-genysys-omnibox-density', 'rnk-genysys-omnibox-compact');
+window.settingsPanelDensityState = readEffectiveDensityMode('rnk-genysys-settings-panel-density', 'rnk-genysys-settings-dense');
+window.statusbarDensityState = readEffectiveDensityMode('rnk-genysys-statusbar-density', 'rnk-genysys-statusbar-minimal');
+window.titlebarDensityState = readEffectiveDensityMode('rnk-genysys-titlebar-density', 'rnk-genysys-titlebar-compact');
+window.shellDensityState = localStorage.getItem('rnk-genysys-shell-density') || 'custom';
+window.shortcutsDensityState = localStorage.getItem('rnk-genysys-shortcuts-density') || 'shell';
+window.toastDensityState = localStorage.getItem('rnk-genysys-toast-density') || 'shell';
+window.performancePanelDensityState = localStorage.getItem('rnk-genysys-performance-panel-density') || 'shell';
+window.searchProviderDensityState = localStorage.getItem('rnk-genysys-search-provider-density') || 'shell';
+window.bookmarksBarDensityState = localStorage.getItem('rnk-genysys-bookmarks-bar-density') || 'shell';
+window.genysysSidebarDensityState = localStorage.getItem('rnk-genysys-sidebar-density') || 'shell';
+window.sessionsDensityState = localStorage.getItem('rnk-genysys-sessions-density') || 'shell';
+window.modalDensityState = localStorage.getItem('rnk-genysys-modal-density') || 'shell';
+window.loadingDensityState = localStorage.getItem('rnk-genysys-loading-density') || 'shell';
 
 window.settingsSectionCollapseState = {};
 try {
-    window.settingsSectionCollapseState = JSON.parse(localStorage.getItem('rnk-veil-settings-section-collapse') || '{}') || {};
+    window.settingsSectionCollapseState = JSON.parse(localStorage.getItem('rnk-genysys-settings-section-collapse') || '{}') || {};
 } catch {
     window.settingsSectionCollapseState = {};
 }
@@ -54,7 +54,7 @@ window.SETTINGS_SECTION_COLLAPSIBLE = [
     { key: 'appearance', sectionId: 'settings-section-appearance', toggleId: 'settings-appearance-toggle' },
     { key: 'privacy', sectionId: 'settings-section-privacy', toggleId: 'settings-privacy-toggle' },
     { key: 'performance', sectionId: 'settings-section-performance', toggleId: 'settings-performance-toggle' },
-    { key: 'veil', sectionId: 'settings-section-veil', toggleId: 'settings-veil-toggle' },
+    { key: 'genysys', sectionId: 'settings-section-genysys', toggleId: 'settings-genysys-toggle' },
     { key: 'advanced', sectionId: 'settings-section-advanced', toggleId: 'settings-advanced-toggle' }
 ];
 
@@ -126,7 +126,7 @@ function syncActiveButtons(activeValue, buttonPairs) {
 }
 
 function saveSettingsSectionCollapseState() {
-    localStorage.setItem('rnk-veil-settings-section-collapse', JSON.stringify(window.settingsSectionCollapseState));
+    localStorage.setItem('rnk-genysys-settings-section-collapse', JSON.stringify(window.settingsSectionCollapseState));
 }
 
 function isSettingsSectionCollapsed(key) {
@@ -193,7 +193,7 @@ function applyTabBarCompactState() {
 }
 
 function saveTabBarDensityState() {
-    localStorage.setItem('rnk-veil-tab-bar-density', window.tabBarDensityState);
+    localStorage.setItem('rnk-genysys-tab-bar-density', window.tabBarDensityState);
 }
 
 function setTabBarDensityState(mode) {

@@ -1,5 +1,5 @@
 /**
- * RNK VEIL™
+ * RNK GENYSYS™
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * PROPRIETARY AND CONFIDENTIAL
@@ -32,15 +32,15 @@ export class SettingsManager {
 
     loadSettings() {
         try {
-            const saved = localStorage.getItem('rnk-veil-settings')
+            const saved = localStorage.getItem('rnk-genysys-settings')
                 ?? localStorage.getItem('rnk-axis-settings')
                 ?? localStorage.getItem('rnk-atlas-settings');
             const settings = saved ? JSON.parse(saved) : this.getDefaultSettings();
 
             if (settings.performance) {
                 const legacyPerformanceKey = ['enable', 'V', 'Q', 'Engines'].join('');
-                if (settings.performance.enableVEILEngines === undefined && settings.performance[legacyPerformanceKey] !== undefined) {
-                    settings.performance.enableVEILEngines = settings.performance[legacyPerformanceKey];
+                if (settings.performance.enableGENYSYSEngines === undefined && settings.performance[legacyPerformanceKey] !== undefined) {
+                    settings.performance.enableGENYSYSEngines = settings.performance[legacyPerformanceKey];
                 }
                 delete settings.performance[legacyPerformanceKey];
             }
@@ -54,7 +54,7 @@ export class SettingsManager {
     getDefaultSettings() {
         return {
             general: {
-                homepage: 'veil://newtab',
+                homepage: 'genysys://newtab',
                 searchEngine: 'duckduckgo',
                 newTabBehavior: 'homepage',
                 showBookmarksBar: true
@@ -75,7 +75,7 @@ export class SettingsManager {
             },
             performance: {
                 enableHardwareAcceleration: true,
-                enableVEILEngines: true,
+                enableGENYSYSEngines: true,
                 preloadPages: false,
                 maxCacheSize: 500
             },
@@ -90,7 +90,7 @@ export class SettingsManager {
 
     saveSettings() {
         try {
-            localStorage.setItem('rnk-veil-settings', JSON.stringify(this.settings));
+            localStorage.setItem('rnk-genysys-settings', JSON.stringify(this.settings));
             this.emitEvent('settings-changed', this.settings);
         } catch (error) {
             console.error('Failed to save settings:', error);

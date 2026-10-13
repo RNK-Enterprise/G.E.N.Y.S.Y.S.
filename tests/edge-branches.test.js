@@ -1,5 +1,5 @@
 /**
- * VEIL™ — branch-completion tests: event paths, storage failures,
+ * GENYSYS™ — branch-completion tests: event paths, storage failures,
  * wrong-state transitions, and catalog success flows.
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
@@ -75,7 +75,7 @@ const { tabSuspend } = await import('../src/turbos/tab-suspend.js');
 const { renderThrottle } = await import('../src/turbos/render-throttle.js');
 const { startupDefer } = await import('../src/turbos/startup-defer.js');
 const loader = await import('../src/engines/catalog-loader.js');
-const { VEILEngineRuntime } = await import('../src/engines/runtime.js');
+const { GENYSYSEngineRuntime } = await import('../src/engines/runtime.js');
 
 describe('storage-failure paths (quota exceeded)', () => {
   test('BookmarkManager.saveBookmarks survives a throwing localStorage', () => {
@@ -124,7 +124,7 @@ describe('wrong-state download transitions', () => {
 });
 
 describe('dns-cache event path', () => {
-  test('veil:policy-allow triggers a hostname lookup through the cache', async () => {
+  test('genysys:policy-allow triggers a hostname lookup through the cache', async () => {
     const lookedUp = [];
     global.window = baseWindow({
       __TAURI__: {
@@ -137,13 +137,13 @@ describe('dns-cache event path', () => {
     });
     const turbo = dnsCache({});
     turbo.start();
-    for (const fn of winListeners.get('veil:policy-allow') || []) {
+    for (const fn of winListeners.get('genysys:policy-allow') || []) {
       fn({ detail: { url: 'https://event.test/path' } });
     }
     await Promise.resolve();
     await Promise.resolve();
     expect(lookedUp).toEqual(['event.test']);
-    expect(global.window.veilDnsCache.cache.get('event.test')).toMatchObject({ host: 'event.test' });
+    expect(global.window.genysysDnsCache.cache.get('event.test')).toMatchObject({ host: 'event.test' });
     turbo.stop();
   });
 
@@ -152,7 +152,7 @@ describe('dns-cache event path', () => {
     const turbo = dnsCache({});
     turbo.start();
     expect(() => {
-      for (const fn of winListeners.get('veil:policy-allow') || []) {
+      for (const fn of winListeners.get('genysys:policy-allow') || []) {
         fn({ detail: { url: 42 } });
         fn({ detail: {} });
         fn({});
@@ -165,7 +165,7 @@ describe('dns-cache event path', () => {
     global.window = baseWindow();
     const turbo = dnsCache({});
     turbo.start();
-    expect(await global.window.veilDnsCache.lookup('')).toBeNull();
+    expect(await global.window.genysysDnsCache.lookup('')).toBeNull();
     turbo.stop();
   });
 });
@@ -266,7 +266,7 @@ describe('tab-suspend remaining paths', () => {
     const other = mk(2);
     const turbo = tabSuspend({ getTabs: () => [active, other] });
     turbo.start();
-    for (const fn of winListeners.get('veil:tab-deactivated') || []) {
+    for (const fn of winListeners.get('genysys:tab-deactivated') || []) {
       fn({ detail: { tab: active, activeId: 1 } });
     }
     expect(active.suspended).toBeUndefined();
@@ -295,7 +295,7 @@ describe('startup-defer cancelled before scheduling', () => {
     turbo.stop();
     turbo.start();
     idleCb();
-    expect(global.document.documentElement.classList.contains('veil-startup-ready')).toBe(true);
+    expect(global.document.documentElement.classList.contains('genysys-startup-ready')).toBe(true);
   });
 });
 
@@ -305,13 +305,13 @@ describe('catalog-loader success path and cached reads', () => {
       ok: true,
       json: async () => ({
         manifest_version: '2.0',
-        catalog_summary: { engines: '3', turbos: '9', mode: 'local', source: 'VEIL' },
+        catalog_summary: { engines: '3', turbos: '9', mode: 'local', source: 'GENYSYS' },
         capabilities: [{ id: 'cap' }],
         engines: [{ id: 'e1' }],
         turbos: [{ id: 't1', status: 'live' }],
       }),
     });
-    const manifest = await loader.loadVEILManifest();
+    const manifest = await loader.loadGENYSYSManifest();
     expect(manifest.capabilities).toHaveLength(1);
     expect(loader.getManifest()).toBe(manifest);
     expect(loader.listEngines()).toEqual([{ id: 'e1' }]);
@@ -321,29 +321,29 @@ describe('catalog-loader success path and cached reads', () => {
 
   test('a non-ok response falls through to the fallback manifest', async () => {
     global.fetch = async () => ({ ok: false, status: 404 });
-    const manifest = await loader.loadVEILManifest();
-    expect(manifest.product).toBe('VEIL');
+    const manifest = await loader.loadGENYSYSManifest();
+    expect(manifest.product).toBe('GENYSYS');
     expect(manifest.capabilities).toEqual([]);
   });
 });
 
 describe('runtime remaining branches', () => {
   test('corrupt enabled-JSON falls back to an empty preference map', async () => {
-    global.localStorage = makeStorage({ 'rnk-veil-turbo-enabled': '{broken' });
+    global.localStorage = makeStorage({ 'rnk-genysys-turbo-enabled': '{broken' });
     global.fetch = async () => { throw new Error('offline'); };
-    const rt = new VEILEngineRuntime();
+    const rt = new GENYSYSEngineRuntime();
     expect(rt.isTurboEnabled('anything')).toBe(true);
     await rt.start({});
     rt.stop();
   });
 
-  test('status indicator writes to the veil-status element when present', async () => {
+  test('status indicator writes to the genysys-status element when present', async () => {
     const el = { textContent: '', style: {} };
-    global.document = { ...documentStub, getElementById: (id) => (id === 'veil-status' ? el : null) };
+    global.document = { ...documentStub, getElementById: (id) => (id === 'genysys-status' ? el : null) };
     global.fetch = async () => { throw new Error('offline'); };
-    const rt = new VEILEngineRuntime();
+    const rt = new GENYSYSEngineRuntime();
     await rt.start({});
-    expect(el.textContent).toBe('VEIL Runtime');
+    expect(el.textContent).toBe('GENYSYS Runtime');
     rt.stop();
     expect(el.textContent).toBe('Runtime Off');
   });

@@ -1,11 +1,11 @@
 /**
- * VEIL™ — extracted from main.js
+ * GENYSYS™ — extracted from main.js
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * Window-mode TabManager: each tab's content is a real Tauri WebviewWindow
  * created by the Rust side AFTER P.R.O.T.E.C.T.S. policy allows the URL.
  * The shell keeps only the chrome (tab bar, omnibox, status). Iframes are
- * gone — webviews render better and carry the VEIL attestation cookie.
+ * gone — webviews render better and carry the GENYSYS attestation cookie.
  *
  * The frontend can never load a URL itself: it asks `navigate_tab`, and the
  * Rust gate either creates/reuses the tab window or returns block.
@@ -28,13 +28,13 @@ class TabManager {
         this._rectRaf = null;
     }
 
-    createTab(url = 'veil://newtab') {
+    createTab(url = 'genysys://newtab') {
         const tabId = this.nextTabId++;
 
         const tab = {
             id: tabId,
             url: url,
-            title: url === 'veil://newtab' ? 'New Tab' : 'Loading...',
+            title: url === 'genysys://newtab' ? 'New Tab' : 'Loading...',
             favicon: null,
             pinned: false,
             blockedView: null,
@@ -43,7 +43,7 @@ class TabManager {
         this.renderTabs();
         this.saveTabs();
 
-        if (url === 'veil://newtab' || url === 'about:blank') {
+        if (url === 'genysys://newtab' || url === 'about:blank') {
             this.activateTab(tabId);
         } else {
             this.activateTab(tabId);
@@ -71,10 +71,10 @@ class TabManager {
         tab.blockedView = null;
         this.renderTabs();
         this.saveTabs();
-        window.refreshVEILSidebarFeeds();
+        window.refreshGENYSYSSidebarFeeds();
         // A restore-initiated round-trip must not clobber the “Viewing …”
         // status the sync activateTab already wrote. Credit is kept until the
-        // navigation settles (veil:navigate / block / a real navigateTab).
+        // navigation settles (genysys:navigate / block / a real navigateTab).
         if (!this._restoreCredits.has(tabId)) {
             window.updateStatusBar(`Loading ${url}...`);
         }
@@ -96,7 +96,7 @@ class TabManager {
             domain: policy?.domain || tab.url,
         };
         this.blockedViews.set(tabId, tab.blockedView);
-        tab.url = tab.url === 'veil://newtab' ? tab.url : (policy?.domain || tab.url);
+        tab.url = tab.url === 'genysys://newtab' ? tab.url : (policy?.domain || tab.url);
         tab.title = isAccessReq ? 'Access Request' : 'Blocked';
         this.renderTabs();
         this.saveTabs();
@@ -107,7 +107,7 @@ class TabManager {
     }
 
     onTauriNavigate(tabId, url, _context, _chain) {
-        // Rust emits veil:navigate after creating/reusing the tab window.
+        // Rust emits genysys:navigate after creating/reusing the tab window.
         const tab = this.tabs.find(t => t.id === tabId);
         if (!tab) return;
         tab.url = url;
@@ -115,7 +115,7 @@ class TabManager {
         tab.blockedView = null;
         this.renderTabs();
         this.saveTabs();
-        window.refreshVEILSidebarFeeds();
+        window.refreshGENYSYSSidebarFeeds();
         // Same restore rule as onPolicyAllowed; this event settles the tab's
         // credit (the invoke callback kept it through the allow).
         if (this._restoreCredits.has(tabId)) {
@@ -145,7 +145,7 @@ class TabManager {
             }
             window.updateStatusBar(tab.title);
         }
-        window.refreshVEILSidebarFeeds();
+        window.refreshGENYSYSSidebarFeeds();
     }
 
     /**

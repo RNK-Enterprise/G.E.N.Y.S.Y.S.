@@ -1,4 +1,4 @@
-# VEIL gitleaks configuration — default rules, no carve-outs.
+# GENYSYS gitleaks configuration — default rules, no carve-outs.
 # Every rule in gitleaks' default set applies. Nothing is ignored.
 # If a scanner false-positive ever appears, document it in .gitleaksignore
 # with the fingerprint and the reason — never weaken this file.
@@ -6,4 +6,4 @@
 [extend]
 useDefault = true
 
-title = "VEIL secret scan"
+title = "GENYSYS secret scan"

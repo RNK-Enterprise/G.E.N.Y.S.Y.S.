@@ -1,5 +1,5 @@
 /**
- * Register live VEIL performance turbos.
+ * Register live GENYSYS performance turbos.
  */
 import { tabSuspend } from './tab-suspend.js';
 import { memoryReclaim } from './memory-reclaim.js';

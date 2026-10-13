@@ -1,4 +1,4 @@
-//! VEIL tab windows — real WebviewWindows per tab (Tauri 1.x).
+//! GENYSYS tab windows — real WebviewWindows per tab (Tauri 1.x).
 //!
 //! Architecture: the HTML shell keeps the chrome (tab bar, omnibox, sections).
 //! Each tab's *content* is a real Tauri WebviewWindow layered above the main
@@ -15,7 +15,7 @@
 //!     "load and then decide" path.
 //!   - Only our own app-origin internal pages (new tab / block views) and
 //!     policy-allowed URLs are loadable. Loopback/metadata stays blocked.
-//!   - `request_privileged` tabs (RNK product surfaces) get the VEIL
+//!   - `request_privileged` tabs (RNK product surfaces) get the GENYSYS
 //!     attestation cookie injected natively; everything else browses
 //!     unattested. Dev builds get no blanket privilege.
 //!   - Losing the session (heartbeat drop, logout, end) locks every tab
@@ -35,9 +35,9 @@ use tauri::{
     AppHandle, Manager, PhysicalPosition, PhysicalSize, Runtime, State, Window, WindowUrl,
 };
 
-/// Journal-visible lifecycle trace (`journalctl --user -u veil ... | grep tabwin`).
+/// Journal-visible lifecycle trace (`journalctl --user -u genysys ... | grep tabwin`).
 fn tabwin_log(msg: &str) {
-    eprintln!("[veil:tabwin] {}", msg);
+    eprintln!("[genysys:tabwin] {}", msg);
 }
 
 /// Default geometry until the shell syncs the real content rect.
@@ -101,7 +101,7 @@ pub fn locked_url() -> String {
 /// Exact app-origin match (scheme + host + port). Not a suffix match — this
 /// is OUR shell page only, never a general "localhost is fine" rule.
 pub fn is_app_origin(url: &str) -> bool {
-    url == app_origin() || url.starts_with(&format!("{}/", app_origin())) || url == "veil://newtab"
+    url == app_origin() || url.starts_with(&format!("{}/", app_origin())) || url == "genysys://newtab"
 }
 
 /// Full navigation decision for a tab window: app-origin internal pages are
@@ -110,13 +110,13 @@ pub fn classify_tab_navigation(url: &str, session: &Session) -> PolicyResult {
     if is_app_origin(url) {
         return PolicyResult {
             decision: "allow".into(),
-            reason: "internal_veil_surface".into(),
+            reason: "internal_genysys_surface".into(),
             audit: false,
             notify: false,
             chain: false,
             request_required: false,
             request_privileged: false,
-            domain: "veil://".into(),
+            domain: "genysys://".into(),
             source: "local".into(),
         };
     }
@@ -154,7 +154,7 @@ pub fn create_tab_window<R: Runtime>(
         return navigate_tab_window(app, tab_id, url, privileged);
     }
 
-    let target = if url == "veil://newtab" {
+    let target = if url == "genysys://newtab" {
         newtab_url()
     } else {
         url.to_string()
@@ -176,7 +176,7 @@ pub fn create_tab_window<R: Runtime>(
         TabWindows::label(tab_id),
         WindowUrl::External(parsed),
     )
-    .title("VEIL Tab")
+    .title("GENYSYS Tab")
     .decorations(false)
     .resizable(true)
     .skip_taskbar(true)
@@ -244,7 +244,7 @@ pub fn navigate_tab_window<R: Runtime>(
     let window = app
         .get_window(&TabWindows::label(tab_id))
         .ok_or_else(|| format!("tab window {} not found", tab_id))?;
-    let target = if url == "veil://newtab" { newtab_url() } else { url.to_string() };
+    let target = if url == "genysys://newtab" { newtab_url() } else { url.to_string() };
     window
         .eval(&format!("window.location.href = {:?};", target))
         .map_err(|e| e.to_string())?;
@@ -276,7 +276,7 @@ pub fn inject_attestation<R: Runtime>(app: &AppHandle<R>, tab_id: u32) {
     if let Some(window) = app.get_window(&TabWindows::label(tab_id)) {
         let _ = window.eval(&format!(
             "try{{document.cookie={cookie:?};}}catch(e){{}}",
-            cookie = format!("veil_attest={}; max-age={}; path=/; Secure", value, max_age),
+            cookie = format!("genysys_attest={}; max-age={}; path=/; Secure", value, max_age),
         ));
     }
 }
@@ -450,13 +450,13 @@ pub fn sync_main_moved<R: Runtime>(app: &AppHandle<R>) {
 
 fn init_script(privileged: bool, tab_id: u32) -> String {
     let mut js = format!(
-        "window.__VEIL_TAB__={};window.__VEIL_PRIVILEGED__={};",
+        "window.__GENYSYS_TAB__={};window.__GENYSYS_PRIVILEGED__={};",
         tab_id, privileged
     );
     if privileged {
         // Attestation is re-minted per session (inject_attestation); this
         // stub only marks the tab so diagnostics can see the tier intent.
-        js.push_str("try{document.cookie='veil_attest=; max-age=0; path=/';}catch(e){}");
+        js.push_str("try{document.cookie='genysys_attest=; max-age=0; path=/';}catch(e){}");
     }
     js
 }

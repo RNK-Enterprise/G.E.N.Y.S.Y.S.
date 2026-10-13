@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# VEIL — CI-style smoke suite: build all three artifacts, verify contents,
+# GENYSYS — CI-style smoke suite: build all three artifacts, verify contents,
 # and launch-verify the AppImage + deb binary headlessly (Xvfb).
 #
 # What "green" means here (every phase must PASS, else exit 1):
@@ -14,7 +14,7 @@
 #   7. Launch-verify: AppImage AND deb binary boot under Xvfb, print the
 #      P.R.O.T.E.C.T.S. banner and hold the fail-closed gate without
 #      COMMAND_URL; a dev binary must NOT print the HOLD line.
-#   8. Gate flip works: with VEIL_TEST_MODE=1 the HOLD is absent.
+#   8. Gate flip works: with GENYSYS_TEST_MODE=1 the HOLD is absent.
 #
 # Usage: bash scripts/smoke-suite.sh [--skip-build]
 #   --skip-build  verify existing artifacts only (they must still be fresh).
@@ -22,11 +22,11 @@ set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BUNDLE="$ROOT/src-tauri/target/release/bundle"
-DEB="$BUNDLE/deb/veil_0.1.0_amd64.deb"
-RPM="$BUNDLE/rpm/veil-0.1.0-1.x86_64.rpm"
-APPDIR="$BUNDLE/appimage/veil.AppDir"
-APPIMAGE="$BUNDLE/appimage/veil_0.1.0_amd64.AppImage"
-BIN="$ROOT/src-tauri/target/release/veil"
+DEB="$BUNDLE/deb/genysys_0.1.0_amd64.deb"
+RPM="$BUNDLE/rpm/genysys-0.1.0-1.x86_64.rpm"
+APPDIR="$BUNDLE/appimage/genysys.AppDir"
+APPIMAGE="$BUNDLE/appimage/genysys_0.1.0_amd64.AppImage"
+BIN="$ROOT/src-tauri/target/release/genysys"
 LOGDIR=$(mktemp -d)
 # Keep logs for CI diagnostics when the suite fails (dumped inline below and
 # by the workflow's log-dump step); cleaned up on success.
@@ -103,7 +103,7 @@ if (cd "$ROOT" && npm run build:vite >/dev/null 2>&1); then
 else
   result FAIL "vite build"
 fi
-if (cd "$ROOT" && grep -rq "veil_dev_bypass" dist/assets/ 2>/dev/null); then
+if (cd "$ROOT" && grep -rq "genysys_dev_bypass" dist/assets/ 2>/dev/null); then
   result FAIL "no dev bypass in prod bundle"
 else
   result PASS "no dev bypass in prod bundle"
@@ -111,11 +111,11 @@ fi
 
 # ── Phase 2: Rust unit tests ─────────────────────────────────────────────────
 banner "Phase 2: rust tests"
-if (cd "$ROOT/src-tauri" && bash ../scripts/with-webkit-pc.sh cargo test >/tmp/veil-smoke-test.log 2>&1); then
-  n=$(grep -oE "test result: ok\. [0-9]+ passed" /tmp/veil-smoke-test.log | grep -oE "[0-9]+" | head -1)
+if (cd "$ROOT/src-tauri" && bash ../scripts/with-webkit-pc.sh cargo test >/tmp/genysys-smoke-test.log 2>&1); then
+  n=$(grep -oE "test result: ok\. [0-9]+ passed" /tmp/genysys-smoke-test.log | grep -oE "[0-9]+" | head -1)
   result PASS "cargo test" "${n:-?} passed"
 else
-  result FAIL "cargo test" "see /tmp/veil-smoke-test.log"
+  result FAIL "cargo test" "see /tmp/genysys-smoke-test.log"
 fi
 
 # ── Phase 3: build artifacts (unless --skip-build) ───────────────────────────
@@ -124,10 +124,10 @@ if [ "${1:-}" = "--skip-build" ]; then
   result PASS "build skipped by flag"
 else
   banner "Phase 3: build artifacts"
-  if (cd "$ROOT" && bash scripts/build-appimage.sh >/tmp/veil-smoke-build.log 2>&1); then
+  if (cd "$ROOT" && bash scripts/build-appimage.sh >/tmp/genysys-smoke-build.log 2>&1); then
     result PASS "build-appimage.sh (deb + rpm + AppImage)"
   else
-    result FAIL "build-appimage.sh" "see /tmp/veil-smoke-build.log"
+    result FAIL "build-appimage.sh" "see /tmp/genysys-smoke-build.log"
   fi
 fi
 
@@ -145,17 +145,17 @@ fi
 if [ -f "$DEB" ]; then
   WORK=$(mktemp -d)
   dpkg-deb -R "$DEB" "$WORK/pkg" 2>/dev/null
-  bin_md5=$(md5sum "$WORK/pkg/usr/bin/veil" 2>/dev/null | cut -d' ' -f1)
+  bin_md5=$(md5sum "$WORK/pkg/usr/bin/genysys" 2>/dev/null | cut -d' ' -f1)
   cur_md5=$(md5sum "$BIN" 2>/dev/null | cut -d' ' -f1)
   if [ -n "$bin_md5" ] && [ "$bin_md5" = "$cur_md5" ]; then
     result PASS "deb binary is fresh (md5 match)"
   else
     result FAIL "deb binary is fresh (md5 match)" "$bin_md5 vs $cur_md5"
   fi
-  if desktop-file-validate "$WORK/pkg/usr/share/applications/veil.desktop" >/dev/null 2>&1; then
-    result PASS "veil.desktop validates"
+  if desktop-file-validate "$WORK/pkg/usr/share/applications/genysys.desktop" >/dev/null 2>&1; then
+    result PASS "genysys.desktop validates"
   else
-    result FAIL "veil.desktop validates"
+    result FAIL "genysys.desktop validates"
   fi
   rm -rf "$WORK"
 fi
@@ -187,7 +187,7 @@ while i + 110 <= len(raw):
     fsize, namesize = f[6], f[11]
     name = raw[i+110:i+110+namesize-1].decode(errors="replace")
     he = (i + 110 + namesize + 3) & ~3
-    if name in ("usr/bin/veil", "./usr/bin/veil"):
+    if name in ("usr/bin/genysys", "./usr/bin/genysys"):
         found = raw[he:he+fsize]
     i = (he + fsize + 3) & ~3
     if name == "TRAILER!!!": break
@@ -201,21 +201,21 @@ PYEOF
       rc=$?
       case $rc in
         2) result FAIL "rpm binary is fresh (md5 match)" "embedded md5 != built $BIN" ;;
-        3) result FAIL "rpm binary is fresh (md5 match)" "usr/bin/veil not found in payload" ;;
+        3) result FAIL "rpm binary is fresh (md5 match)" "usr/bin/genysys not found in payload" ;;
         *) result FAIL "rpm binary is fresh (md5 match)" "payload decode failed (rc=$rc)" ;;
       esac
     fi
   elif command -v rpm2cpio >/dev/null 2>&1; then
     W=$(mktemp -d)
     # Extract everything, keep cpio's stderr: rpm payload paths are stored
-    # WITHOUT a leading ./ on some bundlers and WITH it (./usr/bin/veil) on
+    # WITHOUT a leading ./ on some bundlers and WITH it (./usr/bin/genysys) on
     # tauri 1.6, so a name filter silently matches nothing. On a mismatch the
     # detail reports both md5s so the next run is diagnosable, not a mystery.
     if rpm2cpio "$RPM" 2>"$W/cpio.err" | (cd "$W" && cpio -idm --quiet 2>>"$W/cpio.err"); then
-      if [ ! -f "$W/usr/bin/veil" ]; then
-        result FAIL "rpm binary is fresh (md5 match)" "usr/bin/veil not extracted — $(tail -1 "$W/cpio.err" 2>/dev/null)"
+      if [ ! -f "$W/usr/bin/genysys" ]; then
+        result FAIL "rpm binary is fresh (md5 match)" "usr/bin/genysys not extracted — $(tail -1 "$W/cpio.err" 2>/dev/null)"
       else
-        emb=$(md5sum "$W/usr/bin/veil" | cut -d' ' -f1)
+        emb=$(md5sum "$W/usr/bin/genysys" | cut -d' ' -f1)
         cur=$(md5sum "$BIN" | cut -d' ' -f1)
         if [ "$emb" = "$cur" ]; then
           result PASS "rpm binary is fresh (md5 match)"
@@ -249,7 +249,7 @@ while i + 110 <= len(raw):
     fsize, namesize = f[6], f[11]
     name = raw[i+110:i+110+namesize-1].decode(errors="replace")
     he = (i + 110 + namesize + 3) & ~3
-    if name in ("usr/bin/veil", "./usr/bin/veil"):
+    if name in ("usr/bin/genysys", "./usr/bin/genysys"):
         found = raw[he:he+fsize]
     i = (he + fsize + 3) & ~3
     if name == "TRAILER!!!": break
@@ -258,17 +258,17 @@ if found is None:
 sys.exit(0 if hashlib.md5(found).hexdigest() == hashlib.md5(open(binpath, "rb").read()).hexdigest() else 2)
 PYEOF
       then
-        result PASS "rpm payload contains usr/bin/veil" "(python extraction, md5 match)"
+        result PASS "rpm payload contains usr/bin/genysys" "(python extraction, md5 match)"
       else
         rc=$?
         case $rc in
-          2) result FAIL "rpm payload contains usr/bin/veil" "binary md5 mismatch vs $BIN" ;;
-          3) result FAIL "rpm payload contains usr/bin/veil" "usr/bin/veil not found in payload" ;;
-          *) result FAIL "rpm payload contains usr/bin/veil" "payload decode failed (rc=$rc)" ;;
+          2) result FAIL "rpm payload contains usr/bin/genysys" "binary md5 mismatch vs $BIN" ;;
+          3) result FAIL "rpm payload contains usr/bin/genysys" "usr/bin/genysys not found in payload" ;;
+          *) result FAIL "rpm payload contains usr/bin/genysys" "payload decode failed (rc=$rc)" ;;
         esac
       fi
     else
-      result FAIL "rpm payload contains usr/bin/veil" "no rpm2cpio and no python3 — cannot verify"
+      result FAIL "rpm payload contains usr/bin/genysys" "no rpm2cpio and no python3 — cannot verify"
     fi
   fi
 fi
@@ -297,18 +297,18 @@ if [ -f "$APPIMAGE" ]; then
   # type-2 (modern appimagetool) embeds a compressed squashfs, so strings are
   # invisible to grep — extract via the runtime instead (no FUSE needed).
   if command -v isoinfo >/dev/null 2>&1 && [ "$sig" = "CD001" ]; then
-      if isoinfo -i "$APPIMAGE" -R 2>/dev/null | grep -q "veil.AppDir/usr/bin/veil"; then
-        result PASS "AppImage payload lists usr/bin/veil"
+      if isoinfo -i "$APPIMAGE" -R 2>/dev/null | grep -q "genysys.AppDir/usr/bin/genysys"; then
+        result PASS "AppImage payload lists usr/bin/genysys"
       else
-        result FAIL "AppImage payload lists usr/bin/veil"
+        result FAIL "AppImage payload lists usr/bin/genysys"
       fi
     else
       W=$(mktemp -d)
       if (cd "$W" && HOME="$W" timeout 60 "$APPIMAGE" --appimage-extract >/dev/null 2>&1) \
-         && [ -f "$W/squashfs-root/usr/bin/veil" ]; then
-        result PASS "AppImage payload lists usr/bin/veil" "(type-2 squashfs — runtime extraction)"
+         && [ -f "$W/squashfs-root/usr/bin/genysys" ]; then
+        result PASS "AppImage payload lists usr/bin/genysys" "(type-2 squashfs — runtime extraction)"
       else
-        result FAIL "AppImage payload lists usr/bin/veil"
+        result FAIL "AppImage payload lists usr/bin/genysys"
       fi
       rm -rf "$W"
     fi
@@ -353,16 +353,16 @@ fi
 
 if [ -x "$BIN" ]; then
   # Production behavior: bare launch (no bench env) → HOLD expected.
-  launch_capture "$LOGDIR/bin.log" 20 env -u VEIL_TEST_MODE "$BIN"
+  launch_capture "$LOGDIR/bin.log" 20 env -u GENYSYS_TEST_MODE "$BIN"
   if check_banner_and_hold "$LOGDIR/bin.log" 1; then
     result PASS "release binary boots and holds fail-closed gate"
   else
     result FAIL "release binary boots and holds fail-closed gate" "$(loghead "$LOGDIR/bin.log")"
   fi
-  # Gate flip: with VEIL_TEST_MODE=1 the HOLD must be absent.
-  launch_capture "$LOGDIR/bin-bench.log" 20 env VEIL_TEST_MODE=1 "$BIN"
+  # Gate flip: with GENYSYS_TEST_MODE=1 the HOLD must be absent.
+  launch_capture "$LOGDIR/bin-bench.log" 20 env GENYSYS_TEST_MODE=1 "$BIN"
   if grep -q "FAIL-CLOSED HOLD" "$LOGDIR/bin-bench.log"; then
-    result FAIL "bench mode suppresses HOLD" "VEIL_TEST_MODE=1 still printed HOLD"
+    result FAIL "bench mode suppresses HOLD" "GENYSYS_TEST_MODE=1 still printed HOLD"
   else
     result PASS "bench mode suppresses HOLD"
   fi
@@ -371,12 +371,12 @@ else
 fi
 
 # Same for the installed package binary if present.
-if [ -x /usr/bin/veil ]; then
-  launch_capture "$LOGDIR/installed.log" 20 /usr/bin/veil
+if [ -x /usr/bin/genysys ]; then
+  launch_capture "$LOGDIR/installed.log" 20 /usr/bin/genysys
   if check_banner_and_hold "$LOGDIR/installed.log" 1; then
-    result PASS "installed /usr/bin/veil boots and holds fail-closed gate"
+    result PASS "installed /usr/bin/genysys boots and holds fail-closed gate"
   else
-    result FAIL "installed /usr/bin/veil boots and holds fail-closed gate" "$(loghead "$LOGDIR/installed.log")"
+    result FAIL "installed /usr/bin/genysys boots and holds fail-closed gate" "$(loghead "$LOGDIR/installed.log")"
   fi
 fi
 

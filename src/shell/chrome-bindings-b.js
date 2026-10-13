@@ -1,5 +1,5 @@
 /**
- * VEIL™ — extracted from main.js
+ * GENYSYS™ — extracted from main.js
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 window.bindModalCloseButtons();
@@ -14,7 +14,7 @@ document.querySelectorAll('.modal').forEach(modal => {
 });
 
 function showRecentlyClosedModal() {
-    if (!window.isVEILCapabilityAvailable('veil-history')) {
+    if (!window.isGENYSYSCapabilityAvailable('genysys-history')) {
         return;
     }
 
@@ -82,7 +82,7 @@ function showRecentlyClosedModal() {
 }
 
 function showSessionsModal() {
-    if (!window.isVEILCapabilityAvailable('veil-browser-core')) {
+    if (!window.isGENYSYSCapabilityAvailable('genysys-browser-core')) {
         return;
     }
 
@@ -337,7 +337,7 @@ window.bindClickHandlers([
 window.bindClickHandlers([
     [forwardBtn, () => window.tabManager.goForward()],
     [refreshBtn, () => window.tabManager.refresh()],
-    [homeBtn, () => navigateToUrl('veil://newtab')]
+    [homeBtn, () => navigateToUrl('genysys://newtab')]
 ]);
 
 // Bookmark Button

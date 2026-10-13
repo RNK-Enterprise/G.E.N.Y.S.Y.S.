@@ -3,7 +3,7 @@
  */
 
 /**
- * VEIL™ — UI layer coverage (toast, loading, density core/surfaces)
+ * GENYSYS™ — UI layer coverage (toast, loading, density core/surfaces)
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -17,7 +17,7 @@ import {
 } from './helpers/shell-harness.js';
 
 function stopRuntime() {
-    try { window.veilRuntime?.stop(); } catch { /* not started */ }
+    try { window.genysysRuntime?.stop(); } catch { /* not started */ }
 }
 
 beforeEach(() => {
@@ -151,7 +151,7 @@ describe('ui: density-core', () => {
         expect(document.getElementById('tab-bar').classList.contains('compact')).toBe(true);
         expect(document.getElementById('tabs').classList.contains('hidden')).toBe(true);
         expect(document.getElementById('tab-search').classList.contains('hidden')).toBe(true);
-        expect(localStorage.getItem('rnk-veil-tab-bar-density')).toBe('compact');
+        expect(localStorage.getItem('rnk-genysys-tab-bar-density')).toBe('compact');
         expect(window.tabBarDensityState).toBe('compact');
 
         window.toggleTabBarCompact();
@@ -196,7 +196,7 @@ describe('ui: density-core', () => {
         expect(document.getElementById('settings-section-general').classList.contains('collapsed')).toBe(true);
         expect(document.getElementById('settings-general-toggle').textContent).toBe('Expand');
         expect(window.isSettingsSectionCollapsed('general')).toBe(true);
-        expect(JSON.parse(localStorage.getItem('rnk-veil-settings-section-collapse')).general).toBe(true);
+        expect(JSON.parse(localStorage.getItem('rnk-genysys-settings-section-collapse')).general).toBe(true);
 
         window.toggleSettingsSection('general');
         expect(document.getElementById('settings-general-toggle').textContent).toBe('Collapse');
@@ -210,7 +210,7 @@ describe('ui: density-core', () => {
         window.setModalDensityState('compact');
         expect(modalContent.classList.contains('compact')).toBe(true);
         window.saveModalDensityState();
-        expect(localStorage.getItem('rnk-veil-modal-density')).toBe('compact');
+        expect(localStorage.getItem('rnk-genysys-modal-density')).toBe('compact');
 
         const dropdown = document.getElementById('omnibox-suggestions');
         window.applySuggestionDensityState();
@@ -252,7 +252,7 @@ describe('ui: density-core-b + density-surfaces', () => {
         window.setSettingsPanelDensityState('compact');
         expect(panel.classList.contains('dense')).toBe(true);
         expect(document.getElementById('settings-dense-toggle').textContent).toBe('Roomy');
-        expect(localStorage.getItem('rnk-veil-settings-panel-density')).toBe('compact');
+        expect(localStorage.getItem('rnk-genysys-settings-panel-density')).toBe('compact');
         window.toggleSettingsDense();
         expect(window.settingsPanelDensityState).toBe('roomy');
         expect(panel.classList.contains('roomy')).toBe(true);
@@ -296,11 +296,11 @@ describe('ui: density-core-b + density-surfaces', () => {
     test('per-surface density setters each persist and apply', async () => {
         await bootShell();
         const cases = [
-            ['setToastDensityState', 'toast-container', 'compact', 'rnk-veil-toast-density'],
-            ['setSearchProviderDensityState', null, 'roomy', 'rnk-veil-search-provider-density'],
-            ['setSessionsDensityState', null, 'compact', 'rnk-veil-sessions-density'],
-            ['setBookmarksBarDensityState', 'bookmarks-bar', 'roomy', 'rnk-veil-bookmarks-bar-density'],
-            ['setShortcutsDensityState', 'shortcuts-help', 'compact', 'rnk-veil-shortcuts-density'],
+            ['setToastDensityState', 'toast-container', 'compact', 'rnk-genysys-toast-density'],
+            ['setSearchProviderDensityState', null, 'roomy', 'rnk-genysys-search-provider-density'],
+            ['setSessionsDensityState', null, 'compact', 'rnk-genysys-sessions-density'],
+            ['setBookmarksBarDensityState', 'bookmarks-bar', 'roomy', 'rnk-genysys-bookmarks-bar-density'],
+            ['setShortcutsDensityState', 'shortcuts-help', 'compact', 'rnk-genysys-shortcuts-density'],
         ];
         for (const [fnName, targetId, mode, storageKey] of cases) {
             window[fnName](mode);
@@ -330,7 +330,7 @@ describe('ui: density-core-b + density-surfaces', () => {
         window.statusbarDensityState = 'compact';
         window.syncShellDensityStateFromSurfaces();
         expect(window.shellDensityState).toBe('compact');
-        expect(localStorage.getItem('rnk-veil-shell-density')).toBe('compact');
+        expect(localStorage.getItem('rnk-genysys-shell-density')).toBe('compact');
 
         window.titlebarDensityState = 'roomy';
         window.syncShellDensityStateFromSurfaces();

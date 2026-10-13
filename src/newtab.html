@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-  VEIL™ — Internal tab page (app-origin)
+  GENYSYS™ — Internal tab page (app-origin)
   Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
 
   Served from the app origin (tauri://localhost in release) so the tab-window
@@ -15,7 +15,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>VEIL</title>
+  <title>GENYSYS</title>
   <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -70,7 +70,7 @@
 <body>
   <div class="container">
     <div class="shield" id="icon">🛡</div>
-    <h1 id="title">VEIL</h1>
+    <h1 id="title">GENYSYS</h1>
     <div class="domain" id="domain" hidden></div>
     <p id="body-text">New tab</p>
     <div class="reason" id="reason" hidden><span>Reason:</span> <code id="reason-code"></code></div>
@@ -81,7 +81,7 @@
     </div>
     <div id="actions"></div>
     <div class="clock" id="clock" hidden></div>
-    <div class="foot">VEIL™ — RNK's only client · P.R.O.T.E.C.T.S.-governed (fail-closed)</div>
+    <div class="foot">GENYSYS™ — RNK's only client · P.R.O.T.E.C.T.S.-governed (fail-closed)</div>
   </div>
 
   <script>
@@ -107,7 +107,7 @@
     function backButton() { button('Go Back', function () { history.back(); }); }
 
     if (view === 'block') {
-      document.title = 'VEIL — Blocked';
+      document.title = 'GENYSYS — Blocked';
       document.getElementById('icon').textContent = '🛡';
       document.querySelector('.container').classList.add('danger');
       document.getElementById('title').textContent = 'Blocked by P.R.O.T.E.C.T.S.';
@@ -119,7 +119,7 @@
       document.getElementById('reason-code').textContent = reason || 'policy_violation';
       backButton();
     } else if (view === 'quarantine') {
-      document.title = 'VEIL — Quarantined';
+      document.title = 'GENYSYS — Quarantined';
       document.querySelector('.container').classList.add('warn');
       document.getElementById('title').textContent = 'Suspicious destination quarantined';
       document.getElementById('domain').hidden = false;
@@ -128,7 +128,7 @@
       document.getElementById('reason-code').textContent = reason || 'quarantine';
       backButton();
     } else if (view === 'access-request') {
-      document.title = 'VEIL — Access Request';
+      document.title = 'GENYSYS — Access Request';
       document.querySelector('.container').classList.add('info');
       document.getElementById('title').textContent = 'Access Request Required';
       document.getElementById('domain').hidden = false;
@@ -145,14 +145,14 @@
           if (window.__TAURI__ && window.__TAURI__.invoke) {
             window.__TAURI__.invoke('request_site_access', { domain: domain, reason: value });
           } else {
-            window.parent.postMessage({ type: 'veil:access-request', domain: domain, reason: value }, '*');
+            window.parent.postMessage({ type: 'genysys:access-request', domain: domain, reason: value }, '*');
           }
         } catch (e) { /* best-effort */ }
         document.getElementById('result').style.display = 'block';
         document.getElementById('actions').style.display = 'none';
       }, 'submit');
     } else if (view === 'locked') {
-      document.title = 'VEIL — Locked';
+      document.title = 'GENYSYS — Locked';
       document.querySelector('.container').classList.add('locked');
       document.getElementById('icon').textContent = '🔒';
       document.getElementById('title').textContent = 'Session locked';
@@ -169,7 +169,7 @@
       }
       tick();
       setInterval(tick, 15000);
-      document.getElementById('body-text').textContent = 'VEIL — RNK\'s only client. Enter an address in the omnibox.';
+      document.getElementById('body-text').textContent = 'GENYSYS — RNK\'s only client. Enter an address in the omnibox.';
       var note = document.createElement('p');
       note.style.fontSize = '.78rem';
       note.textContent = 'Navigation is gated by P.R.O.T.E.C.T.S. RNK product surfaces open as privileged tabs.';
