@@ -21,6 +21,9 @@ mark tagged states of the repository.
 - **Surface-state coverage completed.** `surfaces-core.js` now holds exact
   100/100/100/100 coverage across download refusal and fallback paths, search
   provider recovery, and all theme normalization/status branches.
+- **Sidebar-state coverage completed.** `sidebar-render.js` now holds exact
+  100/100/100/100 coverage across badge guards, any-of surface rules, missing
+  elements, default modes, settings category fallbacks, and orphan sections.
 - **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
   pages, rejects embedded and unknown schemes, and intersects remote policy with
   local policy so a remote response cannot override a local block or expand

@@ -347,10 +347,14 @@ describe('shell: sidebar-render', () => {
         window.setGENYSYSSidebarStateBadge(el, 'Ready', 'ready');
         expect(el.textContent).toBe('Ready');
         expect(el.dataset.state).toBe('ready');
+        window.setGENYSYSSidebarStateBadge(el, 'Offline');
+        expect(el.dataset.state).toBe('offline');
         window.setGENYSYSSidebarStateBadgeFromCapability(el, 'genysys-browser-core');
         expect(el.textContent).toBe('Ready');
         window.setGENYSYSSidebarStateBadgeFromCapability(el, 'no-such-capability', 'Ready', 'ready', 'Offline');
         expect(el.textContent).toBe('Offline');
+        window.setGENYSYSSidebarStateBadge(null, 'Ignored');
+        window.setGENYSYSSidebarStateBadgeFromCapability(null, 'ignored');
     });
 
     test('surface availability hides and disables per the rules', async () => {
@@ -369,6 +373,28 @@ describe('shell: sidebar-render', () => {
         expect(document.getElementById('clear-history-btn').disabled).toBe(false);
         window.refreshGENYSYSSidebarConnectionState();
         window.refreshGENYSYSSidebarFeeds();
+
+        const anyOfButton = document.createElement('button');
+        anyOfButton.id = 'any-of-button';
+        const defaultModeButton = document.createElement('button');
+        defaultModeButton.id = 'default-mode-button';
+        document.body.append(anyOfButton, defaultModeButton);
+        const anyOfRule = {
+            selector: '#any-of-button',
+            anyOf: ['genysys-browser-core', 'genysys-search'],
+            mode: 'disable',
+        };
+        const missingRule = { selector: '#missing-surface', capability: 'missing', mode: 'hide' };
+        const defaultModeRule = { selector: '#default-mode-button', capability: 'missing' };
+        window.GENYSYS_SURFACE_RULES.push(anyOfRule, missingRule, defaultModeRule);
+        try {
+            window.updateGENYSYSSurfaceAvailability(window.genysysRuntime.manifest);
+            expect(anyOfButton.disabled).toBe(false);
+            expect(defaultModeButton.hidden).toBe(true);
+            expect(window.hasAnyGENYSYSCapability()).toBe(false);
+        } finally {
+            window.GENYSYS_SURFACE_RULES.splice(-3, 3);
+        }
     });
 
     test('settings section availability activates the first enabled tab', async () => {
@@ -376,6 +402,8 @@ describe('shell: sidebar-render', () => {
         const tabs = document.querySelectorAll('.settings-tab');
         const sections = document.querySelectorAll('.settings-section');
         expect(tabs.length).toBeGreaterThan(0);
+        window.updateSettingsSectionAvailability({});
+        window.updateSettingsSectionAvailability({ capabilities: [{ category: 'browser' }] });
         window.updateSettingsSectionAvailability({ capabilities: [] });
         const disabled = [...tabs].filter((t) => t.disabled);
         expect(disabled.length).toBeGreaterThan(0);
@@ -384,6 +412,35 @@ describe('shell: sidebar-render', () => {
         const activeSection = document.querySelector(`.settings-section[data-section="${active.dataset.tab}"]`);
         expect(activeSection.classList.contains('active')).toBe(true);
         sections.forEach(() => { });
+
+        const syntheticTab = document.createElement('button');
+        syntheticTab.className = 'settings-tab';
+        syntheticTab.dataset.tab = 'synthetic';
+        const syntheticSection = document.createElement('section');
+        syntheticSection.className = 'settings-section';
+        syntheticSection.dataset.section = 'synthetic';
+        tabs.forEach((tab) => tab.classList.remove('active'));
+        document.body.prepend(syntheticTab, syntheticSection);
+        try {
+            window.updateSettingsSectionAvailability({ capabilities: [] });
+            expect(syntheticTab.classList.contains('active')).toBe(true);
+        } finally {
+            syntheticTab.remove();
+            syntheticSection.remove();
+        }
+        const orphanTab = document.createElement('button');
+        orphanTab.className = 'settings-tab';
+        orphanTab.dataset.tab = 'synthetic-orphan';
+        document.querySelectorAll('.settings-tab').forEach((tab) => tab.classList.remove('active'));
+        document.body.prepend(orphanTab);
+        try {
+            window.updateSettingsSectionAvailability({ capabilities: [] });
+            expect(orphanTab.classList.contains('active')).toBe(true);
+        } finally {
+            orphanTab.remove();
+        }
+        document.querySelectorAll('.settings-tab, .settings-section').forEach((element) => element.remove());
+        window.updateSettingsSectionAvailability({ capabilities: [] });
     });
 
     test('hasAnyGENYSYSCapability matches through the runtime map', async () => {
@@ -391,6 +448,7 @@ describe('shell: sidebar-render', () => {
         window.genysysRuntime.capabilities = new Map([['genysys-search', { id: 'genysys-search', status: 'stable' }]]);
         expect(window.hasAnyGENYSYSCapability(['genysys-nope', 'genysys-search'])).toBe(true);
         expect(window.hasAnyGENYSYSCapability(['genysys-nope'])).toBe(false);
+        expect(window.hasAnyGENYSYSCapability()).toBe(false);
     });
 });
 
