@@ -479,8 +479,20 @@ describe('shell: bookmarks-bar', () => {
         window.settingsManager.set('general', 'showBookmarksBar', true);
         window.bookmarkManager.bookmarks = [];
         window.bookmarkManager.addBookmark('', 'https://label.test/deep');
+        window.bookmarkManager.addBookmark('', 'file:///tmp/local-bookmark');
+        window.bookmarkManager.addBookmark('', 'not a valid url');
         window.renderBookmarksBar();
-        const item = document.querySelector('.bookmarks-bar-item');
-        expect(item.textContent).toBe('label.test');
+        const items = [...document.querySelectorAll('.bookmarks-bar-item')];
+        expect(items.map((item) => item.textContent)).toEqual([
+            'label.test',
+            'file:///tmp/local-bookmark',
+            'not a valid url',
+        ]);
+    });
+
+    test('missing bookmarks bar mounts are safe no-ops', async () => {
+        await bootShell();
+        document.getElementById('bookmarks-bar').remove();
+        expect(() => window.renderBookmarksBar()).not.toThrow();
     });
 });

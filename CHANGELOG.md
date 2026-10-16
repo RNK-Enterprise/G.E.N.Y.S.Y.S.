@@ -24,6 +24,9 @@ mark tagged states of the repository.
 - **Sidebar-state coverage completed.** `sidebar-render.js` now holds exact
   100/100/100/100 coverage across badge guards, any-of surface rules, missing
   elements, default modes, settings category fallbacks, and orphan sections.
+- **Bookmarks-bar coverage completed.** `bookmarks-bar.js` now holds exact
+  100/100/100/100 coverage across hidden/empty/rendered states, local and
+  malformed URLs, capped item rendering, and missing mounts.
 - **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
   pages, rejects embedded and unknown schemes, and intersects remote policy with
   local policy so a remote response cannot override a local block or expand
