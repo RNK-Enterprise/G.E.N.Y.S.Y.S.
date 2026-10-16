@@ -18,6 +18,9 @@ mark tagged states of the repository.
 - **Chrome-action coverage completed.** `chrome-actions.js` now holds exact
   100/100/100/100 coverage across missing browser state, missing omnibox
   elements, modal delegates, pinning, and optional settings navigation.
+- **Surface-state coverage completed.** `surfaces-core.js` now holds exact
+  100/100/100/100 coverage across download refusal and fallback paths, search
+  provider recovery, and all theme normalization/status branches.
 - **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
   pages, rejects embedded and unknown schemes, and intersects remote policy with
   local policy so a remote response cannot override a local block or expand

@@ -276,6 +276,21 @@ describe('shell: capabilities + surfaces-core', () => {
         window.tabManager.tabs[0].url = 'https://genysys.test/page';
         window.downloadManager.startDownload = () => ({ filename: 'page' });
         expect(window.startDownloadFromActiveTab()).toBe(true);
+        window.tabManager.tabs[0].title = '   ';
+        window.downloadManager.getFilenameFromUrl = () => 'fallback-page';
+        expect(window.startDownloadFromActiveTab()).toBe(true);
+        const capabilityAvailable = window.isGENYSYSCapabilityAvailable;
+        window.isGENYSYSCapabilityAvailable = () => false;
+        expect(window.startDownloadFromActiveTab()).toBe(false);
+        window.isGENYSYSCapabilityAvailable = capabilityAvailable;
+        window.tabManager.tabs[0].url = 'not a url';
+        expect(window.startDownloadFromActiveTab()).toBe(false);
+        const downloadManager = window.downloadManager;
+        window.downloadManager = null;
+        expect(window.getGENYSYSDownloadSummary()).toEqual({
+            downloads: [], active: [], paused: [], completed: [], failed: [],
+        });
+        window.downloadManager = downloadManager;
     });
 
     test('theme helpers normalize and persist', async () => {
@@ -283,9 +298,14 @@ describe('shell: capabilities + surfaces-core', () => {
         expect(window.applyThemeState('light')).toBe('light');
         expect(document.body.dataset.theme).toBe('light');
         expect(window.applyThemeState('weird')).toBe('dark-neutral');
+        expect(window.applyThemeState()).toBe('dark-neutral');
         expect(window.getThemeLabel('dark')).toBe('Dark');
         expect(window.getThemeLabel('light')).toBe('Light');
         expect(window.getThemeLabel('other')).toBe('Dark Neutral');
+        document.getElementById('setting-theme')?.remove();
+        expect(window.setThemeState('dark-neutral')).toBe('dark-neutral');
+        expect(window.setThemeState('dark-neutral', { statusMessage: '', fromGENYSYS: false }))
+            .toBe('dark-neutral');
         const select = document.createElement('select');
         select.id = 'setting-theme';
         ['dark', 'light', 'dark-neutral'].forEach((v) => {
@@ -307,6 +327,14 @@ describe('shell: capabilities + surfaces-core', () => {
         expect(window.getSearchProviderState().id).toBe('bing');
         window.currentSearchProvider = 'duckduckgo';
         expect(window.getSearchProviderState().id).toBe('duckduckgo');
+        window.currentSearchProvider = undefined;
+        localStorage.clear();
+        expect(window.getSearchProviderState().id).toBe('duckduckgo');
+        window.currentSearchProvider = 'missing';
+        window.searchProviders = {};
+        expect(window.getSearchProviderState()).toEqual({ id: 'missing', name: 'missing', url: '' });
+        window.searchProviders = null;
+        expect(window.getSearchProviderState()).toEqual({ id: 'missing', name: 'missing', url: '' });
         expect(window.getSearchProviderLabel({})).toBe('DuckDuckGo');
         expect(window.getSearchProviderLabel({ name: 'Brave' })).toBe('Brave');
     });

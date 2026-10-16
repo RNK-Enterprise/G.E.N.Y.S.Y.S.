@@ -70,16 +70,21 @@ function getThemeLabel(theme) {
     }
 }
 
-function applyThemeState(theme = settingsManager.getAll().appearance.theme) {
+function applyThemeState(theme) {
+    const requestedTheme = theme === undefined
+        ? settingsManager.getAll().appearance.theme
+        : theme;
     const body = document.body;
-    const normalized = ['dark', 'light'].includes(theme) ? theme : 'dark-neutral';
+    const normalized = ['dark', 'light'].includes(requestedTheme) ? requestedTheme : 'dark-neutral';
     body.classList.remove('theme-dark-neutral', 'theme-dark', 'theme-light');
     body.classList.add(`theme-${normalized}`);
     body.dataset.theme = normalized;
     return normalized;
 }
 
-function setThemeState(theme, { statusMessage = null, fromGENYSYS = false } = {}) {
+function setThemeState(theme, options) {
+    const statusMessage = options?.statusMessage ?? null;
+    const fromGENYSYS = options?.fromGENYSYS ?? false;
     const normalized = applyThemeState(theme);
     const themeSelect = document.getElementById('setting-theme');
     if (themeSelect) {
