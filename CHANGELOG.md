@@ -12,6 +12,9 @@ mark tagged states of the repository.
 - **Shell coverage blockers repaired.** `tauri-api.js`, `manifest.js`,
   `rnk-webviews.js`, and `capabilities.js` now each hold exact 100/100/100/100
   statement, branch, function, and line coverage through real edge-path tests.
+- **Binding coverage completed.** `bind-helpers.js` now holds exact
+  100/100/100/100 coverage across modal actions, guarded buttons, keyboard
+  navigation, tab-close behavior, drag events, and missing-adjacent-tab paths.
 - **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
   pages, rejects embedded and unknown schemes, and intersects remote policy with
   local policy so a remote response cannot override a local block or expand

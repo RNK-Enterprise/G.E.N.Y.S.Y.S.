@@ -261,6 +261,35 @@ describe('shell: section-nav + bind-helpers', () => {
         expect(window.bindCardActionButton(null, () => { })).toBeUndefined();
         window.bindCardActionButton(document.createElement('button'), null);
 
+        const noMatchItem = document.createElement('div');
+        window.bindModalActionButton(noMatchItem, 'button', () => { });
+        const defaultItem = document.createElement('div');
+        window.bindItemEvents([defaultItem]);
+        const mouseOnlyItem = document.createElement('div');
+        let mouseEntered = false;
+        window.bindItemEvents([mouseOnlyItem], { mouseenter: () => { mouseEntered = true; } });
+        mouseOnlyItem.dispatchEvent(new Event('mouseenter', { bubbles: true }));
+        expect(mouseEntered).toBe(true);
+
+        const actionButton = document.createElement('button');
+        let actionEvent;
+        window.bindButtonAction(actionButton, (event) => { actionEvent = event; }, {
+            stopPropagation: true,
+            preventDefault: true,
+        });
+        const actionClick = new MouseEvent('click', { bubbles: true, cancelable: true });
+        actionButton.dispatchEvent(actionClick);
+        expect(actionEvent).toBe(actionClick);
+        expect(actionClick.defaultPrevented).toBe(true);
+
+        const cardButton = document.createElement('button');
+        let cardClicks = 0;
+        window.bindCardActionButton(cardButton, () => { cardClicks += 1; });
+        const cardClick = new MouseEvent('click', { bubbles: true, cancelable: true });
+        cardButton.dispatchEvent(cardClick);
+        expect(cardClicks).toBe(1);
+        expect(cardClick.defaultPrevented).toBe(true);
+
         const item = document.createElement('div');
         const button = document.createElement('button');
         item.appendChild(button);
@@ -304,6 +333,7 @@ describe('shell: section-nav + bind-helpers', () => {
         el.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
         el.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
         el.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+        el.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
         el.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, clientX: 11, clientY: 22 }));
         expect(calls).toContainEqual(['menu', 5, 11, 22]);
         el.dispatchEvent(new Event('dragstart', { bubbles: true }));
@@ -316,7 +346,52 @@ describe('shell: section-nav + bind-helpers', () => {
         const closeEvent = new MouseEvent('click', { bubbles: true });
         Object.defineProperty(closeEvent, 'target', { value: el.querySelector('.tab-close') });
         el.querySelector('.tab-close').dispatchEvent(closeEvent);
+        const tabCloseTargetEvent = new MouseEvent('click', { bubbles: true });
+        Object.defineProperty(tabCloseTargetEvent, 'target', { value: el.querySelector('.tab-close') });
+        el.dispatchEvent(tabCloseTargetEvent);
         await new Promise((resolve) => setTimeout(resolve, 150));
         expect(calls).toContainEqual(['close', 5]);
+
+        const previousElement = document.createElement('div');
+        previousElement.dataset.tabId = '4';
+        const nextElement = document.createElement('div');
+        nextElement.dataset.tabId = '6';
+        document.body.append(previousElement, nextElement);
+        const previousFocus = jest.spyOn(previousElement, 'focus');
+        const nextFocus = jest.spyOn(nextElement, 'focus');
+        const middleElement = document.createElement('div');
+        middleElement.dataset.tabId = '5';
+        middleElement.innerHTML = '<button class="tab-close">close</button>';
+        window.bindTabElementInteractions(
+            middleElement,
+            { id: 5, url: 'https://middle.test/', title: 'M' },
+            1,
+            [
+                { id: 4, url: 'https://previous.test/', title: 'P' },
+                { id: 5, url: 'https://middle.test/', title: 'M' },
+                { id: 6, url: 'https://next.test/', title: 'N' },
+            ],
+            manager,
+        );
+        middleElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
+        middleElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+        expect(previousFocus).toHaveBeenCalled();
+        expect(nextFocus).toHaveBeenCalled();
+
+        const orphanMiddleElement = document.createElement('div');
+        orphanMiddleElement.innerHTML = '<button class="tab-close">close</button>';
+        window.bindTabElementInteractions(
+            orphanMiddleElement,
+            { id: 8, url: 'https://orphan.test/', title: 'O' },
+            1,
+            [
+                { id: 7, url: 'https://orphan-previous.test/', title: 'OP' },
+                { id: 8, url: 'https://orphan.test/', title: 'O' },
+                { id: 9, url: 'https://orphan-next.test/', title: 'ON' },
+            ],
+            manager,
+        );
+        orphanMiddleElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
+        orphanMiddleElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
     });
 });
