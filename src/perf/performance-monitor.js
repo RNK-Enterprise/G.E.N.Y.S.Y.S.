@@ -45,7 +45,7 @@ class PerformanceMonitor {
         window.setGENYSYSSidebarStateBadge?.(perfSummaryState, perfStatusTone === 'busy' ? 'Busy' : genysysConnected ? 'Ready' : 'Idle', perfStatusTone);
         if (perfSummaryText) {
             perfSummaryText.textContent = perfStatusTone === 'busy'
-                ? `GENYSYS under load with ${tabs} tabs and ${memory === 'N/A' ? 'unknown' : `${memory} MB`} memory.`
+                ? `GENYSYS under load with ${tabs} tabs and ${memory} MB memory.`
                 : genysysConnected
                     ? `GENYSYS runtime online · ${liveTurbos} live turbos · ${tabs} tabs.`
                     : `GENYSYS runtime offline — start it from the status indicator.`;

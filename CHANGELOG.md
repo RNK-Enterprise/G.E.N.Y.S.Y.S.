@@ -77,6 +77,10 @@ mark tagged states of the repository.
 - **UI manager lifecycle repair.** Toast removal now reconciles detached nodes,
   and loading overlays clear stale references after external removal. The toast
   and loading managers now hold exact 100/100/100/100 coverage across 4 tests.
+- **Performance monitor coverage and branch cleanup.** The monitor now holds
+  exact 100/100/100/100 coverage across 3 tests, including chart history,
+  offline/ready/busy states, stopped timers, and helper-free panel toggles.
+  An unreachable busy-state memory fallback was removed.
 - **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
   pages, rejects embedded and unknown schemes, and intersects remote policy with
   local policy so a remote response cannot override a local block or expand
