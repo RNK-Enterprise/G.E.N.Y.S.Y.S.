@@ -351,6 +351,7 @@ TabManager.prototype.showTabContextMenu = function(tabId, x, y) {
     menu.style.top = `${y}px`;
 
     const tab = this.tabs.find(t => t.id === tabId);
+    if (!tab) return;
 
     menu.innerHTML = `
         <div class="context-menu-item" data-action="pin">${tab.pinned ? 'Unpin' : 'Pin'} Tab</div>
@@ -392,6 +393,7 @@ TabManager.prototype.handleContextMenuAction = function(tabId, action) {
             break;
         case 'close-right':
             const index = this.tabs.findIndex(t => t.id === tabId);
+            if (index < 0) break;
             this.tabs.slice(index + 1).filter(t => !t.pinned).forEach(t => this.closeTab(t.id));
             break;
         case 'close':

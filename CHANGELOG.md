@@ -68,6 +68,10 @@ mark tagged states of the repository.
   tests. Empty navigation-event payloads now fail safely, browser fallback
   commands and silent IPC failures are covered, and section-window hooks
   tolerate rejected native operations.
+- **Tab-manager coverage and blocker repair.** The browser tab manager and
+  window-mode extras now hold exact 100/100/100/100 coverage across 61 tests.
+  Invalid context-menu targets no longer crash, and an invalid close-right
+  target can no longer close unrelated tabs.
 - **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
   pages, rejects embedded and unknown schemes, and intersects remote policy with
   local policy so a remote response cannot override a local block or expand
