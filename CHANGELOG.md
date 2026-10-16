@@ -81,6 +81,10 @@ mark tagged states of the repository.
   exact 100/100/100/100 coverage across 3 tests, including chart history,
   offline/ready/busy states, stopped timers, and helper-free panel toggles.
   An unreachable busy-state memory fallback was removed.
+- **Welcome and cookies hardening.** Welcome-tour and cookies-bar paths now
+  hold exact 100/100/100/100 coverage across 38 tests. Legacy state migration,
+  malformed storage, loading-time initialization, and no-selection tour paths
+  are covered; persisted daily-message text is rendered as text, not markup.
 - **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
   pages, rejects embedded and unknown schemes, and intersects remote policy with
   local policy so a remote response cannot override a local block or expand

@@ -72,9 +72,10 @@ function showDailyMessage(msg) {
     banner.id = 'genysys-daily-message';
     banner.innerHTML = `
         <span class="genysys-daily-msg-icon">✦</span>
-        <span class="genysys-daily-msg-text">${msg.text}</span>
+        <span class="genysys-daily-msg-text"></span>
         <button class="genysys-daily-msg-close" type="button" title="Dismiss">×</button>
     `;
+    banner.querySelector('.genysys-daily-msg-text').textContent = String(msg.text ?? '');
     document.body.appendChild(banner);
     banner.querySelector('.genysys-daily-msg-close').addEventListener('click', () => {
         banner.classList.add('genysys-daily-msg-out');
@@ -161,7 +162,7 @@ function renderStep(step, index, total, profile, overlay) {
     choicesEl.innerHTML = '';
     if (step.choices) {
         choicesEl.innerHTML = step.choices.map(c => `
-            <button class="genysys-tour-choice${profile.style === c.id ? ' selected' : ''}" data-choice="${c.id}" type="button">${c.label}</button>
+            <button class="genysys-tour-choice" data-choice="${c.id}" type="button">${c.label}</button>
         `).join('');
         choicesEl.querySelectorAll('.genysys-tour-choice').forEach(btn => {
             btn.addEventListener('click', () => {
