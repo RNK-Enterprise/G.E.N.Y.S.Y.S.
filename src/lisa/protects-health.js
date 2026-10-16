@@ -12,9 +12,9 @@ const RESOLUTE_URL = () =>
     localStorage.getItem('genysys_resolute_url')     || localStorage.getItem('axis_resolute_url') || 'http://127.0.0.1:7781';
 
 const ORGANS = [
-    { key: 'resolute', label: 'Resolute Authentication Core', icon: '🔑', note: 'Handshake organ — C.O.M.M.A.N.D. master key' },
-    { key: 'policyEngine', label: 'Policy Engine', icon: '🛡', note: 'Embedded, fail-closed — clears every navigation' },
-    { key: 'attestation', label: 'GENYSYS Attestation', icon: '🪪', note: 'X-GENYSYS-Client / X-GENYSYS-Session on RNK hosts' },
+    { key: 'resolute', label: 'Resolute Authentication Core', icon: 'RA', note: 'Handshake organ — C.O.M.M.A.N.D. master key' },
+    { key: 'policyEngine', label: 'Policy Engine', icon: 'PE', note: 'Embedded, fail-closed — clears every navigation' },
+    { key: 'attestation', label: 'GENYSYS Attestation', icon: 'AT', note: 'X-GENYSYS-Client / X-GENYSYS-Session on RNK hosts' },
     { key: 'chainRouting', label: 'Ghost Chain Routing', icon: '⛓', note: 'Pentest surface only; off unless GENYSYS_CHAIN_ROUTING=on' },
     { key: 'heartbeat', label: 'Heartbeat', icon: '♥', note: 'Session liveness' },
 ];
@@ -92,7 +92,7 @@ function renderHealth(status) {
     const resoluteOk = Boolean(status?.connected);
     gate.innerHTML = `
         <div class="sc-card">
-            <div class="sc-card-icon">👑</div>
+            <div class="sc-card-icon">SA</div>
             <div class="sc-card-body">
                 <div class="sc-card-label">C.O.M.M.A.N.D. gate</div>
                 <div class="sc-card-state">${badge(
@@ -102,7 +102,7 @@ function renderHealth(status) {
             </div>
         </div>
         <div class="sc-card">
-            <div class="sc-card-icon">📞</div>
+            <div class="sc-card-icon">HC</div>
             <div class="sc-card-body">
                 <div class="sc-card-label">Handshake URL</div>
                 <div class="sc-card-state">${RESOLUTE_URL()}</div>

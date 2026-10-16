@@ -102,15 +102,15 @@ function renderLayer1Cards(status) {
     }
 
     const components = [
-        { key: 'nukeEngine',    label: 'NukeEngine',     icon: '☢' },
-        { key: 'oceanListener', label: 'OceanListener',  icon: '🌊' },
-        { key: 'biosigAuth',    label: 'BiosigAuth',     icon: '🫆' },
-        { key: 'jumpDrive',     label: 'JumpDrive',      icon: '💾' },
-        { key: 'heartbeat',     label: 'Heartbeat',      icon: '♥' },
-        { key: 'miabListener',  label: 'MIAB Listener',  icon: '📡' },
-        { key: 'miabIssuer',    label: 'MIAB Issuer',    icon: '🔑' },
-        { key: 'miabValidator', label: 'MIAB Validator', icon: '✓' },
-        { key: 'testMode',      label: 'Test Mode Mgr',  icon: '🧪' },
+        { key: 'nukeEngine',    label: 'NukeEngine',     icon: 'NE' },
+        { key: 'oceanListener', label: 'OceanListener',  icon: 'OL' },
+        { key: 'biosigAuth',    label: 'BiosigAuth',     icon: 'BA' },
+        { key: 'jumpDrive',     label: 'JumpDrive',      icon: 'JD' },
+        { key: 'heartbeat',     label: 'Heartbeat',      icon: 'HB' },
+        { key: 'miabListener',  label: 'MIAB Listener',  icon: 'ML' },
+        { key: 'miabIssuer',    label: 'MIAB Issuer',    icon: 'MI' },
+        { key: 'miabValidator', label: 'MIAB Validator', icon: 'MV' },
+        { key: 'testMode',      label: 'Test Mode Mgr',  icon: 'TM' },
     ];
 
     return components.map(c => {

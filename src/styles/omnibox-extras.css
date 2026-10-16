@@ -17,17 +17,18 @@
 .search-provider-icon {
     position: absolute;
     left: 8px;
-    background: var(--toxic-green);
-    color: var(--dark-bg);
+    background: linear-gradient(145deg, #f8d47a, var(--brand-gold-dark));
+    color: #071326;
     border: none;
     width: 24px;
     height: 24px;
-    border-radius: 50%;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 800;
+    box-shadow: 0 0 10px var(--brand-gold-glow);
     font-size: 12px;
     transition: all var(--transition-fast);
     z-index: 1;
@@ -55,8 +56,8 @@
 }
 
 .search-provider-icon:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 12px rgba(138, 180, 248, 0.5);
+    transform: translateY(-1px);
+    box-shadow: 0 0 15px var(--brand-gold-glow);
 }
 
 #omnibox {

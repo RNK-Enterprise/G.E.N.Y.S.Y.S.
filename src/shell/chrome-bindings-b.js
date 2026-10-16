@@ -27,7 +27,7 @@ function showRecentlyClosedModal() {
     if (closed.length === 0) {
         list.innerHTML = `
             <div class="empty-state">
-                <div class="empty-icon">📋</div>
+                <div class="empty-icon">LIST</div>
                 <div class="empty-title">No Recently Closed Tabs</div>
                 <div class="empty-message">Closed tabs will appear here for quick restoration</div>
             </div>
@@ -39,7 +39,7 @@ function showRecentlyClosedModal() {
             
             const favicon = tab.favicon ? 
                 `<img src="${tab.favicon}" class="tab-favicon" alt="" onerror="this.style.display='none'">` : 
-                '<span class="tab-favicon">🌐</span>';
+                '<span class="tab-favicon">WEB</span>';
             
             const date = new Date(tab.timestamp).toLocaleString();
             
@@ -95,7 +95,7 @@ function showSessionsModal() {
     if (sessions.length === 0) {
         list.innerHTML = `
             <div class="empty-state">
-                <div class="empty-icon">💾</div>
+                <div class="empty-icon">SAVE</div>
                 <div class="empty-title">No Saved Sessions</div>
                 <div class="empty-message">Save your current tabs as a session using Ctrl+Shift+S</div>
             </div>
@@ -178,7 +178,7 @@ window.searchProviders = {
     google: { name: 'Google', icon: 'G', url: 'https://www.google.com/search?q=' },
     duckduckgo: { name: 'DuckDuckGo', icon: 'D', url: 'https://duckduckgo.com/?q=' },
     bing: { name: 'Bing', icon: 'B', url: 'https://www.bing.com/search?q=' },
-    brave: { name: 'Brave Search', icon: '🦁', url: 'https://search.brave.com/search?q=' }
+    brave: { name: 'Brave Search', icon: 'B', url: 'https://search.brave.com/search?q=' }
 };
 
 function updateSearchProviderIcon() {
@@ -231,7 +231,7 @@ window.omnibox.addEventListener('input', (e) => {
         const suggestionItem = document.createElement('div');
         suggestionItem.className = 'suggestion-item';
         suggestionItem.innerHTML = `
-            <span class="suggestion-icon">${item.folder ? '📁' : '🌐'}</span>
+            <span class="suggestion-icon">${item.folder ? 'DIR' : 'WEB'}</span>
             <div class="suggestion-info">
                 <div class="suggestion-title">${highlightMatch(item.title, query)}</div>
                 <div class="suggestion-url">${highlightMatch(item.url, query)}</div>

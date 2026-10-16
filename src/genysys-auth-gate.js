@@ -213,7 +213,7 @@ async function handleSubmit(e) {
 function toggleVis() {
     const isHidden = input.type === 'password';
     input.type = isHidden ? 'text' : 'password';
-    visBtn.textContent = isHidden ? '🙈' : '👁';
+    visBtn.textContent = isHidden ? 'Hide' : 'Show';
 }
 
 async function probeLisaHealth() {

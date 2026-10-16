@@ -196,7 +196,7 @@ describe('shell: chrome-bindings-b', () => {
         providerItem.dispatchEvent(new Event('click', { bubbles: true }));
         expect(window.currentSearchProvider).toBe('brave');
         expect(localStorage.getItem('search-provider')).toBe('brave');
-        expect(document.getElementById('search-provider-btn').textContent).toBe('🦁');
+        expect(document.getElementById('search-provider-btn').textContent).toBe('B');
         expect(document.getElementById('search-provider-modal').classList.contains('hidden')).toBe(true);
     });
 

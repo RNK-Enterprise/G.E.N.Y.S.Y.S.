@@ -253,9 +253,9 @@ TabManager.prototype.renderTabs = function() {
 
         const favicon = tab.favicon ?
             `<img src="${tab.favicon}" class="tab-favicon" alt="" onerror="this.style.display='none'">` :
-            '<span class="tab-favicon" aria-hidden="true">🌐</span>';
+            '<span class="tab-favicon" aria-hidden="true">WEB</span>';
 
-        const pinIndicator = tab.pinned ? '<span class="pin-indicator" aria-label="Pinned tab">📌</span>' : '';
+        const pinIndicator = tab.pinned ? '<span class="pin-indicator" aria-label="Pinned tab">PIN</span>' : '';
 
         tabElement.innerHTML = `
             ${favicon}

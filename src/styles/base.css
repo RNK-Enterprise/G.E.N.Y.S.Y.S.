@@ -6,21 +6,21 @@
  */
 
 :root {
-    /* GENYSYS Theme — midnight blue surfaces, ice-blue accent */
-    --accent: #8ab4f8; --brand-gold: #8ab4f8; --toxic-green: #8ab4f8;
-    --accent-dark: #6d9ae0; --brand-gold-dark: #6d9ae0; --toxic-green-dark: #6d9ae0;
-    --accent-glow: rgba(138, 180, 248, 0.35); --brand-gold-glow: rgba(138, 180, 248, 0.35); --toxic-green-glow: rgba(138, 180, 248, 0.35);
-    --accent-bg: rgba(138, 180, 248, 0.12);
-    --hover-bg: rgba(148, 178, 224, 0.10);
-    --dark-bg: #10192b;
-    --darker-bg: #0a1120;
-    --steel-bg: #16223a;
-    --text-primary: #e6ecf7;
-    --text-secondary: #8294b4;
-    --border-color: #233350;
-    --border-toxic: rgba(138, 180, 248, 0.45);
-    --shadow-toxic: 0 0 18px rgba(138, 180, 248, 0.22);
-    --shadow-deep: 0 14px 40px rgba(0, 0, 0, 0.45);
+    /* RNK identity: midnight navy, architectural gold, electric blue, silver text. */
+    --accent: #1599ff; --brand-gold: #f5b83d; --toxic-green: #1599ff;
+    --accent-dark: #0759bd; --brand-gold-dark: #a96a12; --toxic-green-dark: #0759bd;
+    --accent-glow: rgba(21, 153, 255, 0.38); --brand-gold-glow: rgba(245, 184, 61, 0.34); --toxic-green-glow: rgba(21, 153, 255, 0.38);
+    --accent-bg: rgba(21, 153, 255, 0.12);
+    --hover-bg: rgba(21, 153, 255, 0.11);
+    --dark-bg: #071326;
+    --darker-bg: #030914;
+    --steel-bg: #0b1d35;
+    --text-primary: #edf4ff;
+    --text-secondary: #8fa5c2;
+    --border-color: #1d3b61;
+    --border-toxic: rgba(21, 153, 255, 0.48);
+    --shadow-toxic: 0 0 22px rgba(21, 153, 255, 0.2);
+    --shadow-deep: 0 16px 44px rgba(0, 0, 0, 0.58);
     --success: #34d399;
     --danger: #f87171;
     --warning: #fbbf24;
@@ -46,19 +46,20 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
+    background-image: radial-gradient(circle at 50% -20%, rgba(18, 100, 184, 0.18), transparent 42%), linear-gradient(180deg, #071326 0%, #030914 100%);
     animation: fadeIn 0.3s ease-in;
 }
 
 body.theme-dark {
-    --dark-bg: #0d1626;
-    --darker-bg: #080f1c;
-    --steel-bg: #131f34;
-    --text-primary: #eef3fc;
-    --text-secondary: #8a9cc0;
-    --border-color: #1f3150;
-    --accent: #8ab4f8; --brand-gold: #8ab4f8; --toxic-green: #8ab4f8;
-    --accent-dark: #6d9ae0; --brand-gold-dark: #6d9ae0; --toxic-green-dark: #6d9ae0;
-    --accent-glow: rgba(138, 180, 248, 0.34); --brand-gold-glow: rgba(138, 180, 248, 0.34); --toxic-green-glow: rgba(138, 180, 248, 0.34);
+    --dark-bg: #071326;
+    --darker-bg: #030914;
+    --steel-bg: #0b1d35;
+    --text-primary: #edf4ff;
+    --text-secondary: #8fa5c2;
+    --border-color: #1d3b61;
+    --accent: #1599ff; --brand-gold: #f5b83d; --toxic-green: #1599ff;
+    --accent-dark: #0759bd; --brand-gold-dark: #a96a12; --toxic-green-dark: #0759bd;
+    --accent-glow: rgba(21, 153, 255, 0.38); --brand-gold-glow: rgba(245, 184, 61, 0.34); --toxic-green-glow: rgba(21, 153, 255, 0.38);
 }
 
 body.theme-light {
@@ -139,17 +140,18 @@ body.theme-light .genysys-sidebar-card-open-hint {
 
 /* Custom Titlebar — always above the auth gate so close/min/max stay usable */
 #titlebar {
-    height: var(--genysys-titlebar-h);
+    height: 36px;
     flex-shrink: 0;
     position: relative;
     z-index: 100000;
-    background: var(--darker-bg);
+    background: linear-gradient(180deg, rgba(8, 28, 55, 0.98), rgba(3, 9, 20, 0.98));
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 8px;
     padding: 0 8px;
-    border-bottom: 1px solid var(--brand-gold, #8ab4f8);
+    border-bottom: 1px solid var(--brand-gold);
+    box-shadow: 0 1px 0 rgba(21, 153, 255, 0.32), 0 6px 18px rgba(0, 0, 0, 0.24);
     user-select: none;
 }
 
@@ -187,13 +189,16 @@ body.theme-light .genysys-sidebar-card-open-hint {
 }
 
 .logo {
-    width: 16px;
-    height: 16px;
+    width: 22px;
+    height: 22px;
+    filter: drop-shadow(0 0 7px rgba(21, 153, 255, 0.52));
 }
 
 .window-title {
-    font-size: 12px;
-    color: var(--text-secondary);
+    font-size: 11px;
+    color: var(--brand-gold);
+    letter-spacing: 0.22em;
+    font-weight: 700;
 }
 
 .window-title.hidden {
@@ -213,9 +218,12 @@ body.theme-light .genysys-sidebar-card-open-hint {
 }
 
 .titlebar-spotlight {
-    width: 28px;
-    min-width: 28px;
-    font-size: 13px;
+    width: auto;
+    min-width: 52px;
+    padding: 0 8px;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     line-height: 1;
 }
 
@@ -430,7 +438,8 @@ body.theme-light .genysys-sidebar-card-open-hint {
 }
 
 .titlebar-button:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(21, 153, 255, 0.16);
+    color: var(--text-primary);
 }
 
 .titlebar-button.close:hover {

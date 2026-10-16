@@ -19,9 +19,9 @@
 
 /* Status Bar */
 #statusbar {
-    height: 24px;
-    background: var(--darker-bg);
-    border-top: 1px solid var(--border-color);
+    height: 28px;
+    background: linear-gradient(180deg, #071326, #030914);
+    border-top: 1px solid rgba(245, 184, 61, 0.42);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -31,6 +31,7 @@
 
 #status-text {
     color: var(--text-secondary);
+    letter-spacing: 0.03em;
 }
 
 .statusbar-right {
@@ -47,11 +48,12 @@
 }
 
 .status-indicator.connected {
-    color: var(--toxic-green);
+    color: var(--accent);
+    text-shadow: 0 0 8px var(--accent-glow);
 }
 
 #fps-counter {
-    color: var(--toxic-green);
+    color: var(--brand-gold);
     font-family: 'Courier New', monospace;
 }
 
@@ -85,8 +87,9 @@
 }
 
 .statusbar-button:hover {
-    border-color: var(--toxic-green);
-    color: var(--toxic-green);
+    border-color: var(--brand-gold);
+    color: var(--brand-gold);
+    box-shadow: 0 0 10px var(--brand-gold-glow);
 }
 
 #statusbar.roomy .statusbar-button {

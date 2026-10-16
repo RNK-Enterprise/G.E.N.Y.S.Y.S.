@@ -69,7 +69,7 @@
 </head>
 <body>
   <div class="container">
-    <div class="shield" id="icon">🛡</div>
+    <div class="shield" id="icon">RNK</div>
     <h1 id="title">GENYSYS</h1>
     <div class="domain" id="domain" hidden></div>
     <p id="body-text">New tab</p>
@@ -108,7 +108,7 @@
 
     if (view === 'block') {
       document.title = 'GENYSYS — Blocked';
-      document.getElementById('icon').textContent = '🛡';
+      document.getElementById('icon').textContent = 'RNK';
       document.querySelector('.container').classList.add('danger');
       document.getElementById('title').textContent = 'Blocked by P.R.O.T.E.C.T.S.';
       document.getElementById('domain').hidden = false;
@@ -154,7 +154,7 @@
     } else if (view === 'locked') {
       document.title = 'GENYSYS — Locked';
       document.querySelector('.container').classList.add('locked');
-      document.getElementById('icon').textContent = '🔒';
+      document.getElementById('icon').textContent = 'LOCK';
       document.getElementById('title').textContent = 'Session locked';
       document.getElementById('body-text').textContent =
         'The C.O.M.M.A.N.D. / Resolute session ended or the heartbeat dropped. ' +

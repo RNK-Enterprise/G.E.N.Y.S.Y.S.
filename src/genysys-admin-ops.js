@@ -87,7 +87,7 @@ export function mountAdminOps(mountEl, authTier) {
     if (authTier !== 'super-admin' && authTier !== 'dev') {
         mountEl.innerHTML = `
             <div class="genysys-section-placeholder">
-                <span class="genysys-section-icon">🔐</span>
+                <span class="genysys-section-icon">ADMIN</span>
                 <h2>Admin</h2>
                 <p>Audit · Settings · Admin Panel</p>
                 <p class="genysys-section-coming-soon">Lisa authorization required</p>
