@@ -40,7 +40,7 @@ async function fetchLayer1Status() {
     }
 }
 
-async function issueTestMode(scope = ['benchmark']) {
+async function issueTestMode(scope) {
     try {
         const res = await fetch(`${AUTHORITY_URL()}/api/test-mode/issue`, {
             method: 'POST',
@@ -82,7 +82,12 @@ let _expiryTimer = null;
 
 function statusBadge(ok, label) {
     const cls = ok ? 'sc-badge-ok' : 'sc-badge-off';
-    return `<span class="sc-badge ${cls}">${label}</span>`;
+    return `<span class="sc-badge ${cls}">${escapeHtml(label)}</span>`;
+}
+
+function escapeHtml(value) {
+    const entities = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+    return String(value).replace(/[&<>"']/g, char => entities[char]);
 }
 
 function formatExpiry(ts) {
@@ -98,7 +103,7 @@ function formatExpiry(ts) {
 
 function renderLayer1Cards(status) {
     if (!status) {
-        return `<div class="sc-status-error">Resolute / authority unreachable — check ${AUTHORITY_URL()}</div>`;
+        return `<div class="sc-status-error">Resolute / authority unreachable — check ${escapeHtml(AUTHORITY_URL())}</div>`;
     }
 
     const components = [
@@ -131,7 +136,7 @@ function renderTestModePanel() {
     const active = _testModeActive;
     const expiry = active ? `<div class="sc-tm-expiry" id="sc-tm-expiry">Expires in: ${formatExpiry(_testModeExpiresAt)}</div>` : '';
     const tokenLine = active && _testModeToken
-        ? `<div class="sc-tm-token">Token: <code>${_testModeToken.slice(0, 8)}…</code></div>`
+        ? `<div class="sc-tm-token">Token: <code>${escapeHtml(_testModeToken.slice(0, 8))}…</code></div>`
         : '';
 
     return `
@@ -199,7 +204,7 @@ export async function mountServerControl(mountId = 'server-control-mount') {
             <h3 class="sc-section-title">Authority URL</h3>
             <div class="sc-url-row">
                 <input type="text" id="sc-lisa-url" class="sc-url-input"
-                    value="${AUTHORITY_URL()}" placeholder="http://127.0.0.1:7781">
+                    value="${escapeHtml(AUTHORITY_URL())}" placeholder="http://127.0.0.1:7781">
                 <button id="sc-lisa-url-save" class="sc-btn">Save</button>
             </div>
         </section>
@@ -287,7 +292,6 @@ function startExpiryTick(mount) {
     if (!_testModeActive) return;
 
     _expiryTimer = setInterval(() => {
-        if (!_testModeActive) { clearInterval(_expiryTimer); return; }
         if (_testModeExpiresAt && Date.now() > _testModeExpiresAt) {
             // Token expired — reset state
             _testModeActive = false;

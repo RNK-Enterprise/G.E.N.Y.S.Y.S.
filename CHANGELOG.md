@@ -99,6 +99,11 @@ mark tagged states of the repository.
   render their explicit source-not-wired states, audit timestamps are escaped,
   and tier guards, tab/refresh actions, empty audit state, and the 500-entry cap
   are covered.
+- **Server-control hardening.** Resolute status, Test Mode issue/revoke,
+  expiry, timer cleanup, detached-DOM guards, failure paths, and dynamic HTML
+  values now hold exact 100/100/100/100 coverage across 27 tests. Unreachable
+  timer reset logic was removed, and authority URLs, status labels, and token
+  previews are escaped before rendering.
 - **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
   pages, rejects embedded and unknown schemes, and intersects remote policy with
   local policy so a remote response cannot override a local block or expand
