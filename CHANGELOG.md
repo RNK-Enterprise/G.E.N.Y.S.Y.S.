@@ -72,6 +72,8 @@ mark tagged states of the repository.
   window-mode extras now hold exact 100/100/100/100 coverage across 61 tests.
   Invalid context-menu targets no longer crash, and an invalid close-right
   target can no longer close unrelated tabs.
+- **Classic chunk loader coverage completed.** `eval-chunk.js` now holds exact
+  100/100/100/100 coverage across global execution and logged rethrow paths.
 - **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
   pages, rejects embedded and unknown schemes, and intersects remote policy with
   local policy so a remote response cannot override a local block or expand
