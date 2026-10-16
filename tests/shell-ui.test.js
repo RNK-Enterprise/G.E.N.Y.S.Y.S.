@@ -284,6 +284,19 @@ describe('ui: density-core', () => {
 describe('ui: density-core-b + density-surfaces', () => {
     test('settings panel dense state and toggle label round-trip', async () => {
         await bootShell();
+        const ensureElement = (id, tag = 'button') => {
+            const existing = document.getElementById(id);
+            if (existing) return existing;
+            const element = document.createElement(tag);
+            element.id = id;
+            document.body.appendChild(element);
+            return element;
+        };
+        const shellToggle = ensureElement('shell-density-toggle');
+        ensureElement('settings-shell-density-state', 'span');
+        ensureElement('settings-shell-density-roomy');
+        ensureElement('settings-shell-density-compact');
+        ensureElement('settings-shell-density-custom');
         const panel = document.getElementById('settings-panel');
         window.setSettingsPanelDensityState('compact');
         expect(panel.classList.contains('dense')).toBe(true);
@@ -301,7 +314,7 @@ describe('ui: density-core-b + density-surfaces', () => {
         window.updateShellDensityToggleLabel();
         expect(document.getElementById('settings-shell-density-state').textContent).toBe('Custom');
         expect(document.getElementById('settings-shell-density-custom').getAttribute('aria-pressed')).toBe('true');
-        expect(document.getElementById('shell-density-toggle')).toBeNull();
+        expect(shellToggle.textContent).toBe('Set Density');
 
         window.shellDensityState = 'compact';
         window.updateShellDensityToggleLabel();
@@ -311,8 +324,43 @@ describe('ui: density-core-b + density-surfaces', () => {
         window.shellDensityState = 'roomy';
         window.updateShellDensityToggleLabel();
         expect(document.getElementById('settings-shell-density-state').textContent).toBe('Roomy');
+        expect(shellToggle.textContent).toBe('Compact All');
+        window.shellDensityState = 'compact';
+        window.updateShellDensityToggleLabel();
+        expect(shellToggle.textContent).toBe('Roomy All');
+        window.shellDensityState = 'custom';
+        window.updateShellDensityToggleLabel();
+        expect(shellToggle.textContent).toBe('Set Density');
         window.applySettingsDensityControls();
         expect(document.getElementById('settings-settings-density-shell').classList.contains('active')).toBe(true);
+    });
+
+    test('density core B renderers tolerate absent controls', async () => {
+        await bootShell();
+        [
+            'settings-panel', 'settings-dense-toggle',
+            'statusbar', 'status-text', 'statusbar-minimal-toggle',
+            'titlebar', 'titlebar-compact-toggle',
+            'settings-shell-density-state', 'settings-shell-density-roomy',
+            'settings-shell-density-compact', 'settings-shell-density-custom',
+            'shell-density-toggle',
+        ].forEach((id) => document.getElementById(id)?.remove());
+        document.querySelector('.window-title')?.remove();
+        document.querySelector('.titlebar-left')?.remove();
+        window.applySettingsDenseState();
+        window.applyStatusbarMinimalState();
+        window.applyTitlebarCompactState();
+        window.updateShellDensityToggleLabel();
+
+        const toggle = document.createElement('button');
+        toggle.id = 'shell-density-toggle';
+        document.body.append(toggle);
+        window.shellDensityState = 'compact';
+        window.updateShellDensityToggleLabel();
+        window.shellDensityState = 'roomy';
+        window.updateShellDensityToggleLabel();
+        window.shellDensityState = 'custom';
+        window.updateShellDensityToggleLabel();
     });
 
     test('toggleShellDensity flips roomy<->compact across surfaces', async () => {

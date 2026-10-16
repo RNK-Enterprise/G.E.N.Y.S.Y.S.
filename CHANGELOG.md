@@ -33,6 +33,9 @@ mark tagged states of the repository.
 - **Density-core coverage completed.** `density-core.js` now holds exact
   100/100/100/100 coverage across persisted-state recovery, missing controls,
   density toggles, collapse state, and ordered label fallback resolution.
+- **Density-core-B coverage completed.** `density-core-b.js` now holds exact
+  100/100/100/100 coverage across settings, statusbar, titlebar, shell-density
+  labels, and absent-control guards.
 - **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
   pages, rejects embedded and unknown schemes, and intersects remote policy with
   local policy so a remote response cannot override a local block or expand
