@@ -41,14 +41,18 @@ class ToastManager {
     }
 
     remove(toast) {
-        if (!toast || !this.container.contains(toast)) return;
+        if (!toast) return;
+        if (!this.container.contains(toast)) {
+            this.toasts = this.toasts.filter(t => t !== toast);
+            return;
+        }
 
         toast.classList.add('removing');
         setTimeout(() => {
             if (this.container.contains(toast)) {
                 this.container.removeChild(toast);
-                this.toasts = this.toasts.filter(t => t !== toast);
             }
+            this.toasts = this.toasts.filter(t => t !== toast);
         }, 300); // Match animation duration
     }
 

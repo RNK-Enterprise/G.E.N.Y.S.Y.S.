@@ -18,10 +18,11 @@ class LoadingManager {
     }
 
     hide() {
-        if (this.overlay && document.body.contains(this.overlay)) {
+        if (!this.overlay) return;
+        if (document.body.contains(this.overlay)) {
             document.body.removeChild(this.overlay);
-            this.overlay = null;
         }
+        this.overlay = null;
     }
 
     update(message) {

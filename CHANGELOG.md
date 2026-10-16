@@ -74,6 +74,9 @@ mark tagged states of the repository.
   target can no longer close unrelated tabs.
 - **Classic chunk loader coverage completed.** `eval-chunk.js` now holds exact
   100/100/100/100 coverage across global execution and logged rethrow paths.
+- **UI manager lifecycle repair.** Toast removal now reconciles detached nodes,
+  and loading overlays clear stale references after external removal. The toast
+  and loading managers now hold exact 100/100/100/100 coverage across 4 tests.
 - **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
   pages, rejects embedded and unknown schemes, and intersects remote policy with
   local policy so a remote response cannot override a local block or expand
