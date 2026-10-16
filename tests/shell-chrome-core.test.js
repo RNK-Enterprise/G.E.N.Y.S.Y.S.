@@ -197,6 +197,8 @@ describe('shell: capabilities + surfaces-core', () => {
         expect(window.isGENYSYSCapabilityAvailable('genysys-browser-core')).toBe(true);
         const chip = window.createGENYSYSChip('Cat', 'category');
         expect(chip.className).toBe('genysys-chip genysys-chip-category');
+        expect(window.createGENYSYSChip('Neutral').className).toBe('genysys-chip genysys-chip-neutral');
+        expect(window.getGENYSYSCapability('missing-capability')).toBeNull();
     });
 
     test('renderGENYSYSCapabilities populates summary, categories, surfaces, items', async () => {
@@ -215,6 +217,26 @@ describe('shell: capabilities + surfaces-core', () => {
         expect(document.getElementById('genysys-category-list').children.length).toBe(2);
         expect(document.getElementById('genysys-surface-list').children.length).toBe(2);
         expect(document.getElementById('genysys-capability-list').children.length).toBe(2);
+    });
+
+    test('capability rendering handles partial catalogs and missing mounts', async () => {
+        await bootShell();
+        window.renderGENYSYSCapabilities({});
+        window.renderGENYSYSCapabilities({
+            capabilities: [
+                { id: 'unknown', name: 'Unknown', priority: 'mystery', description: '' },
+                { id: 'defaulted', name: 'Defaulted', category: '', surface: '', status: 'stable' },
+            ],
+        });
+        expect(window.createGENYSYSChip('Explicit default', undefined).className)
+            .toBe('genysys-chip genysys-chip-neutral');
+        expect(document.getElementById('genysys-manifest-summary').textContent).toContain(
+            '2 capabilities loaded from GENYSYS (unknown engines, unknown turbos)',
+        );
+        expect(document.getElementById('genysys-capability-list').children).toHaveLength(2);
+
+        document.getElementById('genysys-capability-list').remove();
+        expect(() => window.renderGENYSYSCapabilities({ capabilities: [] })).not.toThrow();
     });
 
     test('getGENYSYSDownloadSummary partitions by status; non-downloadable URLs refuse', async () => {

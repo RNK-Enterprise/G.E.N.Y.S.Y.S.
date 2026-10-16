@@ -68,6 +68,23 @@ describe('shell/manifest', () => {
         expect(manifest).toBe(window.FALLBACK_GENYSYS_MANIFEST);
         expect(window.genysysRuntime.capabilities.size).toBe(0);
     });
+
+    test('empty catalog falls back to the local manifest response', async () => {
+        const fetchMock = jest.fn()
+            .mockResolvedValueOnce({ ok: false, status: 404 })
+            .mockResolvedValueOnce({ ok: false, status: 404 })
+            .mockResolvedValueOnce({
+                ok: true,
+                status: 200,
+                json: async () => ({ engines: [{ id: 'browser-core' }] }),
+            });
+        window.fetch = fetchMock;
+        await import(srcUrl('shell/manifest.js'));
+        const manifest = await window.loadGENYSYSManifest();
+        expect(manifest.engines).toHaveLength(1);
+        expect(window.genysysRuntime.capabilities.size).toBe(0);
+        expect(fetchMock).toHaveBeenCalledTimes(3);
+    });
 });
 
 describe('shell/tauri-api', () => {
@@ -77,6 +94,27 @@ describe('shell/tauri-api', () => {
         await import(srcUrl('shell/tauri-api.js'));
         expect(await window.initTauriAPI()).toBe(true);
         expect(window.appWindow).toBe(current);
+    });
+
+    test('global bridge falls back to the exposed appWindow when getCurrent is absent', async () => {
+        const current = { label: 'main' };
+        window.__TAURI__ = { invoke: async () => null, window: { appWindow: current } };
+        await import(srcUrl('shell/tauri-api.js'));
+        expect(await window.initTauriAPI()).toBe(true);
+        expect(window.appWindow).toBe(current);
+    });
+
+    test('global bridge with no current window keeps IPC alive through command stubs', async () => {
+        const tauri = stubTauri();
+        window.__TAURI__ = { ...tauri, window: { getCurrent: () => null, appWindow: null } };
+        await import(srcUrl('shell/tauri-api.js'));
+        expect(await window.initTauriAPI()).toBe(true);
+        await window.appWindow.unmaximize();
+        await window.appWindow.close();
+        expect(await window.appWindow.isMaximized()).toBe(false);
+        expect(tauri.__invocations.map((i) => i.cmd)).toEqual(
+            expect.arrayContaining(['window_maximize', 'window_close']),
+        );
     });
 
     test('global bridge without a window module builds the command fallback', async () => {
@@ -111,6 +149,10 @@ describe('shell/tauri-api', () => {
         expect(await window.initTauriAPI()).toBe(false);
         window.appWindow.minimize();
         window.appWindow.maximize();
+        window.appWindow.unmaximize();
+        window.close = jest.fn();
+        window.appWindow.close();
+        expect(await window.appWindow.isMaximized()).toBe(false);
         const result = await window.invoke('any_command', { a: 1 });
         expect(result).toEqual({ success: true });
     });
@@ -171,11 +213,98 @@ describe('shell/rnk-webviews', () => {
         expect(note.textContent).toContain('RNK product unreachable');
     });
 
+    test('native shell opens a dedicated WebviewWindow when available', async () => {
+        jest.unstable_mockModule('@tauri-apps/api/window', () => ({
+            WebviewWindow: class {
+                constructor(label, options) {
+                    globalThis.__genysysNativeWebview = { label, options };
+                }
+            },
+        }));
+        await bootShell();
+        window.__TAURI__ = { ...window.__TAURI__, window: { WebviewWindow: {} } };
+        const { mountRnkWebview } = await import(srcUrl('shell/rnk-webviews.js'));
+        mountRnkWebview('people');
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        expect(globalThis.__genysysNativeWebview).toEqual({
+            label: 'genysys-Raven — People',
+            options: expect.objectContaining({
+                url: 'https://raven.rnk-enterprise.us/hr',
+                title: 'GENYSYS — Raven — People',
+            }),
+        });
+        expect(document.querySelector('#rnk-webview-note-people').hidden).toBe(true);
+        delete globalThis.__genysysNativeWebview;
+    });
+
+    test('webview fallback reports DOM failures without pretending success', async () => {
+        delete window.__TAURI__;
+        await bootShell();
+        const { mountRnkWebview } = await import(srcUrl('shell/rnk-webviews.js'));
+        const createElement = document.createElement;
+        document.createElement = () => { throw new Error('dom failure'); };
+        try {
+            mountRnkWebview('operations');
+            await new Promise((resolve) => setTimeout(resolve, 0));
+            const note = document.querySelector('#rnk-webview-note-operations');
+            expect(note.hidden).toBe(false);
+            expect(note.textContent).toContain('RNK product unreachable');
+        } finally {
+            document.createElement = createElement;
+        }
+    });
+
+    test('webview fallback reports a missing host without throwing', async () => {
+        delete window.__TAURI__;
+        await bootShell();
+        const { mountRnkWebview } = await import(srcUrl('shell/rnk-webviews.js'));
+        const mount = document.getElementById('rnk-webview-operations');
+        const querySelector = mount.querySelector.bind(mount);
+        mount.querySelector = (selector) => (
+            selector === '#rnk-webview-host-operations' ? null : querySelector(selector)
+        );
+        mountRnkWebview('operations');
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        const note = querySelector('#rnk-webview-note-operations');
+        expect(note.hidden).toBe(false);
+        expect(note.textContent).toContain('RNK product unreachable');
+    });
+
+    test('webview open tolerates a missing status note', async () => {
+        delete window.__TAURI__;
+        await bootShell();
+        const { mountRnkWebview } = await import(srcUrl('shell/rnk-webviews.js'));
+        const mount = document.getElementById('rnk-webview-operations');
+        const querySelector = mount.querySelector.bind(mount);
+        mount.querySelector = (selector) => (
+            selector === '#rnk-webview-note-operations' ? null : querySelector(selector)
+        );
+        mountRnkWebview('operations');
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        expect(querySelector('#rnk-webview-host-operations iframe')).not.toBeNull();
+    });
+
     test('unknown section and missing mount are no-ops', async () => {
         delete window.__TAURI__;
         await bootShell();
         const { mountRnkWebview } = await import(srcUrl('shell/rnk-webviews.js'));
         expect(() => mountRnkWebview('does-not-exist')).not.toThrow();
+        const unknownMount = document.createElement('div');
+        unknownMount.id = 'rnk-webview-does-not-exist';
+        document.body.appendChild(unknownMount);
+        expect(() => mountRnkWebview('does-not-exist')).not.toThrow();
+        expect(unknownMount.innerHTML).toBe('');
+        const originalGetElementById = document.getElementById.bind(document);
+        const syntheticMount = document.createElement('div');
+        document.getElementById = (id) => (
+            id === 'rnk-webview-synthetic' ? syntheticMount : originalGetElementById(id)
+        );
+        try {
+            expect(() => mountRnkWebview('synthetic')).not.toThrow();
+            expect(syntheticMount.innerHTML).toBe('');
+        } finally {
+            document.getElementById = originalGetElementById;
+        }
         expect(() => mountRnkWebview('operations')).not.toThrow();
     });
 });

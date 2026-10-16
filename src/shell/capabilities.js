@@ -14,9 +14,10 @@ window.isGENYSYSCapabilityAvailable = function isGENYSYSCapabilityAvailable(capa
 
 window.getGENYSYSCapability = getGENYSYSCapability;
 
-function createGENYSYSChip(label, tone = 'neutral') {
+function createGENYSYSChip(label, tone) {
+    const chipTone = tone === undefined ? 'neutral' : tone;
     const chip = document.createElement('span');
-    chip.className = `genysys-chip genysys-chip-${tone}`;
+    chip.className = `genysys-chip genysys-chip-${chipTone}`;
     chip.textContent = label;
     return chip;
 }
