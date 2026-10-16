@@ -15,6 +15,9 @@ mark tagged states of the repository.
 - **Binding coverage completed.** `bind-helpers.js` now holds exact
   100/100/100/100 coverage across modal actions, guarded buttons, keyboard
   navigation, tab-close behavior, drag events, and missing-adjacent-tab paths.
+- **Chrome-action coverage completed.** `chrome-actions.js` now holds exact
+  100/100/100/100 coverage across missing browser state, missing omnibox
+  elements, modal delegates, pinning, and optional settings navigation.
 - **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
   pages, rejects embedded and unknown schemes, and intersects remote policy with
   local policy so a remote response cannot override a local block or expand

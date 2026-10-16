@@ -35,6 +35,10 @@ describe('shell: chrome-actions', () => {
     test('getActiveBrowserTab/getTabHost resolve from tabManager state', async () => {
         await bootShell();
         expect(window.getActiveBrowserTab()).toBeNull();
+        const tabManager = window.tabManager;
+        window.tabManager = { tabs: null };
+        expect(window.getActiveBrowserTab()).toBeNull();
+        window.tabManager = tabManager;
         window.tabManager.tabs.push({ id: 1, url: 'https://www.example.com/x', title: 'E' });
         window.tabManager.activeTabId = 1;
         expect(window.getActiveBrowserTab().id).toBe(1);
@@ -64,6 +68,17 @@ describe('shell: chrome-actions', () => {
         window.closeSearchProviderModal();
         expect(document.getElementById('search-provider-modal').classList.contains('hidden')).toBe(true);
         expect(window.setElementHidden('#nope', true)).toBeUndefined();
+
+        window.showSessionsModal = jest.fn();
+        window.showRecentlyClosedModal = jest.fn();
+        window.openSessionsView();
+        window.openRecentlyClosedView();
+        expect(window.showSessionsModal).toHaveBeenCalled();
+        expect(window.showRecentlyClosedModal).toHaveBeenCalled();
+
+        document.getElementById('omnibox').remove();
+        window.focusOmniboxAndSelectAll();
+        window.setOmniboxValueAndFocus('missing');
     });
 
     test('openGENYSYSSettingsSection opens settings and scrolls the section', async () => {
@@ -73,6 +88,7 @@ describe('shell: chrome-actions', () => {
         section.scrollIntoView = scrollSpy;
         window.openGENYSYSSettingsSection('#settings-panel');
         expect(scrollSpy).toHaveBeenCalled();
+        window.openGENYSYSSettingsSection();
         window.focusTabSearch();
     });
 
