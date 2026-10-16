@@ -27,6 +27,9 @@ mark tagged states of the repository.
 - **Bookmarks-bar coverage completed.** `bookmarks-bar.js` now holds exact
   100/100/100/100 coverage across hidden/empty/rendered states, local and
   malformed URLs, capped item rendering, and missing mounts.
+- **Section navigation coverage completed.** `section-nav.js` now holds exact
+  100/100/100/100 coverage across section transitions, tab-window bridge
+  hooks, optional callbacks, missing targets, and loading-time setup.
 - **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
   pages, rejects embedded and unknown schemes, and intersects remote policy with
   local policy so a remote response cannot override a local block or expand

@@ -206,6 +206,18 @@ describe('shell: section-nav + bind-helpers', () => {
         expect(document.getElementById('server-control-mount').innerHTML).toContain('Server Control');
         window.activateSection('browser');
         expect(document.getElementById('section-browser').classList.contains('active')).toBe(true);
+        const sectionEnter = jest.fn();
+        const sectionLeave = jest.fn();
+        const sectionChanged = jest.fn();
+        window.tabWindowBridge = { onSectionEnter: sectionEnter, onSectionLeave: sectionLeave };
+        window.genysysSectionChanged = sectionChanged;
+        window.activateSection('browser');
+        window.activateSection('operations');
+        expect(sectionEnter).toHaveBeenCalled();
+        expect(sectionLeave).toHaveBeenCalled();
+        expect(sectionChanged).toHaveBeenLastCalledWith('operations');
+        delete window.tabWindowBridge;
+        delete window.genysysSectionChanged;
     });
 
     test('lisa and admin sections mount their panels with tier gating', async () => {
@@ -238,6 +250,27 @@ describe('shell: section-nav + bind-helpers', () => {
         expect(window.activeSection).toBe('server-control');
         expect(events).toContain('server-control');
         window.activateSection('browser');
+    });
+
+    test('section-nav and window controls tolerate loading and missing targets', async () => {
+        await bootShell({ skipModules: ['./shell/section-nav.js'] });
+        const readyState = document.readyState;
+        Object.defineProperty(document, 'readyState', { configurable: true, value: 'loading' });
+        try {
+            const moduleUrl = new URL('../src/shell/section-nav.js?loading-path', import.meta.url).href;
+            await import(moduleUrl);
+            document.getElementById('section-nav').remove();
+            document.dispatchEvent(new Event('DOMContentLoaded'));
+            expect(() => window.setupSectionNav()).not.toThrow();
+
+            const nav = document.createElement('nav');
+            nav.id = 'section-nav';
+            document.body.appendChild(nav);
+            window.setupSectionNav();
+            nav.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        } finally {
+            Object.defineProperty(document, 'readyState', { configurable: true, value: readyState });
+        }
     });
 
     test('window controls bind once and invoke tauri commands', async () => {
