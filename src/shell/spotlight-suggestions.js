@@ -71,7 +71,7 @@ window.getGENYSYSSpotlightSuggestions = function getGENYSYSSpotlightSuggestions(
   push(cap('genysys-ai-assistant') || cap('genysys-automation'), { title: 'Automation / AI', meta: 'Local automation hooks', badge: 'Auto', action: () => window.openGENYSYSSettingsSection?.('#settings-section-advanced') });
 
   // Recent history shortcuts
-  for (const item of (recentHistory || []).slice(0, 3)) {
+  for (const item of recentHistory.slice(0, 3)) {
     push(true, {
       title: item.title || item.url,
       meta: 'Recent',
@@ -212,7 +212,8 @@ function initSpotlightDropdown() {
     });
     document.addEventListener('mousedown', (e) => {
       if (!isSpotlightOpen()) return;
-      if (e.target.closest('#spotlight-dropdown') || e.target.closest('#spotlight-btn')) return;
+      const target = e.target;
+      if (target?.closest?.('#spotlight-dropdown') || target?.closest?.('#spotlight-btn')) return;
       closeSpotlightDropdown();
     }, true);
     document.addEventListener('keydown', (e) => {

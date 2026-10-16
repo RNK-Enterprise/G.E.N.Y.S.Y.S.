@@ -58,6 +58,11 @@ mark tagged states of the repository.
   exact 100/100/100/100 coverage across bookmarks, navigation, FPS, keyboard
   shortcuts, settings persistence and tabs, runtime status transitions, and
   absent-node safety.
+- **Spotlight surface coverage and guard repair.** Spotlight context,
+  suggestions, rendering, filtering, dropdown lifecycle, initialization, and
+  absent-target paths now hold exact 100/100/100/100 coverage across 74 tests.
+  The document outside-click handler now tolerates non-Element event targets,
+  and the recent-history loop no longer carries an unreachable fallback.
 - **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
   pages, rejects embedded and unknown schemes, and intersects remote policy with
   local policy so a remote response cannot override a local block or expand
