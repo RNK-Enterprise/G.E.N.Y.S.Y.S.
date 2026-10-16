@@ -38,6 +38,58 @@ describe('shell: chrome-bindings', () => {
         expect(document.querySelectorAll('.toast').length).toBeGreaterThan(0);
     });
 
+    test('capability-gated chrome actions fail closed', async () => {
+        await bootShell();
+        const gated = [
+            'new-tab-btn',
+            'recently-closed-btn',
+            'sessions-btn',
+            'search-provider-btn',
+            'clear-history-btn',
+            'fps-counter',
+        ];
+        const openRecentlyClosed = jest.spyOn(window, 'openRecentlyClosedView');
+        const openSessions = jest.spyOn(window, 'openSessionsView');
+        const openSearch = jest.spyOn(window, 'openSearchProviderModal');
+        const togglePerformance = jest.spyOn(window, 'togglePerformancePanel');
+        window.confirm = jest.fn(() => true);
+        window.isGENYSYSCapabilityAvailable = jest.fn(() => false);
+
+        gated.forEach((id) => document.getElementById(id).click());
+        document.querySelector('#performance-panel .modal-close').click();
+        document.getElementById('tab-bar-compact-toggle').click();
+        document.getElementById('omnibox-compact-toggle').click();
+
+        expect(window.tabManager.tabs).toHaveLength(0);
+        expect(openRecentlyClosed).not.toHaveBeenCalled();
+        expect(openSessions).not.toHaveBeenCalled();
+        expect(openSearch).not.toHaveBeenCalled();
+        expect(togglePerformance).not.toHaveBeenCalled();
+        expect(window.confirm).not.toHaveBeenCalled();
+    });
+
+    test('allowed chrome actions open sessions, search, and performance surfaces', async () => {
+        await bootShell();
+        const sessions = jest.spyOn(window, 'openSessionsView');
+        const search = jest.spyOn(window, 'openSearchProviderModal');
+        const performance = jest.spyOn(window, 'togglePerformancePanel');
+        window.isGENYSYSCapabilityAvailable = jest.fn(() => true);
+        document.getElementById('sessions-btn').click();
+        document.getElementById('search-provider-btn').click();
+        document.getElementById('fps-counter').click();
+        document.querySelector('#performance-panel .modal-close').click();
+        expect(sessions).toHaveBeenCalled();
+        expect(search).toHaveBeenCalled();
+        expect(performance).toHaveBeenCalledTimes(2);
+    });
+
+    test('density binding setup tolerates a missing settings section toggle', async () => {
+        await bootShell();
+        document.getElementById('settings-advanced-toggle')?.remove();
+        await import('../src/shell/chrome-bindings.js?missing-toggle');
+        expect(document.getElementById('settings-advanced-toggle')).toBeNull();
+    });
+
     test('save-session validates name, saves, and updates status', async () => {
         await bootShell();
         const input = document.getElementById('session-name-input');
@@ -66,12 +118,20 @@ describe('shell: chrome-bindings', () => {
 
         document.getElementById('reset-settings-btn').click();
         expect(document.getElementById('status-text').textContent).toBe('Settings reset to defaults');
+        window.confirm = jest.fn(() => false);
+        document.getElementById('reset-settings-btn').click();
+        expect(window.confirm).toHaveBeenCalled();
     });
 
     test('tab search filters rows and reports no results', async () => {
         await bootShell();
         window.tabManager.createTab('https://first.test/one');
         window.tabManager.createTab('https://second.test/two');
+        const orphan = document.createElement('div');
+        orphan.className = 'tab';
+        orphan.setAttribute('data-tab-id', '9999');
+        orphan.innerHTML = '<span class="tab-title">Orphan</span>';
+        document.getElementById('tabs').appendChild(orphan);
         const search = document.getElementById('tab-search');
         search.value = 'second';
         search.dispatchEvent(new Event('input', { bubbles: true }));
@@ -91,22 +151,63 @@ describe('shell: chrome-bindings', () => {
         expect(modal.classList.contains('hidden')).toBe(false);
         document.dispatchEvent(new KeyboardEvent('keydown', { key: '?', bubbles: true }));
         expect(modal.classList.contains('hidden')).toBe(true);
+        modal.remove();
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: '?', bubbles: true }));
     });
 
     test('density toggles route through their window handlers', async () => {
         await bootShell();
         document.getElementById('settings-dense-toggle').click();
         expect(window.settingsPanelDensityState).toBe('compact');
+        document.getElementById('settings-dense-toggle').click();
+        expect(window.settingsPanelDensityState).toBe('roomy');
         document.getElementById('shortcuts-dense-toggle').click();
         expect(window.shortcutsDensityState).toBe('compact');
+        document.getElementById('shortcuts-dense-toggle').click();
+        expect(window.shortcutsDensityState).toBe('roomy');
         document.getElementById('statusbar-minimal-toggle').click();
         expect(window.statusbarDensityState).toBe('compact');
+        document.getElementById('statusbar-minimal-toggle').click();
+        expect(window.statusbarDensityState).toBe('roomy');
         document.getElementById('titlebar-compact-toggle').click();
         expect(window.titlebarDensityState).toBe('compact');
+        document.getElementById('titlebar-compact-toggle').click();
+        expect(window.titlebarDensityState).toBe('roomy');
         document.getElementById('omnibox-compact-toggle').click();
         expect(window.omniboxDensityState).toBe('compact');
+        document.getElementById('omnibox-compact-toggle').click();
+        expect(window.omniboxDensityState).toBe('roomy');
         document.getElementById('tab-bar-compact-toggle').click();
         expect(window.tabBarDensityState).toBe('compact');
+        document.getElementById('tab-bar-compact-toggle').click();
+        expect(window.tabBarDensityState).toBe('roomy');
+        const shellToggle = document.createElement('button');
+        shellToggle.id = 'shell-density-toggle';
+        document.body.appendChild(shellToggle);
+        window.bindDensityControlListeners();
+        window.shellDensityState = 'compact';
+        shellToggle.click();
+        expect(window.shellDensityState).toBe('roomy');
+        shellToggle.click();
+        expect(window.shellDensityState).toBe('compact');
+    });
+
+    test('settings section and close stubs remain bound', async () => {
+        await bootShell();
+        const section = jest.spyOn(window, 'toggleSettingsSection');
+        document.getElementById('settings-general-toggle').click();
+        document.getElementById('close-settings').click();
+        document.getElementById('menu-btn').click();
+        expect(section).toHaveBeenCalledWith('general');
+    });
+
+    test('early close and open stubs are callable before full action bindings', async () => {
+        await bootShell();
+        delete window.closeSettings;
+        delete window.openSettings;
+        await import('../src/shell/chrome-bindings.js?early-stubs');
+        document.getElementById('close-settings').click();
+        document.getElementById('menu-btn').click();
     });
 
     test('download events update the status bar', async () => {
@@ -117,6 +218,10 @@ describe('shell: chrome-bindings', () => {
         }
         window.dispatchEvent(new Event('history-updated'));
         window.dispatchEvent(new Event('bookmark-added'));
+        window.dispatchEvent(new Event('bookmark-removed'));
+        for (const type of ['download-started', 'download-completed', 'download-paused', 'download-resumed', 'download-cancelled']) {
+            window.dispatchEvent(new CustomEvent(type));
+        }
     });
 });
 

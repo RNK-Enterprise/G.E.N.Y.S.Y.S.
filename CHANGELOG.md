@@ -45,6 +45,11 @@ mark tagged states of the repository.
 - **Main orchestrator coverage completed.** `main.js` now holds exact
   100/100/100/100 coverage across authenticated boot gating, re-entry guards,
   sparse manifests, optional surfaces, turbo rendering, and DOM readiness.
+- **Chrome binding coverage and selector repair.** `chrome-bindings.js` now
+  holds exact 100/100/100/100 coverage across capability gates, density
+  actions, settings-section listeners, event fallbacks, and early stubs. The
+  performance close action now binds through its actual DOM selector instead
+  of an ID lookup that could never attach.
 - **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
   pages, rejects embedded and unknown schemes, and intersects remote policy with
   local policy so a remote response cannot override a local block or expand

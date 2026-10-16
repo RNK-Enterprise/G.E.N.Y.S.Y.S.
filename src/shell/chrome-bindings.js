@@ -72,7 +72,7 @@ window.bindClickHandlers([
         if (!window.isGENYSYSCapabilityAvailable('genysys-performance-stack')) return;
         window.togglePerformancePanel();
     }],
-    ['performance-panel .modal-close', () => {
+    [document.querySelector('#performance-panel .modal-close'), () => {
         if (!window.isGENYSYSCapabilityAvailable('genysys-performance-stack')) return;
         window.togglePerformancePanel();
     }]
