@@ -120,6 +120,18 @@ describe('ui: loading', () => {
 });
 
 describe('ui: density-core', () => {
+    test('malformed persisted collapse state fails closed', async () => {
+        localStorage.setItem('rnk-genysys-settings-section-collapse', 'not-json');
+        await bootShell();
+        expect(window.settingsSectionCollapseState).toEqual({});
+    });
+
+    test('null persisted collapse state falls back to an empty object', async () => {
+        localStorage.setItem('rnk-genysys-settings-section-collapse', 'null');
+        await bootShell();
+        expect(window.settingsSectionCollapseState).toEqual({});
+    });
+
     test('readEffectiveDensityMode honors new, legacy true/false, and fallback', async () => {
         await bootShell();
         const { readEffectiveDensityMode } = await import('../src/ui/density-core.js');
@@ -202,6 +214,9 @@ describe('ui: density-core', () => {
         expect(document.getElementById('settings-general-toggle').textContent).toBe('Collapse');
         expect(document.getElementById('settings-general-toggle').getAttribute('aria-expanded')).toBe('true');
         window.applySettingsSectionCollapseState();
+        document.getElementById('settings-section-general')?.remove();
+        document.getElementById('settings-general-toggle')?.remove();
+        window.applySettingsSectionCollapseState();
     });
 
     test('modal + suggestion density and syncActiveButtons', async () => {
@@ -224,6 +239,11 @@ describe('ui: density-core', () => {
         window.syncActiveButtons('x', [[a, 'x'], [b, 'y']]);
         expect(a.classList.contains('active')).toBe(true);
         expect(b.classList.contains('active')).toBe(false);
+        window.syncActiveButtons('x', [[null, 'x']]);
+        window.syncDensityToggleGroup('unknown', null, null, null, null, {});
+        window.syncDensityToggleGroup('unknown', null, null, null, null, { roomy: 'Roomy' });
+        window.syncDensityToggleGroup('unknown', null, null, null, null, { shell: 'Shell' });
+        window.syncDensityToggleGroup('unknown', null, null, null, null, { compact: 'Compact' });
         window.saveSettingsSectionCollapseState();
     });
 
@@ -241,7 +261,23 @@ describe('ui: density-core', () => {
         window.applyLoadingDensityState();
         expect(overlay.classList.contains('compact')).toBe(true);
         window.saveLoadingDensityState();
+        window.applyLoadingDensityState(null);
         manager.hide();
+    });
+
+    test('density renderers tolerate missing control elements', async () => {
+        await bootShell();
+        ['tab-bar', 'tabs', 'tab-search', 'tab-bar-compact-toggle'].forEach((id) => {
+            document.getElementById(id)?.remove();
+        });
+        window.applyTabBarCompactState();
+
+        document.getElementById('omnibox-container')?.remove();
+        document.querySelector('.omnibox-wrapper')?.remove();
+        document.getElementById('omnibox-compact-toggle')?.remove();
+        document.getElementById('omnibox-suggestions')?.remove();
+        window.applyOmniboxCompactState();
+        window.applySuggestionDensityState();
     });
 });
 

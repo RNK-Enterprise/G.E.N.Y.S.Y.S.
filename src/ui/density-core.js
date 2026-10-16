@@ -104,7 +104,8 @@ function syncDensityToggleGroup(mode, stateElement, shellBtn, roomyBtn, compactB
     compact: 'Compact'
 }) {
     if (stateElement) {
-        stateElement.textContent = labels[mode] ?? labels.roomy ?? labels.shell ?? labels.compact ?? mode;
+        stateElement.textContent = [labels[mode], labels.roomy, labels.shell, labels.compact, mode]
+            .find((label) => label !== undefined);
     }
     if (shellBtn) {
         shellBtn.classList.toggle('active', mode === 'shell');

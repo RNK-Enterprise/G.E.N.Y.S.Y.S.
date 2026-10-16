@@ -30,6 +30,9 @@ mark tagged states of the repository.
 - **Section navigation coverage completed.** `section-nav.js` now holds exact
   100/100/100/100 coverage across section transitions, tab-window bridge
   hooks, optional callbacks, missing targets, and loading-time setup.
+- **Density-core coverage completed.** `density-core.js` now holds exact
+  100/100/100/100 coverage across persisted-state recovery, missing controls,
+  density toggles, collapse state, and ordered label fallback resolution.
 - **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
   pages, rejects embedded and unknown schemes, and intersects remote policy with
   local policy so a remote response cannot override a local block or expand
