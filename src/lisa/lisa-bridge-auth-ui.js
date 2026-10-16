@@ -74,7 +74,7 @@ export function initAuthPanel() {
         hideAuthPanel()
         updateLisaStatusIndicator()
       } else {
-        error.textContent = result.error ?? 'Authentication failed. Check your access code.'
+        error.textContent = result.error
         error.style.display = 'block'
         input.value = ''
         input.focus()

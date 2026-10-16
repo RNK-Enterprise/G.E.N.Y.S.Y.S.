@@ -63,6 +63,11 @@ mark tagged states of the repository.
   absent-target paths now hold exact 100/100/100/100 coverage across 74 tests.
   The document outside-click handler now tolerates non-Element event targets,
   and the recent-history loop no longer carries an unreachable fallback.
+- **LISA bridge and auth UI coverage completed.** The bridge and shortcode
+  authentication panel now hold exact 100/100/100/100 coverage across 20
+  tests. Empty navigation-event payloads now fail safely, browser fallback
+  commands and silent IPC failures are covered, and section-window hooks
+  tolerate rejected native operations.
 - **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
   pages, rejects embedded and unknown schemes, and intersects remote policy with
   local policy so a remote response cannot override a local block or expand

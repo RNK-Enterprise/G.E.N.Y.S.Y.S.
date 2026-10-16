@@ -266,7 +266,7 @@ let _navigateHandler = null
 
 export function onGENYSYSNavigate(handler) {
   _navigateHandler = handler
-  tauriListen('genysys:navigate', (event) => {
+  return tauriListen('genysys:navigate', (event) => {
     handler?.(event.payload)
   })
 }
@@ -355,7 +355,7 @@ export async function initLISABridge(tabManager) {
   // Listen for Tauri genysys:navigate events (Rust fires these after policy
   // approval AND after creating the tab window).
   onGENYSYSNavigate((payload) => {
-    const { tabId, url, context, chain } = payload
+    const { tabId, url, context, chain } = payload || {}
     tabManager?.onTauriNavigate?.(tabId, url, context, chain)
   })
 
