@@ -9,6 +9,13 @@ mark tagged states of the repository.
 
 ### Changed
 
+- **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
+  pages, rejects embedded and unknown schemes, and intersects remote policy with
+  local policy so a remote response cannot override a local block or expand
+  privilege. Product webview creation now uses the lower-case Tauri window API
+  and section-scoped host IDs. Verified: Vite build, global audit across 57
+  files, 221 files under the 500 LOC cap, Jest 321/321, Chromium E2E 4/4, and
+  Rust tests 44/44.
 - **Full product rename: V.E.I.L. → G.E.N.Y.S.Y.S. / Genysys.** Directory already `G.E.N.Y.S.Y.S.`. Package `rnk-genysys`, crate `rnk-genysys`, bundle `com.rnk.genysys`, scheme `genysys://`, attestation `X-GENYSYS-*` + cookie `genysys_attest`, env `GENYSYS_TEST_MODE` / `GENYSYS_ATTEST_ENFORCE`, shortcodes `genysys-odinn` / `genysys-agent`, docs `GENYSYS.md`. Distinct from P.R.O.T.E.C.T.S. Seat-2 **Obfuscation Veil Array**. Verified: Jest 320/320, cargo test 40/40. Local commit only; Raven/Mail/Echonet product gates still need matching `/api/genysys` + header accept when those trees are next touched. Live C.O.M.M.A.N.D. wiring still held.
 
 ## [Unreleased] — 2026-09-16

@@ -2,8 +2,11 @@
 //! Verify bar: unauthenticated → block; authenticated internal genysys:// → allow;
 //! biosig strings can never authenticate; pentest host stays out of default chrome.
 
-use crate::lisa_policy::evaluate_local;
+use crate::lisa_policy::{check_policy, evaluate_local};
 use crate::{Session, TabContext};
+use serde_json::json;
+use std::io::{Read, Write};
+use std::net::TcpListener;
 
 fn unauth() -> Session {
     Session::default()
@@ -17,6 +20,25 @@ fn agent_session(tier: &str) -> Session {
         shortcode: None,
         device_verified: false,
     }
+}
+
+fn spawn_policy_mock(body: serde_json::Value) -> String {
+    let listener = TcpListener::bind("127.0.0.1:0").expect("bind");
+    let port = listener.local_addr().unwrap().port();
+    std::thread::spawn(move || {
+        if let Ok((mut stream, _)) = listener.accept() {
+            let mut request = [0u8; 4096];
+            let _ = stream.read(&mut request);
+            let body = body.to_string();
+            let response = format!(
+                "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
+                body.len(),
+                body,
+            );
+            let _ = stream.write_all(response.as_bytes());
+        }
+    });
+    format!("http://127.0.0.1:{}", port)
 }
 
 #[test]
@@ -38,6 +60,24 @@ fn authenticated_internal_genysys_is_allowed() {
     let p = evaluate_local("genysys://newtab", &agent_session("agent"));
     assert_eq!(p.decision, "allow");
     assert_eq!(p.reason, "internal_genysys_surface");
+}
+
+#[test]
+fn unauthenticated_internal_and_embedded_schemes_are_blocked() {
+    for url in ["genysys://newtab", "about:blank", "data:text/html,blocked", "blob:https://example.com/id"] {
+        let p = evaluate_local(url, &unauth());
+        assert_eq!(p.decision, "block", "must block {}", url);
+        assert_eq!(p.reason, "unauthenticated");
+    }
+}
+
+#[test]
+fn authenticated_embedded_schemes_are_not_external_navigation() {
+    for url in ["about:blank", "data:text/html,blocked", "blob:https://example.com/id"] {
+        let p = evaluate_local(url, &agent_session("agent"));
+        assert_eq!(p.decision, "block", "must block {}", url);
+        assert_eq!(p.reason, "scheme_not_allowed");
+    }
 }
 
 #[test]
@@ -116,4 +156,45 @@ fn biosig_stub_strings_cannot_authenticate_via_policy() {
         assert_eq!(p.decision, "block");
         assert_eq!(p.reason, "unauthenticated");
     }
+}
+
+#[tokio::test]
+async fn remote_allow_cannot_override_local_block() {
+    let remote = spawn_policy_mock(json!({
+        "decision": "allow",
+        "reason": "remote_allow",
+        "requestPrivileged": true,
+    }));
+    let result = check_policy(
+        "https://example.com",
+        &unauth(),
+        &remote,
+        &None,
+        true,
+    )
+    .await;
+    assert_eq!(result.decision, "block");
+    assert_eq!(result.reason, "unauthenticated");
+    assert_eq!(result.source, "local");
+}
+
+#[tokio::test]
+async fn remote_allow_cannot_expand_local_privilege() {
+    let remote = spawn_policy_mock(json!({
+        "decision": "allow",
+        "reason": "remote_allow",
+        "requestPrivileged": true,
+        "chain": true,
+    }));
+    let result = check_policy(
+        "https://example.com",
+        &agent_session("agent"),
+        &remote,
+        &None,
+        true,
+    )
+    .await;
+    assert_eq!(result.decision, "allow");
+    assert!(!result.request_privileged);
+    assert!(!result.chain);
 }

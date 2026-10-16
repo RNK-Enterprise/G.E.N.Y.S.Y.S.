@@ -51,8 +51,7 @@ fn extract_domain(url: &str) -> String {
 
 fn is_internal(url: &str) -> bool {
     let lower = url.to_lowercase();
-    INTERNAL_SCHEMES.iter().any(|s| lower.starts_with(&format!("{}:", s)))
-        || lower == "about:blank"
+    lower == "genysys://newtab" || lower.starts_with("genysys://newtab?")
 }
 
 fn host_matches(host: &str, list: &[&str]) -> bool {
@@ -67,6 +66,20 @@ fn is_authenticated(session: &Session) -> bool {
 /// Local in-process policy. Must not panic; on logic failure return block.
 pub fn evaluate_local(url: &str, session: &Session) -> PolicyResult {
     let domain = extract_domain(url);
+
+    if is_internal(url) && !is_authenticated(session) {
+        return PolicyResult {
+            decision: "block".into(),
+            reason: "unauthenticated".into(),
+            audit: true,
+            notify: false,
+            chain: false,
+            request_required: false,
+            request_privileged: false,
+            domain: extract_domain(url),
+            source: "local".into(),
+        };
+    }
 
     if is_internal(url) {
         return PolicyResult {
@@ -97,9 +110,10 @@ pub fn evaluate_local(url: &str, session: &Session) -> PolicyResult {
     }
 
     let lower = url.to_lowercase();
+    let explicit_scheme = Url::parse(url).ok().map(|parsed| parsed.scheme().to_lowercase());
     let ok_scheme = lower.starts_with("https://")
         || lower.starts_with("http://")
-        || (!lower.contains("://") && !lower.is_empty());
+        || (explicit_scheme.is_none() && !lower.is_empty());
 
     if !ok_scheme {
         return PolicyResult {
@@ -262,7 +276,19 @@ pub async fn check_policy(
 
     // Attempt remote P.R.O.T.E.C.T.S. overlay
     match query_remote(url, session, lisa_url, lisa_key).await {
-        Ok(remote) => remote,
+        Ok(_) if local.decision == "block" => local,
+        Ok(remote) if remote.decision == "block" => remote,
+        Ok(remote) => {
+            let mut merged = remote;
+            // Remote policy may narrow local authority, never expand it.
+            merged.request_privileged &= local.request_privileged;
+            merged.chain &= local.chain;
+            merged.request_required |= local.request_required;
+            merged.audit |= local.audit;
+            merged.notify |= local.notify;
+            merged.domain = local.domain;
+            merged
+        }
         Err(_) => {
             // Remote dark — keep local (standalone). Do not fail open.
             let mut p = local;
@@ -308,8 +334,11 @@ async fn query_remote(
     }
 
     let data: serde_json::Value = resp.json().await.map_err(|_| ())?;
-    let decision = data["decision"].as_str().unwrap_or("block").to_string();
-    // Remote omitting decision → fail-closed
+    let decision = match data["decision"].as_str() {
+        Some("allow") => "allow".to_string(),
+        Some("block") => "block".to_string(),
+        _ => return Err(()),
+    };
     Ok(PolicyResult {
         decision: if decision.is_empty() {
             "block".into()

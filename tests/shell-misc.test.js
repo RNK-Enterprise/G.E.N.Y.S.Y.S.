@@ -141,6 +141,20 @@ describe('shell/rnk-webviews', () => {
         );
     });
 
+    test('each product section receives its own webview host id', async () => {
+        delete window.__TAURI__;
+        await bootShell();
+        const { mountRnkWebview } = await import(srcUrl('shell/rnk-webviews.js'));
+        mountRnkWebview('operations');
+        mountRnkWebview('people');
+        mountRnkWebview('comms');
+        expect([...document.querySelectorAll('.rnk-webview-host')].map((host) => host.id)).toEqual([
+            'rnk-webview-host-operations',
+            'rnk-webview-host-people',
+            'rnk-webview-host-comms',
+        ]);
+    });
+
     test('WebviewWindow construction failure surfaces the honest degraded note', async () => {
         jest.unstable_mockModule('@tauri-apps/api/window', () => ({
             WebviewWindow: class {
@@ -148,7 +162,7 @@ describe('shell/rnk-webviews', () => {
             },
         }));
         await bootShell();
-        window.__TAURI__ = { ...window.__TAURI__, Window: {} };
+        window.__TAURI__ = { ...window.__TAURI__, window: { WebviewWindow: {} } };
         const { mountRnkWebview } = await import(srcUrl('shell/rnk-webviews.js'));
         mountRnkWebview('people');
         await new Promise((resolve) => setTimeout(resolve, 0));

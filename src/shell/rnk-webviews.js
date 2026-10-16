@@ -32,8 +32,8 @@ function productUrl(target) {
     return `https://${target.host}${target.path}`;
 }
 
-async function createGENYSYSWindow(url, label) {
-    if (window.__TAURI__?.Window) {
+async function createGENYSYSWindow(url, label, container) {
+    if (window.__TAURI__?.window?.WebviewWindow) {
         try {
             const { WebviewWindow } = await import('@tauri-apps/api/window');
             const win = new WebviewWindow(`genysys-${label}`, {
@@ -55,7 +55,6 @@ async function createGENYSYSWindow(url, label) {
         frame.className = 'webview rnk-webview';
         frame.setAttribute('aria-label', `RNK product — ${label}`);
         frame.style.cssText = 'width:100%;height:100%;border:0;display:block;';
-        const container = document.getElementById('rnk-webview-host');
         if (!container) return false;
         container.innerHTML = '';
         container.appendChild(frame);
@@ -78,12 +77,13 @@ export function mountRnkWebview(sectionId) {
                 <span class="rnk-webview-url">${productUrl(target)}</span>
                 <button class="sc-btn" id="rnk-webview-open-${sectionId}">Open in GENYSYS</button>
             </div>
-            <div class="rnk-webview-host" id="rnk-webview-host"></div>
+            <div class="rnk-webview-host" id="rnk-webview-host-${sectionId}"></div>
             <div class="rnk-webview-note" id="rnk-webview-note-${sectionId}" hidden></div>
         </div>`;
 
     const open = async () => {
-        const ok = await createGENYSYSWindow(productUrl(target), target.title);
+        const container = mount.querySelector(`#rnk-webview-host-${sectionId}`);
+        const ok = await createGENYSYSWindow(productUrl(target), target.title, container);
         const note = mount.querySelector(`#rnk-webview-note-${sectionId}`);
         if (note) {
             if (ok) {
