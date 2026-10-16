@@ -90,6 +90,10 @@ mark tagged states of the repository.
   fail-closed command errors, native-sync failures, heartbeat relock/resume,
   bridge fallbacks, storage exceptions, and missing-control guards. An
   unreachable normal-submit dev-bypass branch and duplicate cleanup were removed.
+- **P.R.O.T.E.C.T.S. health hardening.** Health rendering now holds exact
+  100/100/100/100 coverage across 3 tests, including legacy/default URLs,
+  failed health responses, missing mounts/cards, refresh actions, and escaped
+  dynamic Resolute values.
 - **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
   pages, rejects embedded and unknown schemes, and intersects remote policy with
   local policy so a remote response cannot override a local block or expand

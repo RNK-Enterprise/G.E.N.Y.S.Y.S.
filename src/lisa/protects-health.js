@@ -19,6 +19,11 @@ const ORGANS = [
     { key: 'heartbeat', label: 'Heartbeat', icon: '♥', note: 'Session liveness' },
 ];
 
+function escapeHtml(value) {
+    const entities = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+    return String(value).replace(/[&<>"']/g, char => entities[char]);
+}
+
 export function mountProtectsHealth(mountEl) {
     if (!mountEl) return;
 
@@ -43,7 +48,7 @@ export function mountProtectsHealth(mountEl) {
                 <h3 class="sc-section-title">Resolute URL</h3>
                 <div class="sc-url-row">
                     <input type="text" id="protects-url-input" class="sc-url-input"
-                        value="${RESOLUTE_URL()}" placeholder="http://127.0.0.1:7781">
+                        value="${escapeHtml(RESOLUTE_URL())}" placeholder="http://127.0.0.1:7781">
                     <button id="protects-url-save" class="sc-btn">Save</button>
     </div>
                 <p class="sc-panel-desc" style="margin-top:.5rem">
@@ -81,7 +86,7 @@ async function fetchHealth() {
 }
 
 function badge(ok, label) {
-    return `<span class="sc-badge ${ok ? 'sc-badge-ok' : 'sc-badge-off'}">${label}</span>`;
+    return `<span class="sc-badge ${ok ? 'sc-badge-ok' : 'sc-badge-off'}">${escapeHtml(label)}</span>`;
 }
 
 function renderHealth(status) {
@@ -105,7 +110,7 @@ function renderHealth(status) {
             <div class="sc-card-icon">HC</div>
             <div class="sc-card-body">
                 <div class="sc-card-label">Handshake URL</div>
-                <div class="sc-card-state">${RESOLUTE_URL()}</div>
+                <div class="sc-card-state">${escapeHtml(RESOLUTE_URL())}</div>
             </div>
         </div>`;
 
