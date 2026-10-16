@@ -259,6 +259,40 @@ describe('shell: chrome-bindings-b', () => {
         expect(dropdown.querySelector('.suggestion-item').classList.contains('selected')).toBe(false);
         omnibox.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
         expect(dropdown.classList.contains('hidden')).toBe(true);
+
+        omnibox.value = 'no-match';
+        omnibox.dispatchEvent(new Event('input', { bubbles: true }));
+        dropdown.innerHTML = '';
+        omnibox.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+        omnibox.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
+        omnibox.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
+        omnibox.dispatchEvent(new KeyboardEvent('keypress', { key: 'Space', bubbles: true }));
+        window.selectedSuggestionIndex = 0;
+        omnibox.dispatchEvent(new KeyboardEvent('keypress', { key: 'Enter', bubbles: true }));
+        expect(dropdown.classList.contains('hidden')).toBe(true);
+        expect(window.highlightMatch('plain text', 'missing')).toBe('plain text');
+    });
+
+    test('omnibox renders folder suggestions and preserves explicit protocols', async () => {
+        await bootShell();
+        window.bookmarkManager.getAllBookmarks = () => [{
+            title: 'Folder Result',
+            url: 'https://folder.test/',
+            folder: 'saved',
+        }];
+        const omnibox = document.getElementById('omnibox');
+        omnibox.value = 'folder';
+        omnibox.dispatchEvent(new Event('input', { bubbles: true }));
+        const item = document.querySelector('#omnibox-suggestions .suggestion-item');
+        expect(item.querySelector('.suggestion-icon').textContent).toBe('DIR');
+        item.dispatchEvent(new Event('mouseenter', { bubbles: true }));
+        item.querySelector('.suggestion-url').textContent = '';
+        item.dispatchEvent(new Event('click', { bubbles: true }));
+
+        omnibox.value = 'https://already.test/';
+        window.selectedSuggestionIndex = -1;
+        omnibox.dispatchEvent(new KeyboardEvent('keypress', { key: 'Enter', bubbles: true }));
+        expect(omnibox.value).toBe('https://already.test/');
     });
 
     test('Enter on selected suggestion navigates; bare Enter builds search URL', async () => {
@@ -285,19 +319,11 @@ describe('shell: chrome-bindings-b', () => {
     });
 
     test('search provider selection persists and updates the icon button', async () => {
-        await bootShell();
         const providerItem = document.createElement('div');
         providerItem.className = 'provider-item';
         providerItem.setAttribute('data-provider', 'brave');
         document.getElementById('search-provider-modal').appendChild(providerItem);
-        window.bindItemEvents([providerItem], {
-            click: (item) => {
-                window.currentSearchProvider = item.getAttribute('data-provider');
-                localStorage.setItem('search-provider', window.currentSearchProvider);
-                window.updateSearchProviderIcon();
-                window.closeSearchProviderModal();
-            },
-        });
+        await bootShell();
         providerItem.dispatchEvent(new Event('click', { bubbles: true }));
         expect(window.currentSearchProvider).toBe('brave');
         expect(localStorage.getItem('search-provider')).toBe('brave');
@@ -325,14 +351,36 @@ describe('shell: chrome-bindings-b', () => {
 
     test('recently-closed modal renders empty state and restore action', async () => {
         await bootShell();
+        jest.useFakeTimers();
         document.getElementById('recently-closed-btn').click();
         expect(document.getElementById('recently-closed-list').innerHTML).toContain('No Recently Closed Tabs');
 
-        window.recentlyClosedManager.addClosedTab({ id: 1, url: 'https://closed.test/', title: 'Closed' });
+        window.recentlyClosedManager.addClosedTab({ id: 1, url: 'https://closed.test/', title: 'Closed', favicon: 'data:image/png;base64,AA' });
+        window.recentlyClosedManager.addClosedTab({ id: 2, url: 'https://plain.test/', title: 'Plain' });
         window.showRecentlyClosedModal();
         const item = document.querySelector('#recently-closed-list .modal-list-item');
         expect(item).not.toBeNull();
+        item.querySelector('.modal-item-action').dispatchEvent(new Event('mouseenter', { bubbles: true }));
         item.querySelector('.modal-item-action').dispatchEvent(new Event('click', { bubbles: true }));
+        jest.advanceTimersByTime(300);
+        document.querySelector('#recently-closed-list .action-btn').click();
+        expect(document.getElementById('recently-closed-list').innerHTML).toContain('No Recently Closed Tabs');
+        jest.useRealTimers();
+    });
+
+    test('modal guards and missing session loads fail closed', async () => {
+        await bootShell();
+        window.isGENYSYSCapabilityAvailable = jest.fn(() => false);
+        expect(() => window.showRecentlyClosedModal()).not.toThrow();
+        expect(() => window.showSessionsModal()).not.toThrow();
+
+        window.isGENYSYSCapabilityAvailable = jest.fn(() => true);
+        window.sessionManager.saveSession('missing', []);
+        const loadSession = window.sessionManager.loadSession;
+        window.sessionManager.loadSession = jest.fn(() => null);
+        window.showSessionsModal();
+        document.querySelector('#sessions-list .modal-item-action').click();
+        window.sessionManager.loadSession = loadSession;
     });
 
     test('sessions modal lists, loads, and deletes sessions', async () => {
@@ -340,22 +388,41 @@ describe('shell: chrome-bindings-b', () => {
         jest.useFakeTimers();
         window.sessionManager.saveSession('alpha', [{ url: 'https://one.test/' }]);
         window.sessionManager.saveSession('beta', [{ url: 'https://two.test/' }]);
+        window.sessionManager.saveSession('multi', [{ url: 'https://three.test/' }, { url: 'https://four.test/' }]);
 
         window.showSessionsModal();
         const items = document.querySelectorAll('#sessions-list .modal-list-item');
-        expect(items.length).toBe(2);
+        expect(items.length).toBe(3);
 
+        window.tabManager.tabs.push({ iframe: document.createElement('iframe') }, {});
         items[0].querySelector('.modal-item-action').dispatchEvent(new Event('click', { bubbles: true }));
         jest.advanceTimersByTime(1000);
         expect(window.tabManager.tabs.length).toBe(1);
         expect(window.tabManager.tabs[0].url).toBe('https://one.test/');
+
+        const loadSession = window.sessionManager.loadSession;
+        window.sessionManager.loadSession = jest.fn(() => null);
+        window.showSessionsModal();
+        document.querySelector('#sessions-list .modal-item-action').click();
+        window.sessionManager.loadSession = loadSession;
+
+        window.showSessionsModal();
+        const multi = [...document.querySelectorAll('#sessions-list .modal-list-item')]
+            .find((item) => item.textContent.includes('multi'));
+        multi.querySelector('.modal-item-action').dispatchEvent(new Event('click', { bubbles: true }));
+        jest.advanceTimersByTime(1000);
 
         window.confirm = jest.fn(() => true);
         window.showSessionsModal();
         document.querySelectorAll('#sessions-list .modal-list-item')[0]
             .querySelector('.modal-item-action.danger')
             .dispatchEvent(new Event('click', { bubbles: true }));
-        expect(window.sessionManager.listSessions().map((s) => s.name)).toEqual(['beta']);
+        expect(window.sessionManager.listSessions().map((s) => s.name)).toEqual(['beta', 'multi']);
+        window.confirm = jest.fn(() => false);
+        window.showSessionsModal();
+        document.querySelectorAll('#sessions-list .modal-list-item')[0]
+            .querySelector('.modal-item-action.danger')
+            .dispatchEvent(new Event('click', { bubbles: true }));
         jest.useRealTimers();
     });
 

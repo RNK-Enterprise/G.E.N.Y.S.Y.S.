@@ -50,6 +50,10 @@ mark tagged states of the repository.
   actions, settings-section listeners, event fallbacks, and early stubs. The
   performance close action now binds through its actual DOM selector instead
   of an ID lookup that could never attach.
+- **Chrome bindings-B coverage completed.** `chrome-bindings-b.js` now holds
+  exact 100/100/100/100 coverage across modal guards, restore and clear
+  actions, session load/delete branches, provider selection, omnibox
+  suggestions, keyboard paths, and explicit URL handling.
 - **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
   pages, rejects embedded and unknown schemes, and intersects remote policy with
   local policy so a remote response cannot override a local block or expand
