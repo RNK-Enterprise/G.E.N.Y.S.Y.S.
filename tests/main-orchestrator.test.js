@@ -21,7 +21,7 @@ import {
 } from './helpers/shell-harness.js';
 import url from 'node:url';
 
-const mainUrl = () => url.pathToFileURL(`${ROOT}/src/main.js`).href;
+const mainUrl = (suffix = '') => `${url.pathToFileURL(`${ROOT}/src/main.js`).href}${suffix}`;
 
 beforeEach(() => {
     resetShellDom();
@@ -112,10 +112,93 @@ describe('main.js initializeApp', () => {
         primeBridge();
         await bootMain();
         expect(window.tabManager.tabs.length).toBe(1);
-        await import(mainUrl());
+        await import(mainUrl('?reentry'));
         document.dispatchEvent(new CustomEvent('genysys:authenticated', { detail: {} }));
         await new Promise((resolve) => setTimeout(resolve, 30));
         expect(window.tabManager.tabs.length).toBe(1);
+    });
+
+    test('re-entry guard returns on a duplicate authenticated event', async () => {
+        primeBridge();
+        await import(mainUrl('?guard-only'));
+        window.__genysysBooted = true;
+        document.dispatchEvent(new CustomEvent('genysys:authenticated', { detail: {} }));
+        await new Promise((resolve) => setTimeout(resolve, 30));
+        expect(window.__genysysBooted).toBe(true);
+    });
+
+    test('sparse manifest and absent optional surfaces fail safely', async () => {
+        primeBridge();
+        await import(mainUrl('?sparse'));
+        const runtime = window.genysysRuntime;
+        runtime.start = async ({ getTabs }) => {
+            expect(getTabs()).toEqual([]);
+            return { catalog_summary: {} };
+        };
+        window.__TAURI__ = {};
+        delete window.genysysRuntime;
+        delete window.tabManager;
+        document.getElementById('perf-turbo-list')?.remove();
+        document.getElementById('perf-summary-text')?.remove();
+        [
+            'renderGENYSYSCapabilities',
+            'renderBookmarksBar',
+            'updateSettingsSectionAvailability',
+            'updateGENYSYSSurfaceAvailability',
+            'loadSettings',
+            'setShellDensityState',
+            'applyTabBarCompactState',
+            'applyOmniboxCompactState',
+            'applySettingsDenseState',
+            'applyStatusbarMinimalState',
+            'applyTitlebarCompactState',
+            'applyDensityDependentSurfaces',
+            'syncShellDensityStateFromSurfaces',
+            'applyGENYSYSRuntimeStatus',
+            'updateStatusBar',
+        ].forEach((name) => delete window[name]);
+
+        document.dispatchEvent(new CustomEvent('genysys:authenticated'));
+        await new Promise((resolve) => setTimeout(resolve, 30));
+        expect(window.__genysysBooted).toBe(true);
+        expect(console.error).toHaveBeenCalledWith('GENYSYS initializeApp failed:', expect.any(Error));
+    });
+
+    test('turbo panel renders disabled rows and swallows boot-log rejection', async () => {
+        const tauri = primeBridge();
+        const invoke = tauri.invoke;
+        tauri.invoke = (command, args) => command === 'log_boot'
+            ? Promise.reject(new Error('diagnostic unavailable'))
+            : invoke(command, args);
+        await import(mainUrl('?turbo-fallback'));
+        const runtime = window.genysysRuntime;
+        runtime.start = async () => ({ capabilities: [], catalog_summary: {} });
+        runtime.listTurboStates = () => [{ id: 'turbo-off', name: 'Off', enabled: false, status: 'idle' }];
+        document.body.insertAdjacentHTML('beforeend', '<div id="perf-turbo-list"></div>');
+        document.dispatchEvent(new CustomEvent('genysys:authenticated', { detail: {} }));
+        await new Promise((resolve) => setTimeout(resolve, 30));
+
+        const input = document.querySelector('#perf-turbo-list input[data-turbo-id="turbo-off"]');
+        expect(input).not.toBeNull();
+        expect(input.checked).toBe(false);
+        expect(document.getElementById('perf-turbo-list').textContent).toContain('0 turbos in catalog');
+    });
+
+    test('loading document waits for DOMContentLoaded before booting', async () => {
+        primeBridge();
+        const original = Object.getOwnPropertyDescriptor(document, 'readyState');
+        Object.defineProperty(document, 'readyState', { configurable: true, value: 'loading' });
+        try {
+            await import(mainUrl('?loading'));
+            expect(window.__genysysBooted).toBeUndefined();
+            Object.defineProperty(document, 'readyState', { configurable: true, value: 'complete' });
+            document.dispatchEvent(new Event('DOMContentLoaded'));
+            document.dispatchEvent(new CustomEvent('genysys:authenticated', { detail: { name: 'Odinn' } }));
+            await new Promise((resolve) => setTimeout(resolve, 30));
+            expect(window.__genysysBooted).toBe(true);
+        } finally {
+            if (original) Object.defineProperty(document, 'readyState', original);
+        }
     });
 
     test('shell density presets re-apply through the compact branch', async () => {

@@ -125,7 +125,7 @@ function startWhenAuthenticated() {
     Boolean(window.__genysysAuthenticated) ||
     Boolean(sessionStorage.getItem('rnk-genysys-auth-session'));
 
-  const boot = (detail = {}) => {
+  const boot = (detail) => {
     // CI diagnostics: prove the full import graph executed and the orchestrator started.
     if (window.__TAURI__?.invoke) {
       window.__TAURI__.invoke('log_boot', { marker: 'main.js initializeApp' }).catch(() => {});
@@ -141,7 +141,7 @@ function startWhenAuthenticated() {
 
   document.addEventListener(
     'genysys:authenticated',
-    (e) => boot(e.detail || {}),
+    (e) => boot(e.detail),
     { once: true },
   );
 }

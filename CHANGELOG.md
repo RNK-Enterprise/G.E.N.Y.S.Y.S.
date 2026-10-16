@@ -42,6 +42,9 @@ mark tagged states of the repository.
 - **Density-surfaces-B coverage completed.** `density-surfaces-b.js` now holds
   exact 100/100/100/100 coverage across shell toggling, dependent-surface
   appliers, persistence, and absent optional surfaces.
+- **Main orchestrator coverage completed.** `main.js` now holds exact
+  100/100/100/100 coverage across authenticated boot gating, re-entry guards,
+  sparse manifests, optional surfaces, turbo rendering, and DOM readiness.
 - **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
   pages, rejects embedded and unknown schemes, and intersects remote policy with
   local policy so a remote response cannot override a local block or expand
