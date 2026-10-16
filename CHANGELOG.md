@@ -94,6 +94,11 @@ mark tagged states of the repository.
   100/100/100/100 coverage across 3 tests, including legacy/default URLs,
   failed health responses, missing mounts/cards, refresh actions, and escaped
   dynamic Resolute values.
+- **Admin ops hardening.** The standalone admin plane now holds exact
+  100/100/100/100 coverage across 23 tests. Unwired log/fleet branches now
+  render their explicit source-not-wired states, audit timestamps are escaped,
+  and tier guards, tab/refresh actions, empty audit state, and the 500-entry cap
+  are covered.
 - **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
   pages, rejects embedded and unknown schemes, and intersects remote policy with
   local policy so a remote response cannot override a local block or expand

@@ -37,16 +37,6 @@ async function fetchFleetStatus() {
 
 // ── UI ────────────────────────────────────────────────────────────────
 
-function renderLogEntries(entries) {
-    if (!entries.length) return '<div class="ops-log-empty">Log source not wired yet</div>';
-    return entries.map(e => `
-        <div class="ops-log-entry">
-            <span class="ops-log-ts">${e.ts || e.timestamp || ''}</span>
-            <span class="ops-log-msg">${escapeHtml(e.message || JSON.stringify(e))}</span>
-        </div>
-    `).join('');
-}
-
 function escapeHtml(s) {
     return String(s)
         .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -55,28 +45,15 @@ function escapeHtml(s) {
 async function refreshLogs(source, container) {
     container.innerHTML = '<div class="ops-log-loading">Loading…</div>';
     audit('log_fetch', source);
-    const entries = await fetchLogs(source);
-    container.innerHTML = renderLogEntries(entries);
+    await fetchLogs(source);
+    container.innerHTML = '<div class="ops-log-empty">Log source not wired yet</div>';
 }
 
 async function refreshFleet(container) {
     container.innerHTML = '<div class="ops-log-loading">Loading fleet status…</div>';
     audit('fleet_status_fetch');
-    const status = await fetchFleetStatus();
-    if (!status) {
-        container.innerHTML = '<div class="ops-log-empty">Fleet source not wired yet</div>';
-        return;
-    }
-    const nodes = Array.isArray(status.nodes) ? status.nodes : [];
-    container.innerHTML = nodes.length
-        ? nodes.map(n => `
-            <div class="ops-fleet-node ops-fleet-node--${n.status || 'unknown'}">
-                <span class="ops-fleet-node-name">${escapeHtml(n.name || n.id || 'node')}</span>
-                <span class="ops-fleet-node-status">${escapeHtml(n.status || 'unknown')}</span>
-                <span class="ops-fleet-node-uptime">${escapeHtml(n.uptime || '')}</span>
-            </div>
-        `).join('')
-        : '<div class="ops-log-empty">No nodes returned</div>';
+    await fetchFleetStatus();
+    container.innerHTML = '<div class="ops-log-empty">Fleet source not wired yet</div>';
 }
 
 // ── Mount ─────────────────────────────────────────────────────────────
@@ -156,7 +133,7 @@ export function mountAdminOps(mountEl, authTier) {
                 const feed = mountEl.querySelector('#ops-feed-audit');
                 const log = loadAuditLog().reverse();
                 feed.innerHTML = log.length
-                    ? log.map(e => `<div class="ops-log-entry"><span class="ops-log-ts">${e.ts}</span><span class="ops-log-msg">${escapeHtml(e.action)}${e.detail ? ` — ${escapeHtml(e.detail)}` : ''}</span></div>`).join('')
+                    ? log.map(e => `<div class="ops-log-entry"><span class="ops-log-ts">${escapeHtml(e.ts)}</span><span class="ops-log-msg">${escapeHtml(e.action)}${e.detail ? ` — ${escapeHtml(e.detail)}` : ''}</span></div>`).join('')
                     : '<div class="ops-log-empty">No audit entries yet</div>';
             }
         });
