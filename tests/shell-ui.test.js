@@ -383,6 +383,26 @@ describe('ui: density-core-b + density-surfaces', () => {
         expect(() => window.renderSettingsDensityControls()).not.toThrow();
     });
 
+    test('density surface appliers tolerate absent optional surfaces', async () => {
+        await bootShell();
+        [
+            'shortcuts-help',
+            'shortcuts-dense-toggle',
+            'toast-container',
+            'performance-panel',
+            'search-provider-modal',
+            'bookmarks-bar',
+        ].forEach((id) => document.getElementById(id)?.remove());
+
+        expect(() => window.applyShortcutsDenseState()).not.toThrow();
+        expect(() => window.applyToastDensityState()).not.toThrow();
+        expect(() => window.applyPerformancePanelDensityState()).not.toThrow();
+        expect(() => window.applySearchProviderDensityState()).not.toThrow();
+        expect(() => window.applySessionsDensityState()).not.toThrow();
+        expect(() => window.applyBookmarksBarDensityState()).not.toThrow();
+        expect(() => window.applyBookmarksBarVisibilityState()).not.toThrow();
+    });
+
     test('toggleShellDensity flips roomy<->compact across surfaces', async () => {
         await bootShell();
         window.toggleShellDensity();
