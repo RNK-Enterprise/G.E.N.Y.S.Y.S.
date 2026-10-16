@@ -159,7 +159,6 @@ function startCommandHeartbeat() {
                 clearInterval(_heartbeatTimer);
                 _heartbeatTimer = null;
                 sessionStorage.removeItem(SESSION_KEY);
-            delete window.genysysAuthSession;
                 delete window.genysysAuthSession;
                 gate.classList.remove('hidden');
                 gate.setAttribute('aria-hidden', 'false');
@@ -193,16 +192,10 @@ async function handleSubmit(e) {
     submitBtn.textContent = 'Verifying…';
 
     try {
-        let result;
-        if (isDevBypassEnabled()) {
-            result = { token: 'dev-bypass', tier: 'dev', agentId: 'local', source: 'dev' };
-        } else {
-            result = await resolveCode(code);
-        }
+        const result = await resolveCode(code);
         persistSession(result);
         await syncNativeSession(result);
         dismissGate(result);
-        if (mode === 'command') startCommandHeartbeat();
     } catch (err) {
         showError(err?.message || 'Invalid access code');
         submitBtn.disabled = false;

@@ -85,6 +85,11 @@ mark tagged states of the repository.
   hold exact 100/100/100/100 coverage across 38 tests. Legacy state migration,
   malformed storage, loading-time initialization, and no-selection tour paths
   are covered; persisted daily-message text is rendered as text, not markup.
+- **Auth-gate hardening.** Startup authentication now holds exact
+  100/100/100/100 coverage across 25 tests, including malformed sessions,
+  fail-closed command errors, native-sync failures, heartbeat relock/resume,
+  bridge fallbacks, storage exceptions, and missing-control guards. An
+  unreachable normal-submit dev-bypass branch and duplicate cleanup were removed.
 - **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
   pages, rejects embedded and unknown schemes, and intersects remote policy with
   local policy so a remote response cannot override a local block or expand
