@@ -54,6 +54,10 @@ mark tagged states of the repository.
   exact 100/100/100/100 coverage across modal guards, restore and clear
   actions, session load/delete branches, provider selection, omnibox
   suggestions, keyboard paths, and explicit URL handling.
+- **Chrome bindings-C coverage completed.** `chrome-bindings-c.js` now holds
+  exact 100/100/100/100 coverage across bookmarks, navigation, FPS, keyboard
+  shortcuts, settings persistence and tabs, runtime status transitions, and
+  absent-node safety.
 - **Shell/browser blocker repair.** Local policy now authenticates GENYSYS internal
   pages, rejects embedded and unknown schemes, and intersects remote policy with
   local policy so a remote response cannot override a local block or expand
