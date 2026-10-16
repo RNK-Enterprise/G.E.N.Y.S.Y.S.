@@ -363,6 +363,26 @@ describe('ui: density-core-b + density-surfaces', () => {
         window.updateShellDensityToggleLabel();
     });
 
+    test('density surface catalog renders and executes every control handler', async () => {
+        await bootShell();
+        const configs = window.settingsDensityControlConfigs;
+        const matrix = document.getElementById('settings-density-matrix');
+        expect(configs.length).toBe(14);
+        expect(matrix.querySelectorAll('.setting-item')).toHaveLength(configs.length);
+
+        configs.forEach(({ stateId, buttons, label }) => {
+            expect(matrix.textContent).toContain(label);
+            expect(document.getElementById(stateId)).not.toBeNull();
+            buttons.forEach(({ id, handler }) => {
+                expect(document.getElementById(id)).not.toBeNull();
+                expect(() => handler()).not.toThrow();
+            });
+        });
+
+        matrix.remove();
+        expect(() => window.renderSettingsDensityControls()).not.toThrow();
+    });
+
     test('toggleShellDensity flips roomy<->compact across surfaces', async () => {
         await bootShell();
         window.toggleShellDensity();
