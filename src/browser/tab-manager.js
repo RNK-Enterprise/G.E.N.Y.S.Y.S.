@@ -132,12 +132,24 @@ class TabManager {
         // From the Rust watcher: real title/URL of the tab window.
         const tab = this.tabs.find(t => t.id === tabId);
         if (!tab) return;
-        if (meta.title) {
-            tab.title = String(meta.title).slice(0, 120) || tab.title;
-        }
-        if (meta.url && !meta.url.startsWith('data:')) {
-            tab.url = meta.url;
-        }
+        const reportedTitle = String(meta.title || '').trim();
+        const reportedUrl = typeof meta.url === 'string' && !meta.url.startsWith('data:')
+            ? meta.url
+            : null;
+        // The native child window has a generic title before a page title is
+        // available. Keep the stable New Tab label instead of accepting that
+        // shell title on every watcher tick.
+        const internalNewTab = tab.url === 'genysys://newtab'
+            || tab.url.includes('/newtab.html')
+            || (reportedUrl && reportedUrl.includes('/newtab.html'));
+        const genericNewTabTitle = internalNewTab && reportedTitle === 'GENYSYS Tab';
+        const titleChanged = Boolean(reportedTitle)
+            && !genericNewTabTitle
+            && reportedTitle.slice(0, 120) !== tab.title;
+        const urlChanged = Boolean(reportedUrl) && reportedUrl !== tab.url;
+        if (!titleChanged && !urlChanged) return;
+        if (titleChanged) tab.title = reportedTitle.slice(0, 120);
+        if (urlChanged) tab.url = reportedUrl;
         this.renderTabs();
         this.saveTabs();
         if (tabId === this.activeTabId) {

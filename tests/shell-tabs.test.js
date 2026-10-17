@@ -123,8 +123,26 @@ describe('browser: tab-manager core', () => {
         window.tabManager.onTabMeta(tab.id, { url: 'data:text/html,hi' });
         expect(tab.url).toBe('https://nav.test/final');
 
+        const renderSpy = jest.spyOn(window.tabManager, 'renderTabs');
+        window.tabManager.onTabMeta(tab.id, { title: 'Real Title', url: 'https://nav.test/final' });
+        expect(renderSpy).not.toHaveBeenCalled();
+        renderSpy.mockRestore();
+
         window.tabManager.onTabMeta(999, { title: 'ghost' });
         window.tabManager.onTauriNavigate(999, 'https://ghost.test/');
+    });
+
+    test('onTabMeta ignores the native generic title for the new-tab page', async () => {
+        const tauri = stubTauri();
+        await bootShell({ tauri });
+        const tab = window.tabManager.createTab();
+
+        window.tabManager.onTabMeta(tab.id, {
+            title: 'GENYSYS Tab',
+            url: 'genysys://newtab',
+        });
+
+        expect(tab.title).toBe('New Tab');
     });
 
     test('setTabLoading and loadInternal route correctly', async () => {

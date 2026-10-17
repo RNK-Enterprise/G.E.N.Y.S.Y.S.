@@ -197,44 +197,33 @@ describe('shell/rnk-webviews', () => {
         ]);
     });
 
-    test('WebviewWindow construction failure surfaces the honest degraded note', async () => {
-        jest.unstable_mockModule('@tauri-apps/api/window', () => ({
-            WebviewWindow: class {
-                constructor() { throw new Error('no shell'); }
-            },
-        }));
+    test('native shell without a tab manager surfaces the honest degraded note', async () => {
         await bootShell();
-        window.__TAURI__ = { ...window.__TAURI__, window: { WebviewWindow: {} } };
+        window.__TAURI__ = { ...window.__TAURI__, invoke: jest.fn() };
+        const originalTabManager = window.tabManager;
+        window.tabManager = null;
         const { mountRnkWebview } = await import(srcUrl('shell/rnk-webviews.js'));
         mountRnkWebview('people');
         await new Promise((resolve) => setTimeout(resolve, 0));
         const note = document.querySelector('#rnk-webview-note-people');
         expect(note.hidden).toBe(false);
         expect(note.textContent).toContain('RNK product unreachable');
+        window.tabManager = originalTabManager;
     });
 
-    test('native shell opens a dedicated WebviewWindow when available', async () => {
-        jest.unstable_mockModule('@tauri-apps/api/window', () => ({
-            WebviewWindow: class {
-                constructor(label, options) {
-                    globalThis.__genysysNativeWebview = { label, options };
-                }
-            },
-        }));
+    test('native shell opens a product through the browser tab manager', async () => {
         await bootShell();
-        window.__TAURI__ = { ...window.__TAURI__, window: { WebviewWindow: {} } };
+        window.__TAURI__ = { ...window.__TAURI__, invoke: jest.fn() };
+        const createTab = jest.spyOn(window.tabManager, 'createTab').mockReturnValue({ id: 9 });
+        const activateSection = jest.spyOn(window, 'activateSection').mockImplementation(() => {});
         const { mountRnkWebview } = await import(srcUrl('shell/rnk-webviews.js'));
         mountRnkWebview('people');
         await new Promise((resolve) => setTimeout(resolve, 0));
-        expect(globalThis.__genysysNativeWebview).toEqual({
-            label: 'genysys-Raven — People',
-            options: expect.objectContaining({
-                url: 'https://raven.rnk-enterprise.us/hr',
-                title: 'GENYSYS — Raven — People',
-            }),
-        });
+        expect(activateSection).toHaveBeenCalledWith('browser');
+        expect(createTab).toHaveBeenCalledWith('https://raven.rnk-enterprise.us/hr');
         expect(document.querySelector('#rnk-webview-note-people').hidden).toBe(true);
-        delete globalThis.__genysysNativeWebview;
+        activateSection.mockRestore();
+        createTab.mockRestore();
     });
 
     test('webview fallback reports DOM failures without pretending success', async () => {

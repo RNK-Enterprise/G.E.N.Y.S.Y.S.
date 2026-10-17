@@ -6,7 +6,8 @@
  * privileged-tab webviews. A normal browser hitting these hosts is refused by
  * the products' attestation checks (X-GENYSYS-Client / X-GENYSYS-Session).
  *
- * Native shell (Tauri): dedicated WebviewWindow per product.
+ * Native shell (Tauri): product URLs go through the browser tab manager so
+ * P.R.O.T.E.C.T.S. and the attestation cookie stay in the same path.
  * Vite preview (no shell): an honest degraded state, not a fake success.
  */
 
@@ -32,21 +33,11 @@ function productUrl(target) {
     return `https://${target.host}${target.path}`;
 }
 
-async function createGENYSYSWindow(url, label, container) {
-    if (window.__TAURI__?.window?.WebviewWindow) {
-        try {
-            const { WebviewWindow } = await import('@tauri-apps/api/window');
-            const win = new WebviewWindow(`genysys-${label}`, {
-                url,
-                title: `G.E.N.E.S.Y.S. — ${label}`,
-                width: 1280,
-                height: 820,
-            });
-            return true;
-        } catch (e) {
-            console.warn(`[GENYSYS Webviews] window create failed for ${label}:`, e);
-            return false;
-        }
+async function createGENYSYSWindow(url, _label, container) {
+    if (window.__TAURI__?.invoke) {
+        if (!window.tabManager?.createTab) return false;
+        window.activateSection?.('browser');
+        return Boolean(window.tabManager.createTab(url));
     }
     // Same-host iframe fallback (works inside the shell's dist build too).
     try {
