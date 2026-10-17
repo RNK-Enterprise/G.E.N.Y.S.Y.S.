@@ -3,7 +3,7 @@
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * Browser-mode E2E against the Vite dev server (port 1420, strictPort in
- * vite.config.js). The Tauri IPC bridge is absent here; lisa-bridge.js
+ * vite.config.js). The Tauri IPC bridge is absent here; policy-bridge.js
  * fail-closes navigation, which is fine for shell-level tests like tabs.
  */
 

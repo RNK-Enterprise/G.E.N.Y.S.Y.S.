@@ -2,7 +2,7 @@
 //! Verify bar: unauthenticated → block; authenticated internal genysys:// → allow;
 //! biosig strings can never authenticate; pentest host stays out of default chrome.
 
-use crate::lisa_policy::{check_policy, evaluate_local};
+use crate::protects_policy::{check_policy, evaluate_local};
 use crate::{Session, TabContext};
 use serde_json::json;
 use std::io::{Read, Write};
@@ -150,8 +150,8 @@ fn tab_context_privileged_only_for_rnk_hosts() {
 
 #[test]
 fn biosig_stub_strings_cannot_authenticate_via_policy() {
-    // These must be refused by auth.rs; policy-side they are just unauthenticated URLs.
-    for s in ["__biosig__", "__mother_lisa__", "__fido__", "__lisa_handshake__"] {
+    // These are not access codes; policy-side they are just unauthenticated URLs.
+    for s in ["__biosig__", "__fido__"] {
         let p = evaluate_local(&format!("https://{}", s), &unauth());
         assert_eq!(p.decision, "block");
         assert_eq!(p.reason, "unauthenticated");

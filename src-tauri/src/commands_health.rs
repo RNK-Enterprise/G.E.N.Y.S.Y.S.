@@ -6,17 +6,17 @@ use serde_json::json;
 use tauri::{AppHandle, State};
 
 #[tauri::command]
-pub async fn check_lisa_health(state: State<'_, AppState>) -> Result<serde_json::Value, String> {
-    let lisa_url = state.lisa_url.lock().map_err(|e| e.to_string())?.clone();
-    let lisa_key = state.lisa_key.lock().map_err(|e| e.to_string())?.clone();
+pub async fn check_policy_health(state: State<'_, AppState>) -> Result<serde_json::Value, String> {
+    let policy_url = state.policy_url.lock().map_err(|e| e.to_string())?.clone();
+    let policy_key = state.policy_key.lock().map_err(|e| e.to_string())?.clone();
 
     let local_ok = true; // embedded policy always present
-    if lisa_url.trim().is_empty() {
+    if policy_url.trim().is_empty() {
         return Ok(json!({
             "connected": true,
             "mode": "local",
             "localPolicy": local_ok,
-            "lisaUrl": "",
+            "policyUrl": "",
         }));
     }
 
@@ -25,8 +25,8 @@ pub async fn check_lisa_health(state: State<'_, AppState>) -> Result<serde_json:
         .build()
         .map_err(|e| e.to_string())?;
 
-    let mut req = client.get(format!("{}/health", lisa_url.trim_end_matches('/')));
-    if let Some(ref key) = lisa_key {
+    let mut req = client.get(format!("{}/health", policy_url.trim_end_matches('/')));
+    if let Some(ref key) = policy_key {
         req = req.header("X-API-Key", key);
     }
 
@@ -36,21 +36,21 @@ pub async fn check_lisa_health(state: State<'_, AppState>) -> Result<serde_json:
             "mode": "remote",
             "localPolicy": local_ok,
             "status": resp.status().as_u16(),
-            "lisaUrl": lisa_url,
+            "policyUrl": policy_url,
         })),
         Err(e) => Ok(json!({
             "connected": false,
             "mode": "local-fallback",
             "localPolicy": local_ok,
             "error": e.to_string(),
-            "lisaUrl": lisa_url,
+            "policyUrl": policy_url,
         })),
     }
 }
 
 #[tauri::command]
 pub async fn check_atlas_health(state: State<'_, AppState>) -> Result<serde_json::Value, String> {
-    check_lisa_health(state).await
+    check_policy_health(state).await
 }
 
 #[tauri::command]

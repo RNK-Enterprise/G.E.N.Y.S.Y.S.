@@ -1,13 +1,13 @@
-import { initAuthPanel, showAuthPanel, hideAuthPanel } from './lisa/lisa-bridge-auth-ui.js';
+import { initAuthPanel, showAuthPanel, hideAuthPanel } from './protection/access-auth-ui.js';
 
 /**
- * RNK GENYSYS™ — LISA Bridge
+ * G.E.N.E.S.Y.S. — Policy Bridge
  *
  * Intercepts all navigation in the frontend and routes through the Rust
- * navigate_tab command, which enforces LISA policy before allowing any
+ * navigate_tab command, which enforces P.R.O.T.E.C.T.S. policy before allowing any
  * page to load.
  *
- * Every navigation is LISA-gated. No exceptions.
+ * Every navigation is POLICY-gated. No exceptions.
  *
  * Decision handling:
  *   allow     → iframe loads normally
@@ -21,7 +21,7 @@ import { initAuthPanel, showAuthPanel, hideAuthPanel } from './lisa/lisa-bridge-
  * Also handles:
  *   - Session management (shortcode auth, set_session Tauri command)
  *   - Access request flow (unlisted domains for restricted tiers)
- *   - LISA status indicator in titlebar
+ *   - POLICY status indicator in titlebar
  *
  * Creator: Barry "Odinn" Walter, RNK Enterprise
  */
@@ -31,9 +31,9 @@ import { initAuthPanel, showAuthPanel, hideAuthPanel } from './lisa/lisa-bridge-
 
 // Window bridge — modules extracted from the original main.js reference these
 // globals directly (tab-manager.js, tab-manager-extras.js). Publish them here so
-// navigation always routes through the LISA gate.
+// navigation always routes through the POLICY gate.
 window.normalizeUrl = normalizeUrl;
-window.navigateWithLISA = navigateWithLISA;
+window.navigateWithPolicy = navigateWithPolicy;
 window.tauriInvoke = tauriInvoke;
 
 export function tauriInvoke(command, args = {}) {
@@ -41,7 +41,7 @@ export function tauriInvoke(command, args = {}) {
     return window.__TAURI__.invoke(command, args)
   }
   // Dev fallback when running in browser without Tauri
-  console.warn(`[LISA Bridge] Tauri not available — dev mode passthrough for ${command}`)
+  console.warn(`[POLICY Bridge] Tauri not available — dev mode passthrough for ${command}`)
   return Promise.resolve(_devFallback(command, args))
 }
 
@@ -82,7 +82,7 @@ function _devFallback(command, args) {
       }
       return {
         decision: 'block',
-        reason: 'lisa_unreachable_fail_closed',
+        reason: 'policy_unreachable_fail_closed',
         audit: true,
         notify: true,
         chain: false,
@@ -108,9 +108,9 @@ function _devFallback(command, args) {
     case 'auth_resolve_code':
       if (!bypass) return Promise.reject(new Error('Auth requires GENYSYS native shell'))
       return { token: 'dev-bypass', tier: 'dev', agentId: 'local', source: 'dev' }
-    case 'check_lisa_health':
+    case 'check_policy_health':
     case 'check_genysys_health':
-      return { connected: true, mode: 'local', localPolicy: true, lisaUrl: '' }
+      return { connected: true, mode: 'local', localPolicy: true, policyUrl: '' }
     case 'request_site_access':
       return { submitted: true, requestId: 'dev-' + Date.now() }
     default:
@@ -130,7 +130,7 @@ let _session = {
 export async function refreshSession() {
   try {
     _session = await tauriInvoke('get_session_info')
-    updateLisaStatusIndicator()
+    updatePolicyStatusIndicator()
   } catch { /* non-fatal */ }
 }
 
@@ -142,9 +142,9 @@ export async function setSession(sessionData) {
   try {
     await tauriInvoke('set_session', sessionData)
     _session = await tauriInvoke('get_session_info')
-    updateLisaStatusIndicator()
+    updatePolicyStatusIndicator()
   } catch (err) {
-    console.error('[LISA Bridge] set_session failed:', err)
+    console.error('[POLICY Bridge] set_session failed:', err)
   }
 }
 
@@ -152,37 +152,37 @@ export async function clearSession() {
   try {
     await tauriInvoke('clear_session')
     _session = { accessTier: 'locked', shortcode: null, deviceVerified: false, authenticated: false }
-    updateLisaStatusIndicator()
+    updatePolicyStatusIndicator()
     showAuthPanel()
   } catch { /* non-fatal */ }
 }
 
-// ── LISA status indicator ─────────────────────────────────────────────────────
+// ── POLICY status indicator ─────────────────────────────────────────────────────
 
-export function updateLisaStatusIndicator() {
-  const el = document.getElementById('lisa-status-indicator')
+export function updatePolicyStatusIndicator() {
+  const el = document.getElementById('policy-status-indicator')
   if (!el) return
 
   const tier = _session.accessTier ?? 'unknown'
   const auth = _session.authenticated
 
-  el.textContent = auth ? `LISA: ${tier}` : 'LISA: unauthenticated'
-  el.className = `lisa-status-indicator lisa-status-${auth ? 'active' : 'inactive'}`
+  el.textContent = auth ? `G.E.N.E.S.Y.S.: ${tier}` : 'G.E.N.E.S.Y.S.: unauthenticated'
+  el.className = `policy-status-indicator policy-status-${auth ? 'active' : 'inactive'}`
 }
 
 // ── Core navigation gate ──────────────────────────────────────────────────────
 
 /**
- * Navigate a tab through the LISA policy gate.
+ * Navigate a tab through the P.R.O.T.E.C.T.S. policy gate.
  * This is the ONLY path through which any URL may load.
  *
  * @param {number} tabId
  * @param {string} url
- * @param {Function} onAllow   — called with (url, chain) when LISA allows navigation
- * @param {Function} onBlock   — called with (policy) when LISA blocks navigation
+ * @param {Function} onAllow   — called with (url, chain) when POLICY allows navigation
+ * @param {Function} onBlock   — called with (policy) when POLICY blocks navigation
  * @returns {Promise<object>}  — the PolicyResult
  */
-export async function navigateWithLISA(tabId, url, onAllow, onBlock) {
+export async function navigateWithPolicy(tabId, url, onAllow, onBlock) {
   // Normalize URL
   const normalized = normalizeUrl(url)
 
@@ -193,11 +193,11 @@ export async function navigateWithLISA(tabId, url, onAllow, onBlock) {
   try {
     policy = await tauriInvoke('navigate_tab', { tabId, url: normalized })
   } catch (err) {
-    // Fail-closed: Lisa / Tauri unreachable → block
-    console.warn('[LISA Bridge] navigate_tab failed (fail-closed):', err)
+    // Fail-closed: Policy / Tauri unreachable → block
+    console.warn('[POLICY Bridge] navigate_tab failed (fail-closed):', err)
     policy = {
       decision: 'block',
-      reason: 'lisa_unreachable_fail_closed',
+      reason: 'policy_unreachable_fail_closed',
       audit: true,
       notify: true,
       chain: false,
@@ -229,7 +229,7 @@ export async function navigateWithLISA(tabId, url, onAllow, onBlock) {
     case 'flag':
       onAllow?.(normalized, false)
       window.dispatchEvent(new CustomEvent('genysys:policy-allow', { detail: { url: normalized, chain: false } }))
-      showLisaFlag(policy)
+      showPolicyFlag(policy)
       break
 
     case 'chain':
@@ -260,7 +260,7 @@ export async function navigateWithLISA(tabId, url, onAllow, onBlock) {
 }
 
 // ── Tauri event listener: genysys:navigate ───────────────────────────────────────
-// Rust emits this after LISA approves — frontend should drive the WebView here
+// Rust emits this after POLICY approves — frontend should drive the WebView here
 
 let _navigateHandler = null
 
@@ -271,17 +271,17 @@ export function onGENYSYSNavigate(handler) {
   })
 }
 
-// ── LISA decision UI ──────────────────────────────────────────────────────────
+// ── POLICY decision UI ──────────────────────────────────────────────────────────
 
 function setTabLoading(tabId, loading) {
   // Signal to the main TabManager via custom event
   window.dispatchEvent(new CustomEvent('genysys:tab-loading', { detail: { tabId, loading } }))
 }
 
-function showLisaFlag(policy) {
+function showPolicyFlag(policy) {
   const status = document.getElementById('status-text')
   if (status) {
-    status.textContent = `⚑ LISA flagged: ${policy.reason ?? 'low confidence signal'}`
+    status.textContent = `G.E.N.E.S.Y.S. flagged: ${policy.reason ?? 'low confidence signal'}`
     status.classList.add('status-flagged')
     setTimeout(() => {
       status.classList.remove('status-flagged')
@@ -297,7 +297,7 @@ export async function submitAccessRequest(domain, reason) {
     const result = await tauriInvoke('request_site_access', { domain, reason })
     return result
   } catch (err) {
-    console.error('[LISA Bridge] access request failed:', err)
+    console.error('[POLICY Bridge] access request failed:', err)
     throw err
   }
 }
@@ -337,7 +337,7 @@ export function initMessageListener(tabManager) {
 
     if (type === 'genysys:proceed-anyway') {
       // User explicitly overrode quarantine — load with audit flag
-      console.warn(`[LISA Bridge] User overrode quarantine for ${domain}`)
+      console.warn(`[POLICY Bridge] User overrode quarantine for ${domain}`)
       tabManager?.navigateActiveTab(domain)
     }
   })
@@ -345,7 +345,7 @@ export function initMessageListener(tabManager) {
 
 // ── Initialization ────────────────────────────────────────────────────────────
 
-export async function initLISABridge(tabManager) {
+export async function initPolicyBridge(tabManager) {
   // Load initial session
   await refreshSession()
 
@@ -389,21 +389,21 @@ export async function initLISABridge(tabManager) {
     },
   }
 
-  // Add LISA status indicator to titlebar
-  injectLisaStatusIndicator()
+  // Add POLICY status indicator to titlebar
+  injectPolicyStatusIndicator()
 
   // GENYSYS engine runtime owns the status indicator; nothing external to poll.
-  console.log('[LISA Bridge] Initialized')
+  console.log('[POLICY Bridge] Initialized')
 }
 
-function injectLisaStatusIndicator() {
+function injectPolicyStatusIndicator() {
   const titlebarRight = document.querySelector('.titlebar-right')
   if (!titlebarRight) return
 
   const indicator = document.createElement('span')
-  indicator.id = 'lisa-status-indicator'
-  indicator.className = 'lisa-status-indicator lisa-status-inactive'
-  indicator.textContent = 'LISA: initializing'
+  indicator.id = 'policy-status-indicator'
+  indicator.className = 'policy-status-indicator policy-status-inactive'
+  indicator.textContent = 'G.E.N.E.S.Y.S.: initializing'
   indicator.style.cssText = 'font-size:10px; padding: 2px 8px; border-radius: 3px; margin-right: 8px; cursor: pointer; transition: all .2s;'
   indicator.title = 'Click to authenticate'
   indicator.addEventListener('click', () => {
@@ -414,5 +414,5 @@ function injectLisaStatusIndicator() {
 
     // Session may already be resolved (refreshSession ran before injection) —
     // sync immediately instead of showing "initializing" until the next poll.
-    updateLisaStatusIndicator()
+    updatePolicyStatusIndicator()
 }

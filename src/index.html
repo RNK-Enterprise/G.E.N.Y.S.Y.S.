@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GENYSYS</title>
+    <title>G.E.N.E.S.Y.S.</title>
     <link rel="icon" type="image/svg+xml" href="assets/GENYSYS.svg">
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -13,7 +13,7 @@
         <div class="genysys-auth-card" id="genysys-auth-card">
             <div class="genysys-auth-brand">
                 <div class="genysys-auth-logo"><img src="assets/GENYSYS.svg" alt="" width="28" height="28"></div>
-                <div class="genysys-auth-title">GENYSYS</div>
+                <div class="genysys-auth-title">G.E.N.E.S.Y.S.</div>
                 <div class="genysys-auth-subtitle">Secure Access Required</div>
             </div>
             <form class="genysys-auth-form" id="genysys-auth-form" autocomplete="off">
@@ -30,21 +30,21 @@
                 <div id="genysys-auth-error"></div>
                 <button type="submit" id="genysys-auth-submit">Authenticate</button>
             </form>
-            <div class="genysys-auth-footer">GENYSYS · Authorized Personnel Only</div>
+            <div class="genysys-auth-footer">G.E.N.E.S.Y.S. · Authorized Personnel Only</div>
         </div>
     </div>
 
     <!-- Custom Window Chrome. Drag only the left brand strip so min/max/close stay clickable. -->
     <div id="titlebar">
         <div class="titlebar-left" data-tauri-drag-region>
-            <img src="assets/GENYSYS.svg" alt="GENYSYS" class="logo">
-            <span class="window-title">GENYSYS</span>
+            <img src="assets/GENYSYS.svg" alt="G.E.N.E.S.Y.S." class="logo">
+            <span class="window-title">G.E.N.E.S.Y.S.</span>
         </div>
         <div class="titlebar-center">
-            <nav id="section-nav" aria-label="GENYSYS sections">
+            <nav id="section-nav" aria-label="G.E.N.E.S.Y.S. sections">
                 <div class="section-nav-group">
                     <button class="section-nav-btn active" data-section="browser" title="Browser">Browser</button>
-                    <button class="section-nav-btn" data-section="lisa" title="Lisa">Lisa</button>
+                    <button class="section-nav-btn" data-section="policy" title="P.R.O.T.E.C.T.S. Health">Health</button>
                 </div>
                 <div class="section-nav-group">
                     <button class="section-nav-btn" data-section="operations" title="Operations">Ops</button>
@@ -63,7 +63,7 @@
                         <input type="text" id="spotlight-search" placeholder="Filter actions…" autocomplete="off" spellcheck="false" />
                         <button type="button" id="spotlight-close" class="spotlight-close" title="Close" aria-label="Close">×</button>
                     </div>
-                    <p id="spotlight-context-line" class="spotlight-context-line">GENYSYS watches the active tab and suggests the best next action.</p>
+                    <p id="spotlight-context-line" class="spotlight-context-line">G.E.N.E.S.Y.S. watches the active tab and suggests the best next action.</p>
                     <div id="spotlight-feed" class="spotlight-feed"></div>
                 </div>
             </div>
@@ -126,9 +126,9 @@
 
     </div><!-- /#section-browser -->
 
-    <!-- Section: Lisa -->
-    <div id="section-lisa" class="genysys-section hidden">
-        <div class="genysys-section-inner" id="lisa-section-mount"></div>
+    <!-- Section: Policy -->
+    <div id="section-policy" class="genysys-section hidden">
+        <div class="genysys-section-inner" id="policy-section-mount"></div>
     </div>
 
     <!-- Section: Operations (Raven CRM inside GENYSYS) -->
@@ -173,7 +173,7 @@
         <span id="status-text">Ready</span>
         <div class="statusbar-right">
             <button id="statusbar-minimal-toggle" class="statusbar-button" type="button" title="Minimal Status Bar">Mini</button>
-            <span id="genysys-status" class="status-indicator">GENYSYS: Disconnected</span>
+            <span id="genysys-status" class="status-indicator">G.E.N.E.S.Y.S.: Disconnected</span>
             <span id="fps-counter">0 FPS</span>
         </div>
     </div>
@@ -256,13 +256,13 @@
                 <span id="perf-network" class="perf-value">Idle</span>
             </div>
             <div class="perf-metric">
-                <span class="perf-label">GENYSYS Connection:</span>
+                <span class="perf-label">G.E.N.E.S.Y.S. Connection:</span>
                 <span id="perf-genysys" class="perf-value">Disconnected</span>
             </div>
         </div>
         <div class="perf-summary">
             <span id="perf-summary-state" class="perf-summary-state">Ready</span>
-            <span id="perf-summary-text" class="perf-summary-text">GENYSYS performance is standing by.</span>
+            <span id="perf-summary-text" class="perf-summary-text">G.E.N.E.S.Y.S. performance is standing by.</span>
         </div>
         <div class="perf-chart">
             <canvas id="perf-canvas" width="400" height="150"></canvas>
@@ -302,7 +302,7 @@
                         <kbd>Ctrl+F</kbd><span>Search Tabs</span>
                     </div>
                     <div class="shortcut-item">
-                        <kbd>Ctrl+K</kbd><span>Open GENYSYS Launcher</span>
+                        <kbd>Ctrl+K</kbd><span>Open G.E.N.E.S.Y.S. Launcher</span>
                     </div>
                     <div class="shortcut-item">
                         <kbd>Alt+Enter</kbd><span>Pin or unpin launcher result</span>
@@ -341,7 +341,7 @@
 
     <script type="module">
         // Inline initialization to ensure it loads
-        console.log('GENYSYS initializing...');
+        console.log('G.E.N.E.S.Y.S. initializing...');
         // CI diagnostics: report the shell's own JS execution to the native log.
         if (window.__TAURI__?.invoke) {
             window.__TAURI__.invoke('log_boot', { marker: 'inline module' })

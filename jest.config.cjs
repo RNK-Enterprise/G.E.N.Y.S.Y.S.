@@ -24,7 +24,7 @@ module.exports = {
   // branches (import.meta.env.DEV) are test-controllable.
   transform: {
     '^.+\\.(html|css)$': '<rootDir>/tests/helpers/raw-transform.cjs',
-    'src/(lisa-bridge|genysys-auth-gate)\\.js$': '<rootDir>/tests/helpers/env-transform.cjs',
+    'src/(policy-bridge|genysys-auth-gate)\\.js$': '<rootDir>/tests/helpers/env-transform.cjs',
   },
   moduleNameMapper: {
     '^(.*)\\?raw$': '$1',

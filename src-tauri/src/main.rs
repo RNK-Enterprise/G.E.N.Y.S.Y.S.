@@ -14,12 +14,12 @@ mod auth;
 mod command_gate;
 mod command_session;
 mod commands_health;
-mod lisa_policy;
+mod protects_policy;
 mod tab_commands;
 mod tab_windows;
 
 #[cfg(test)]
-mod lisa_policy_tests;
+mod protects_policy_tests;
 
 #[cfg(test)]
 mod command_session_tests;
@@ -102,9 +102,9 @@ pub struct AppState {
     tabs: Mutex<Vec<Tab>>,
     session: Mutex<Session>,
     next_tab_id: Mutex<u32>,
-    /// Optional remote Lisa base URL (empty = local-only standalone).
-    lisa_url: Mutex<String>,
-    lisa_key: Mutex<Option<String>>,
+    /// Optional remote Policy base URL (empty = local-only standalone).
+    policy_url: Mutex<String>,
+    policy_key: Mutex<Option<String>>,
     prefer_remote: Mutex<bool>,
     access_codes: Mutex<HashMap<String, AccessEntry>>,
     /// C.O.M.M.A.N.D. / Resolute handshake base URL (empty = unconfigured).
@@ -113,8 +113,8 @@ pub struct AppState {
     command_session: tokio::sync::Mutex<command_session::CommandClient>,
 }
 
-fn resolve_lisa_url() -> String {
-    std::env::var("LISA_URL")
+fn resolve_policy_url() -> String {
+    std::env::var("PROTECTS_URL")
         .or_else(|_| std::env::var("ATLAS_URL"))
         .unwrap_or_default()
 }
@@ -155,16 +155,16 @@ async fn navigate_tab(
     window: Window,
     app: AppHandle,
 ) -> Result<PolicyResult, String> {
-    let (lisa_url, lisa_key, session, prefer_remote) = {
-        let au = state.lisa_url.lock().map_err(|e| e.to_string())?.clone();
-        let lk = state.lisa_key.lock().map_err(|e| e.to_string())?.clone();
+    let (policy_url, policy_key, session, prefer_remote) = {
+        let au = state.policy_url.lock().map_err(|e| e.to_string())?.clone();
+        let lk = state.policy_key.lock().map_err(|e| e.to_string())?.clone();
         let s = state.session.lock().map_err(|e| e.to_string())?.clone();
         let pr = *state.prefer_remote.lock().map_err(|e| e.to_string())?;
         (au, lk, s, pr)
     };
 
     let policy =
-        lisa_policy::check_policy(&url, &session, &lisa_url, &lisa_key, prefer_remote).await;
+        protects_policy::check_policy(&url, &session, &policy_url, &policy_key, prefer_remote).await;
 
     if policy.decision == "block" {
         return Ok(policy);
@@ -185,7 +185,7 @@ async fn navigate_tab(
     if let Err(e) = tab_windows::create_tab_window(&app, tab_id, &url, policy.request_privileged) {
         // Window layer unavailable → surface as a policy refusal (fail-closed
         // behavior: no window, no load).
-        return Ok(lisa_policy::block_result(&format!("tab_window_refused:{}", e), &policy.domain));
+        return Ok(protects_policy::block_result(&format!("tab_window_refused:{}", e), &policy.domain));
     }
 
     let _ = window.emit(
@@ -311,28 +311,28 @@ fn clear_session(state: State<'_, AppState>, app: AppHandle) -> Result<(), Strin
 }
 
 #[tauri::command]
-fn configure_lisa(
-    lisa_url: String,
-    lisa_key: Option<String>,
+fn configure_policy(
+    policy_url: String,
+    policy_key: Option<String>,
     prefer_remote: Option<bool>,
     state: State<'_, AppState>,
 ) -> Result<(), String> {
-    *state.lisa_url.lock().map_err(|e| e.to_string())? = lisa_url;
-    *state.lisa_key.lock().map_err(|e| e.to_string())? = lisa_key;
+    *state.policy_url.lock().map_err(|e| e.to_string())? = policy_url;
+    *state.policy_key.lock().map_err(|e| e.to_string())? = policy_key;
     if let Some(p) = prefer_remote {
         *state.prefer_remote.lock().map_err(|e| e.to_string())? = p;
     }
     Ok(())
 }
 
-/// Deprecated alias for configure_lisa.
+/// Deprecated alias for configure_policy.
 #[tauri::command]
 fn configure_atlas(
     atlas_url: String,
-    lisa_key: Option<String>,
+    policy_key: Option<String>,
     state: State<'_, AppState>,
 ) -> Result<(), String> {
-    configure_lisa(atlas_url, lisa_key, Some(true), state)
+    configure_policy(atlas_url, policy_key, Some(true), state)
 }
 
 #[tauri::command]
@@ -376,23 +376,23 @@ fn main() {
     // WebKitGTK init can wedge there — headless verification must observe the
     // gate without depending on webview init succeeding.
     println!("GENYSYS™ v0.1.0 — P.R.O.T.E.C.T.S.-governed browser (RNK's only client)");
-    let gate_lisa_url = resolve_lisa_url();
-    if gate_lisa_url.is_empty() {
+    let gate_policy_url = resolve_policy_url();
+    if gate_policy_url.is_empty() {
         println!("P.R.O.T.E.C.T.S. mode: embedded local policy (fail-closed)");
     } else {
-        println!("P.R.O.T.E.C.T.S. mode: local + optional remote {}", gate_lisa_url);
+        println!("P.R.O.T.E.C.T.S. mode: local + optional remote {}", gate_policy_url);
     }
     command_gate::enforce_command_gate();
 
-    let lisa_url = resolve_lisa_url();
-    let prefer_remote = !lisa_url.is_empty();
+    let policy_url = resolve_policy_url();
+    let prefer_remote = !policy_url.is_empty();
 
     let state = AppState {
         tabs: Mutex::new(Vec::new()),
         session: Mutex::new(Session::default()),
         next_tab_id: Mutex::new(0),
-        lisa_url: Mutex::new(lisa_url.clone()),
-        lisa_key: Mutex::new(std::env::var("LISA_API_KEY").ok()),
+        policy_url: Mutex::new(policy_url.clone()),
+        policy_key: Mutex::new(std::env::var("PROTECTS_API_KEY").ok()),
         prefer_remote: Mutex::new(prefer_remote),
         access_codes: Mutex::new(load_access_map()),
         command_url: Mutex::new(command_gate::resolve_command_url()),
@@ -414,9 +414,9 @@ fn main() {
             set_session,
             get_session_info,
             clear_session,
-            configure_lisa,
+            configure_policy,
             configure_atlas,
-            commands_health::check_lisa_health,
+            commands_health::check_policy_health,
             commands_health::check_atlas_health,
             auth::auth_resolve_code,
             auth::auth_logout,

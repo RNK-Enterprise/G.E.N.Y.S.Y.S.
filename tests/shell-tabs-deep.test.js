@@ -126,11 +126,11 @@ describe('browser: tab manager deep core paths', () => {
         await pause();
         expect(tab.url).toBe('https://navigate.test/page');
         manager.navigateTab(999, 'https://missing.test/');
-        const originalNavigate = window.navigateWithLISA;
-        window.navigateWithLISA = (_id, _url, _allow, block) => block({ reason: 'policy_violation', domain: 'blocked.test' });
+        const originalNavigate = window.navigateWithPolicy;
+        window.navigateWithPolicy = (_id, _url, _allow, block) => block({ reason: 'policy_violation', domain: 'blocked.test' });
         manager.createTab('create-block.test');
         manager.navigateTab(tab.id, 'blocked.test');
-        window.navigateWithLISA = originalNavigate;
+        window.navigateWithPolicy = originalNavigate;
 
         window.tauriInvoke = () => Promise.reject(new Error('window closed'));
         await manager.loadInternal(tab.id, 'newtab.html');

@@ -55,12 +55,12 @@ describe('shell: chrome-bindings-c', () => {
         window.genysysRuntime.connected = true;
         status.click();
         expect(window.genysysRuntime.connected).toBe(false);
-        expect(document.getElementById('status-text').textContent).toBe('GENYSYS Runtime stopped');
+        expect(document.getElementById('status-text').textContent).toBe('G.E.N.E.S.Y.S. Runtime stopped');
         window.genysysRuntime.connected = false;
         await status.click();
         await new Promise((resolve) => setTimeout(resolve, 0));
         expect(window.genysysRuntime.connected).toBe(true);
-        expect(document.getElementById('status-text').textContent).toBe('GENYSYS Runtime online');
+        expect(document.getElementById('status-text').textContent).toBe('G.E.N.E.S.Y.S. Runtime online');
     });
 
     test('keyboard shortcuts drive tab lifecycle and helpers', async () => {
@@ -220,12 +220,12 @@ describe('shell: section-nav + bind-helpers', () => {
         delete window.genysysSectionChanged;
     });
 
-    test('lisa and admin sections mount their panels with tier gating', async () => {
+    test('policy and admin sections mount their panels with tier gating', async () => {
         await bootShell();
-        window.activateSection('lisa');
-        expect(document.getElementById('lisa-section-mount').innerHTML).toContain('P.R.O.T.E.C.T.S.');
+        window.activateSection('policy');
+        expect(document.getElementById('policy-section-mount').innerHTML).toContain('P.R.O.T.E.C.T.S.');
         window.activateSection('admin');
-        expect(document.getElementById('admin-section-mount').innerHTML).toContain('Lisa authorization required');
+        expect(document.getElementById('admin-section-mount').innerHTML).toContain('Policy authorization required');
         window.genysysAuthSession = { tier: 'dev' };
         window.activateSection('admin');
         expect(document.getElementById('admin-section-mount').innerHTML).toContain('Ops Plane');

@@ -11,7 +11,7 @@
  * Rust gate either creates/reuses the tab window or returns block.
  */
 
-import { normalizeUrl, navigateWithLISA } from '../lisa-bridge.js';
+import { normalizeUrl, navigateWithPolicy } from '../policy-bridge.js';
 
 class TabManager {
     constructor() {
@@ -48,7 +48,7 @@ class TabManager {
         } else {
             this.activateTab(tabId);
             const resolved = window.normalizeUrl(url);
-            window.navigateWithLISA(
+            window.navigateWithPolicy(
                 tabId,
                 resolved,
                 (finalUrl) => this.onPolicyAllowed(tabId, finalUrl),

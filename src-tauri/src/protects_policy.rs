@@ -1,5 +1,5 @@
 //! P.R.O.T.E.C.T.S. embedded policy for standalone GENYSYS.
-//! (Formerly "Lisa policy" — the mind is P.R.O.T.E.C.T.S.; Resolute is the handshake organ.)
+//! (Formerly "Policy policy" — the mind is P.R.O.T.E.C.T.S.; Resolute is the handshake organ.)
 //!
 //! Fail-closed: any undecidable / error path returns block. Never fail open.
 
@@ -257,8 +257,8 @@ pub fn block_result(reason: &str, domain: &str) -> PolicyResult {
 pub async fn check_policy(
     url: &str,
     session: &Session,
-    lisa_url: &str,
-    lisa_key: &Option<String>,
+    policy_url: &str,
+    policy_key: &Option<String>,
     prefer_remote: bool,
 ) -> PolicyResult {
     let local = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
@@ -270,12 +270,12 @@ pub async fn check_policy(
         Err(_) => return block_result("local_policy_panic_fail_closed", &extract_domain(url)),
     };
 
-    if !prefer_remote || lisa_url.trim().is_empty() {
+    if !prefer_remote || policy_url.trim().is_empty() {
         return local;
     }
 
     // Attempt remote P.R.O.T.E.C.T.S. overlay
-    match query_remote(url, session, lisa_url, lisa_key).await {
+    match query_remote(url, session, policy_url, policy_key).await {
         Ok(_) if local.decision == "block" => local,
         Ok(remote) if remote.decision == "block" => remote,
         Ok(remote) => {
@@ -303,8 +303,8 @@ pub async fn check_policy(
 async fn query_remote(
     url: &str,
     session: &Session,
-    lisa_url: &str,
-    lisa_key: &Option<String>,
+    policy_url: &str,
+    policy_key: &Option<String>,
 ) -> Result<PolicyResult, ()> {
     let domain = extract_domain(url);
     let client = reqwest::Client::builder()
@@ -312,12 +312,12 @@ async fn query_remote(
         .build()
         .map_err(|_| ())?;
 
-    let endpoint = format!("{}/api/lisa/policy", lisa_url.trim_end_matches('/'));
+    let endpoint = format!("{}/api/protects/policy", policy_url.trim_end_matches('/'));
     let mut req = client
         .post(&endpoint)
         .header("Content-Type", "application/json");
 
-    if let Some(key) = lisa_key {
+    if let Some(key) = policy_key {
         req = req.header("X-API-Key", key);
     }
 

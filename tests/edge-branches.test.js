@@ -343,7 +343,7 @@ describe('runtime remaining branches', () => {
     global.fetch = async () => { throw new Error('offline'); };
     const rt = new GENYSYSEngineRuntime();
     await rt.start({});
-    expect(el.textContent).toBe('GENYSYS Runtime');
+    expect(el.textContent).toBe('G.E.N.E.S.Y.S. Runtime');
     rt.stop();
     expect(el.textContent).toBe('Runtime Off');
   });

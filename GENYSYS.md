@@ -1,17 +1,17 @@
-# GENYSYS — agent file
+# G.E.N.E.S.Y.S. — agent file
 
 RNK Enterprise — Proprietary and Confidential.
 SoT: `/media/odinn/privacy-sys/G.E.N.Y.S.Y.S.`
 Portable memory (any agent, whole system): `/media/odinn/privacy-system/memory/SYSTEM.md`
 Swept 2026-09-20. Ask Odinn before acting.
 
-You are in the **GENYSYS** tree. GENYSYS is RNK's **only client / only access environment**. It is a Tauri desktop browser. It is not C.O.M.M.A.N.D., not P.R.O.T.E.C.T.S., not the products.
+You are in the **G.E.N.E.S.Y.S.** tree. G.E.N.E.S.Y.S. is RNK's **only client / only access environment**. It is a Tauri desktop browser. It is not C.O.M.M.A.N.D., not P.R.O.T.E.C.T.S., not the products.
 
 ---
 
 ## Job
 
-Be the door. Session from C.O.M.M.A.N.D. (Resolute). Every navigation cleared by in-process P.R.O.T.E.C.T.S. policy (fail-closed). Raven, Echonet, Mail, and other RNK product surfaces open **inside GENYSYS**. Their login/API surfaces refuse a normal browser.
+Be the door. Session from C.O.M.M.A.N.D. (Resolute). Every navigation cleared by in-process P.R.O.T.E.C.T.S. policy (fail-closed). Raven, Echonet, Mail, and other RNK product surfaces open **inside G.E.N.E.S.Y.S.**. Their login/API surfaces refuse a normal browser.
 
 Public marketing on `rnk-enterprise.us` may stay world-readable. Login/API may not.
 
@@ -21,20 +21,21 @@ Old path `/media/odinn/privacy-sys/G.E.N.Y.S.Y.S.` is retired. Do not write it.
 
 ```
 C.O.M.M.A.N.D. / Resolute  (master key, session grant)
-  -> GENYSYS shell            (Tauri + Vite chrome, tabs, omnibox)
+  -> G.E.N.E.S.Y.S. shell     (Tauri + Vite chrome, tabs, omnibox)
        P.R.O.T.E.C.T.S. policy in Rust clears every nav
        Attestation headers on RNK product hosts
   -> Raven / Echonet / Mail / Command chrome  (webviews inside GENYSYS)
 ```
 
-GENYSYS opens **after** the key app. GENYSYS does not replace it.
+G.E.N.E.S.Y.S. opens **after** the key app. G.E.N.E.S.Y.S. does not replace it.
 
 ## Do not
 
 - Fail open if policy errors or is unreachable. Block.
 - Invent a fallback identity provider if C.O.M.M.A.N.D. is dark. Hold.
 - Ship shortcodes or `genysys_dev_bypass` in production. Shortcodes are DEV/bootstrap only.
-- Make biosig stubs succeed (`__lisa_handshake__`, `__mother_lisa__`, `__biosig__`, `__fido__`). They refuse until Mother Lisa ships.
+- Make biosig or FIDO challenge strings succeed. They remain invalid until a verified
+  C.O.M.M.A.N.D. session or configured development/bootstrap code exists.
 - Treat `sec.rnk-enterprise.us` as a default tab. Policy fail-closes it (`chain_unavailable_fail_closed`) until Ghost chain routing is wired. A `chain` decision is not "load it directly."
 - Revive the 800-engine / 4000-turbo stub catalog. Catalog is real-only: 8 engines + 9 live turbos.
 - Pad `scripts/generate-genysys-catalog.mjs`. Edit the real list, do not invent inventory.
@@ -51,7 +52,7 @@ GENYSYS opens **after** the key app. GENYSYS does not replace it.
 
 ## Policy
 
-In-process Rust (`src-tauri/src/lisa_policy.rs`). Optional remote overlay via `LISA_URL` (never a boot requirement).
+In-process Rust (`src-tauri/src/protects_policy.rs`). Optional remote overlay via `PROTECTS_URL` (never a boot requirement).
 
 Always blocked: `localhost`, `127.0.0.1`, `169.254.169.254`, other metadata/loopback. Plain `http://` off-loopback blocked. Internal chrome uses `genysys://`.
 
@@ -111,7 +112,7 @@ Ubuntu 24.04: WebKitGTK 4.1 under 4.1 sonames; Tauri 1 wants 4.0. Shim is `scrip
 
 ## Sweep 2026-09-20
 
-Vite + Tauri `devPath` pin `127.0.0.1`. `.gitignore` covers `.env` / secrets. `package.json` / Cargo description no longer say Mother Lisa. `dist/.gitkeep` so cargo test compiles; `with-webkit-pc.sh` exports absolute `-L` so linking works from repo root. History tests use local calendar day (UTC ISO was crossing midnight in EDT). Jest + Rust tests are the test SoT. No IdP invented. Do not push from this sweep unless Odinn says so.
+Vite + Tauri `devPath` pin `127.0.0.1`. `.gitignore` covers `.env` / secrets. `package.json` / Cargo description no longer say obsolete creator identity. `dist/.gitkeep` so cargo test compiles; `with-webkit-pc.sh` exports absolute `-L` so linking works from repo root. History tests use local calendar day (UTC ISO was crossing midnight in EDT). Jest + Rust tests are the test SoT. No IdP invented. Do not push from this sweep unless Odinn says so.
 
 ## Out of scope
 

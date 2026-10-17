@@ -1,12 +1,12 @@
 /**
- * GENYSYS™ — LISA auth panel UI
+ * G.E.N.E.S.Y.S. — access panel UI
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * Standalone shortcode authentication. All auth resolves through the local
  * Rust command `auth_resolve_code` (GENYSYS_ACCESS_CODES). No remote auth server.
  */
 
-import { tauriInvoke, getSession, updateLisaStatusIndicator } from '../lisa-bridge.js'
+import { tauriInvoke, getSession, updatePolicyStatusIndicator } from '../policy-bridge.js'
 
 let _authPanelEl = null
 
@@ -26,7 +26,7 @@ export function initAuthPanel() {
           <path d="M75 48 L75 42 Q75 34 80 34 Q85 34 85 42 L85 48" fill="none" stroke="#8ab4f8" stroke-width="2.5" stroke-linecap="round"/>
         </svg>
       </div>
-      <h2 class="genysys-auth-title">RNK GENYSYS™</h2>
+      <h2 class="genysys-auth-title">G.E.N.E.S.Y.S.</h2>
       <p class="genysys-auth-subtitle">Enter your access code to authenticate</p>
 
       <div class="genysys-auth-field">
@@ -48,7 +48,7 @@ export function initAuthPanel() {
 
       <p class="genysys-auth-note">
         Restricted access requires an access code issued for your tier.
-        Mother Lisa / biosig opens with that product.
+        Production access is C.O.M.M.A.N.D.-gated.
       </p>
     </div>
   `
@@ -72,7 +72,7 @@ export function initAuthPanel() {
       const result = await authenticateAccessCode(value)
       if (result.success) {
         hideAuthPanel()
-        updateLisaStatusIndicator()
+        updatePolicyStatusIndicator()
       } else {
         error.textContent = result.error
         error.style.display = 'block'
@@ -80,7 +80,7 @@ export function initAuthPanel() {
         input.focus()
       }
     } catch {
-      error.textContent = 'Authentication error. GENYSYS native shell required.'
+      error.textContent = 'Authentication error. G.E.N.E.S.Y.S. native shell required.'
       error.style.display = 'block'
     } finally {
       submit.disabled = false

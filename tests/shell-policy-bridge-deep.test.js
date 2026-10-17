@@ -3,7 +3,7 @@
  */
 
 /**
- * GENYSYS™ — deep LISA bridge and auth UI coverage
+ * GENYSYS™ — deep POLICY bridge and auth UI coverage
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -32,11 +32,11 @@ beforeEach(() => {
     drainListeners();
 });
 
-describe('shell: LISA bridge fallback and session edges', () => {
+describe('shell: POLICY bridge fallback and session edges', () => {
     test('browser fallback covers internal, session, health, access, and tab commands', async () => {
         globalThis.__GENYSYS_DEV__ = true;
         await bootShell();
-        const bridge = await import('../src/lisa-bridge.js');
+        const bridge = await import('../src/policy-bridge.js');
         window.__TAURI__ = undefined;
 
         const internal = await bridge.tauriInvoke('navigate_tab', { url: 'genysys://newtab' });
@@ -48,7 +48,7 @@ describe('shell: LISA bridge fallback and session edges', () => {
         expect(await bridge.tauriInvoke('set_session', {})).toBeNull();
         expect(await bridge.tauriInvoke('get_session_info', {})).toMatchObject({ accessTier: 'locked' });
         expect(await bridge.tauriInvoke('auth_session_info', {})).toMatchObject({ authenticated: false });
-        expect(await bridge.tauriInvoke('check_lisa_health', {})).toMatchObject({ connected: true });
+        expect(await bridge.tauriInvoke('check_policy_health', {})).toMatchObject({ connected: true });
         expect(await bridge.tauriInvoke('check_genysys_health', {})).toMatchObject({ localPolicy: true });
         expect(await bridge.tauriInvoke('request_site_access', { domain: 'example.test' })).toMatchObject({ submitted: true });
 
@@ -56,7 +56,7 @@ describe('shell: LISA bridge fallback and session edges', () => {
             .mockImplementation(() => { throw new Error('storage unavailable'); });
         globalThis.__GENYSYS_DEV__ = true;
         const blocked = await bridge.tauriInvoke('navigate_tab', { url: 'https://blocked.test/' });
-        expect(blocked.reason).toBe('lisa_unreachable_fail_closed');
+        expect(blocked.reason).toBe('policy_unreachable_fail_closed');
         globalThis.__GENYSYS_DEV__ = false;
         storageGet.mockRestore();
     });
@@ -65,7 +65,7 @@ describe('shell: LISA bridge fallback and session edges', () => {
         globalThis.__GENYSYS_DEV__ = true;
         localStorage.setItem('genysys_dev_bypass', 'true');
         await bootShell();
-        const bridge = await import('../src/lisa-bridge.js');
+        const bridge = await import('../src/policy-bridge.js');
         window.__TAURI__ = undefined;
 
         expect(await bridge.tauriInvoke('auth_resolve_code', { code: 'dev-code' }))
@@ -76,9 +76,9 @@ describe('shell: LISA bridge fallback and session edges', () => {
 
     test('session failures and status fallback paths remain non-fatal', async () => {
         await bootShell();
-        const bridge = await import('../src/lisa-bridge.js');
+        const bridge = await import('../src/policy-bridge.js');
         const indicator = document.createElement('span');
-        indicator.id = 'lisa-status-indicator';
+        indicator.id = 'policy-status-indicator';
         document.body.appendChild(indicator);
 
         window.__TAURI__ = stubTauri({
@@ -92,8 +92,8 @@ describe('shell: LISA bridge fallback and session edges', () => {
         await bridge.refreshSession();
         await bridge.setSession({ accessTier: 'agent' });
         await bridge.clearSession();
-        bridge.updateLisaStatusIndicator();
-        expect(indicator.textContent).toBe('LISA: unauthenticated');
+        bridge.updatePolicyStatusIndicator();
+        expect(indicator.textContent).toBe('G.E.N.E.S.Y.S.: unauthenticated');
 
         window.__TAURI__ = stubTauri({
             invoke: async (command) => command === 'get_session_info'
@@ -101,22 +101,22 @@ describe('shell: LISA bridge fallback and session edges', () => {
                 : null,
         });
         await bridge.refreshSession();
-        expect(indicator.textContent).toBe('LISA: unauthenticated');
+        expect(indicator.textContent).toBe('G.E.N.E.S.Y.S.: unauthenticated');
         expect(indicator.className).toContain('inactive');
     });
 });
 
-describe('shell: LISA navigation and listener edges', () => {
+describe('shell: POLICY navigation and listener edges', () => {
     test('navigation handles missing decisions, internal URLs, optional callbacks, and flag timeout', async () => {
         await bootShell();
-        const bridge = await import('../src/lisa-bridge.js');
+        const bridge = await import('../src/policy-bridge.js');
         const loading = [];
         window.addEventListener('genysys:tab-loading', (event) => loading.push(event.detail.loading));
 
         window.__TAURI__ = stubTauri({
             invoke: async (command) => command === 'navigate_tab' ? {} : null,
         });
-        const missing = await bridge.navigateWithLISA(3, 'genysys://missing', undefined, undefined);
+        const missing = await bridge.navigateWithPolicy(3, 'genysys://missing', undefined, undefined);
         expect(missing.decision).toBeUndefined();
         expect(loading).toEqual([true, false]);
 
@@ -124,7 +124,7 @@ describe('shell: LISA navigation and listener edges', () => {
         window.__TAURI__ = stubTauri({
             invoke: async (command) => command === 'navigate_tab' ? { decision: 'flag' } : null,
         });
-        const flagged = await bridge.navigateWithLISA(4, 'https://flagged.test/', undefined, undefined);
+        const flagged = await bridge.navigateWithPolicy(4, 'https://flagged.test/', undefined, undefined);
         expect(flagged.decision).toBe('flag');
         expect(document.getElementById('status-text').textContent).toContain('low confidence signal');
         jest.advanceTimersByTime(5000);
@@ -133,13 +133,13 @@ describe('shell: LISA navigation and listener edges', () => {
         window.__TAURI__ = stubTauri({
             invoke: async (command) => command === 'navigate_tab' ? { decision: 'flag' } : null,
         });
-        await bridge.navigateWithLISA(5, 'https://no-status.test/', undefined, undefined);
+        await bridge.navigateWithPolicy(5, 'https://no-status.test/', undefined, undefined);
         jest.useRealTimers();
     });
 
     test('event listeners tolerate absent Tauri and absent managers', async () => {
         await bootShell();
-        const bridge = await import('../src/lisa-bridge.js');
+        const bridge = await import('../src/policy-bridge.js');
         window.__TAURI__ = {};
         const unlisten = await bridge.onGENYSYSNavigate(null);
         expect(typeof unlisten).toBe('function');
@@ -167,7 +167,7 @@ describe('shell: LISA navigation and listener edges', () => {
 
     test('bridge initialization covers missing payloads, null active tabs, and missing titlebar', async () => {
         await bootShell();
-        const bridge = await import('../src/lisa-bridge.js');
+        const bridge = await import('../src/policy-bridge.js');
         document.querySelector('.titlebar-right').remove();
         const tauri = stubTauri({
             invoke: async (command) => {
@@ -179,7 +179,7 @@ describe('shell: LISA navigation and listener edges', () => {
         });
         window.__TAURI__ = tauri;
         const manager = { activeTabId: 7, syncContentRect: jest.fn(), onTabMeta: jest.fn() };
-        await bridge.initLISABridge(manager);
+        await bridge.initPolicyBridge(manager);
         tauri.__emit('genysys:navigate', undefined);
         tauri.__emit('genysys:tab-meta', undefined);
         tauri.__emit('genysys:tab-meta', { tabId: 2 });
@@ -190,32 +190,32 @@ describe('shell: LISA navigation and listener edges', () => {
         manager.activeTabId = null;
         window.tabWindowBridge.onSectionEnter();
         await new Promise((resolve) => setTimeout(resolve, 0));
-        expect(document.getElementById('lisa-status-indicator')).toBeNull();
+        expect(document.getElementById('policy-status-indicator')).toBeNull();
     });
 
     test('status indicator opens auth panel for unauthenticated sessions', async () => {
         await bootShell();
-        const bridge = await import('../src/lisa-bridge.js');
+        const bridge = await import('../src/policy-bridge.js');
         const tauri = stubTauri({
             invoke: async (command) => command === 'get_session_info'
                 ? { accessTier: undefined, authenticated: false }
                 : null,
         });
         window.__TAURI__ = tauri;
-        await bridge.initLISABridge(window.tabManager);
-        const indicator = document.getElementById('lisa-status-indicator');
-        expect(indicator.textContent).toBe('LISA: unauthenticated');
+        await bridge.initPolicyBridge(window.tabManager);
+        const indicator = document.getElementById('policy-status-indicator');
+        expect(indicator.textContent).toBe('G.E.N.E.S.Y.S.: unauthenticated');
         indicator.click();
         expect(document.getElementById('genysys-auth-panel')).not.toBeNull();
         expect(tauri.__invocations.map((entry) => entry.cmd)).toContain('get_session_info');
     });
 });
 
-describe('shell: LISA auth panel edge paths', () => {
+describe('shell: POLICY auth panel edge paths', () => {
     test('auth UI covers no-op hide, Enter submission, default error, and null-error failure', async () => {
         await bootShell();
-        const bridge = await import('../src/lisa-bridge.js');
-        const auth = await import('../src/lisa/lisa-bridge-auth-ui.js');
+        const bridge = await import('../src/policy-bridge.js');
+        const auth = await import('../src/protection/access-auth-ui.js');
         auth.hideAuthPanel();
         auth.initAuthPanel();
         const panel = document.getElementById('genysys-auth-panel');
@@ -266,7 +266,7 @@ describe('shell: LISA auth panel edge paths', () => {
 
     test('auth success defaults missing tier and agent identity', async () => {
         await bootShell();
-        const auth = await import('../src/lisa/lisa-bridge-auth-ui.js');
+        const auth = await import('../src/protection/access-auth-ui.js');
         auth.initAuthPanel();
         const panel = document.getElementById('genysys-auth-panel');
         const input = panel.querySelector('#genysys-shortcode-input');

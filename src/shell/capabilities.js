@@ -37,7 +37,8 @@ function renderGENYSYSCapabilities(manifest) {
         ...capabilities.map(capability => capability.surface).filter(Boolean)
     ])].sort();
 
-    summary.textContent = `${capabilities.length} capabilities loaded from ${manifest.product || 'GENYSYS'} (${manifest.catalog_summary?.engines || 'unknown'} engines, ${manifest.catalog_summary?.turbos || 'unknown'} turbos)`;
+    const displayProduct = manifest.product === 'GENYSYS' ? 'G.E.N.E.S.Y.S.' : (manifest.product || 'G.E.N.E.S.Y.S.');
+    summary.textContent = `${capabilities.length} capabilities loaded from ${displayProduct} (${manifest.catalog_summary?.engines || 'unknown'} engines, ${manifest.catalog_summary?.turbos || 'unknown'} turbos)`;
 
     categoryList.innerHTML = '';
     categories.forEach(category => {

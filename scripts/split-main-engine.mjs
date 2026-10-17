@@ -39,9 +39,9 @@ const SHARED = new Set([
   'tabSearch', 'omnibox', 'backBtn', 'forwardBtn', 'refreshBtn', 'homeBtn',
   'suggestionsDropdown', 'currentSearchProvider', 'searchProviders',
   'selectedSuggestionIndex', 'bookmarkBtn', 'ATLAS_HEALTH_URL',
-  'frameCount', 'lastTime', 'lisaAssistantMounted', 'adminOpsMounted',
+  'frameCount', 'lastTime', 'policyAssistantMounted', 'adminOpsMounted',
   'SessionManager', 'RecentlyClosedManager', 'TabManager',
-  'genysysRuntime', 'normalizeUrl', 'navigateWithLISA', 'initLISABridge', 'initMessageListener',
+  'genysysRuntime', 'normalizeUrl', 'navigateWithPolicy', 'initPolicyBridge', 'initMessageListener',
   'mountServerControl', 'unmountServerControl',
 ]);
 

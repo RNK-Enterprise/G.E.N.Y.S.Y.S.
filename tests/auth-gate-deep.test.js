@@ -198,17 +198,14 @@ describe('auth gate: session and command failure paths', () => {
 });
 
 describe('auth gate: health, controls, and DOM guards', () => {
-    test('covers remote and unavailable Lisa states and existing Mother Lisa control', async () => {
+    test('covers remote and unavailable policy states without the retired identity control', async () => {
         const tauri = stubTauri({ invoke: (cmd) => {
-            if (cmd === 'check_lisa_health') return { connected: true, mode: 'remote', localPolicy: false };
+            if (cmd === 'check_policy_health') return { connected: true, mode: 'remote', localPolicy: false };
             return null;
         } });
-        await loadGate(tauri, () => {
-            const mother = document.createElement('button');
-            mother.id = 'genysys-mother-lisa-btn';
-            document.getElementById('genysys-auth-card').appendChild(mother);
-        });
+        await loadGate(tauri);
         expect(document.querySelector('.genysys-auth-subtitle').textContent).toBe('Secure Access Required');
+        expect(document.querySelector('.genysys-auth-legacy')).toBeNull();
     });
 
     test('uses window.invoke and resolves when no control bridge exists', async () => {
@@ -229,13 +226,13 @@ describe('auth gate: health, controls, and DOM guards', () => {
         expect(document.getElementById('genysys-auth-gate')).not.toBeNull();
     });
 
-    test('shows the connected remote Lisa state and resumes an open session with defaults', async () => {
+    test('shows the connected remote Policy state and resumes an open session with defaults', async () => {
         const tauri = stubTauri({ invoke: (cmd) => {
-            if (cmd === 'check_lisa_health') return { connected: true, mode: 'remote', localPolicy: true };
+            if (cmd === 'check_policy_health') return { connected: true, mode: 'remote', localPolicy: true };
             return null;
         } });
         await loadGate(tauri);
-        expect(document.querySelector('.genysys-auth-subtitle').textContent).toBe('Lisa ready (local + remote)');
+        expect(document.querySelector('.genysys-auth-subtitle').textContent).toBe('G.E.N.E.S.Y.S. ready (local + remote)');
 
         resetShellDom();
         resetModuleRegistry();

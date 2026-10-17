@@ -87,7 +87,7 @@ export class GENYSYSEngineRuntime {
   _setStatusIndicator(connected) {
     const el = document.getElementById('genysys-status') || document.getElementById('genysys-status');
     if (!el) return;
-    el.textContent = connected ? 'GENYSYS Runtime' : 'Runtime Off';
+    el.textContent = connected ? 'G.E.N.E.S.Y.S. Runtime' : 'Runtime Off';
     el.style.color = connected ? 'var(--accent, #8ab4f8)' : 'var(--text-secondary)';
   }
 

@@ -38,7 +38,7 @@ async function createGENYSYSWindow(url, label, container) {
             const { WebviewWindow } = await import('@tauri-apps/api/window');
             const win = new WebviewWindow(`genysys-${label}`, {
                 url,
-                title: `GENYSYS — ${label}`,
+                title: `G.E.N.E.S.Y.S. — ${label}`,
                 width: 1280,
                 height: 820,
             });
@@ -75,7 +75,7 @@ export function mountRnkWebview(sectionId) {
             <div class="rnk-webview-bar">
                 <span class="rnk-webview-badge">Privileged — RNK product surface</span>
                 <span class="rnk-webview-url">${productUrl(target)}</span>
-                <button class="sc-btn" id="rnk-webview-open-${sectionId}">Open in GENYSYS</button>
+                <button class="sc-btn" id="rnk-webview-open-${sectionId}">Open in G.E.N.E.S.Y.S.</button>
             </div>
             <div class="rnk-webview-host" id="rnk-webview-host-${sectionId}"></div>
             <div class="rnk-webview-note" id="rnk-webview-note-${sectionId}" hidden></div>
@@ -91,8 +91,8 @@ export function mountRnkWebview(sectionId) {
             } else {
                 note.hidden = false;
                 note.textContent =
-                    'RNK product unreachable from this preview — open the full GENYSYS shell. ' +
-                    'These hosts refuse non-GENYSYS browsers by design.';
+                    'RNK product unreachable from this preview — open the full G.E.N.E.S.Y.S. shell. ' +
+                    'These hosts refuse non-G.E.N.E.S.Y.S. browsers by design.';
             }
         }
     };

@@ -24,7 +24,7 @@ describe('admin ops: authorization and lifecycle', () => {
         mountAdminOps(null, 'super-admin');
         const mount = document.createElement('div');
         mountAdminOps(mount, 'agent');
-        expect(mount.textContent).toContain('Lisa authorization required');
+        expect(mount.textContent).toContain('Policy authorization required');
     });
 
     test('renders authorized tabs, refreshes every source, and records audit entries', async () => {

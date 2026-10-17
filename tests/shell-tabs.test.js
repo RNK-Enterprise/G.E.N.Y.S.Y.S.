@@ -36,7 +36,7 @@ function allowPolicy(url) {
 }
 
 describe('browser: tab-manager core', () => {
-    test('createTab newtab auto-activates; external URL routes through LISA', async () => {
+    test('createTab newtab auto-activates; external URL routes through POLICY', async () => {
         const tauri = stubTauri({ invoke: (cmd) => (cmd === 'navigate_tab' ? allowPolicy('https://ok.test/page') : null) });
         await bootShell({ tauri });
         const tab = window.tabManager.createTab();

@@ -16,9 +16,9 @@ Engines/turbos: **rebuild small**. The 800/4000 stub catalog is useless. Keep on
 | **Identity** | GENYSYS = only access environment. README/GENYSYS.md say that. No `/media/odinn/privacy-sys/G.E.N.Y.S.Y.S.`. | Tauri 0.1.0 `com.rnk.genysys`. README still `/media/odinn/privacy-sys/G.E.N.Y.S.Y.S.`. Evidence GENYSYS_ARCHITECTURE still says agencies skip GENYSYS | Rewrite GENYSYS.md + README. Evidence copy: add a dated supersede note if you touch it; do not silently keep Chrome-as-client. |
 | **Catalog** | Only real browser engines + the 9 live turbos. Manifest matches `src/`. No pad-to-800. | `scripts/generate-genysys-catalog.mjs` **ENGINE_COUNT=800 TURBO_COUNT=4000**; 9 live in `src/turbos/` | Kill the generator’s mass stubs. Hand-written tiny manifest. `prebuild` must not regenerate 4000 fakes. |
 | **Gate** | C.O.M.M.A.N.D. session (fingerprint → jump drive → face/voice → heartbeat). Shortcodes are not production. | `auth.rs` access codes; biosig stubs **never succeed** (good — don’t fake) | Wire to C.O.M.M.A.N.D. / Resolute. If the key app is dark → **fail closed**. Dev bypass stays DEV-only. |
-| **Policy** | Every navigation through P.R.O.T.E.C.T.S. / Resolute overlay optional; local still fail-closed. RNK product hosts only load in GENYSYS-privileged tabs. | `lisa_policy.rs` — unauthenticated block; after shortcode **any https allow**. `ECHONET_DOMAINS` only paints Privileged | Allowlist RNK surfaces. Rename Lisa→P.R.O.T.E.C.T.S. in GENYSYS code you touch. `chain` decision must mean Ghost, not a no-op. |
+| **Policy** | Every navigation through P.R.O.T.E.C.T.S. / Resolute overlay optional; local still fail-closed. RNK product hosts only load in GENYSYS-privileged tabs. | `protects_policy.rs` — unauthenticated block; after shortcode **any https allow**. `ECHONET_DOMAINS` only paints Privileged | Allowlist RNK surfaces. Rename Policy→P.R.O.T.E.C.T.S. in GENYSYS code you touch. `chain` decision must mean Ghost, not a no-op. |
 | **Nothing outside GENYSYS** | Raven / Echonet / Mail / demo product APIs reject non-GENYSYS clients | Those apps have their own JWT/logins; work in Chrome | GENYSYS issues an attestation (header or cookie) after session. **Minimal** checks in Raven/Mail/Echonet/Website-demo **only** to refuse missing attestation. Do not rebuild those products. Public marketing `rnk-enterprise.us` may stay world-readable; **login/API** must not. |
-| **Chrome** | Browser is real. Other sections are real webviews or honest empty | Ops/People/Comms/Admin = “Coming soon”. Lisa = local chat stub. Server Control → `:7700` `/api/layer1` | Browser 100%. Lisa section → P.R.O.T.E.C.T.S. health (Resolute), not a fake chatbot. Comms/Ops/People = webviews to Echonet/Raven (in GENYSYS), not placeholders. Server Control → Resolute, not Brain/Lisa `:7700` as the mind. |
+| **Chrome** | Browser is real. Other sections are real webviews or honest empty | Ops/People/Comms/Admin = “Coming soon”. Policy = local chat stub. Server Control → `:7700` `/api/layer1` | Browser 100%. Policy section → P.R.O.T.E.C.T.S. health (Resolute), not a fake chatbot. Comms/Ops/People = webviews to Echonet/Raven (in GENYSYS), not placeholders. Server Control → Resolute, not Brain/Policy `:7700` as the mind. |
 | **Build** | `npm run build` / `cargo check` on a host with webkit | 2026-08-21: javascriptcoregtk missing here | Prove on a machine that can compile, or FULL STOP listing the missing SDK. Do not fake a green Tauri build. |
 
 **Live turbos to KEEP (already in `src/turbos/`):**  
@@ -46,8 +46,8 @@ LOCKED
   (ignore /media/odinn/privacy-sys/G.E.N.Y.S.Y.S. except to fix docs that still say it)
 - GENYSYS is THE client. Raven, Echonet, Mail, demo product surfaces, C.O.M.M.A.N.D. chrome, P.R.O.T.E.C.T.S. — not usable outside GENYSYS for creator/agents.
 - Odinn overrules Evidence GENYSYS_ARCHITECTURE § agencies-use-Chrome. Do not restore that sentence as current doctrine.
-- Lisa (the mind) = P.R.O.T.E.C.T.S. Handshake organ = Resolute Authentication Core.
-- C.O.M.M.A.N.D. = master key (Mother Lisa still in play). GENYSYS does not replace it; GENYSYS opens after it.
+- Policy (the mind) = P.R.O.T.E.C.T.S. Handshake organ = Resolute Authentication Core.
+- C.O.M.M.A.N.D. = master key (obsolete creator identity still in play). GENYSYS does not replace it; GENYSYS opens after it.
 - Fail-closed: policy error / key app dark / missing attestation → block. Never fail open. Dev bypass = Vite DEV + genysys_dev_bypass only.
 - Catalog: ONLY browser-real engines + the 9 live turbos. Delete the 800/4000 stub mill.
 - Do not edit Ghost Comms crypto, Vortex, Anvil locker, P.R.O.T.E.C.T.S. organ internals, D.O.M.A.I.N.
@@ -56,7 +56,7 @@ LOCKED
 - ≤500 LOC on files you touch; split if you must. main.js was ~7k — finish the extract, don’t grow it.
 - No git commit unless Odinn says. No fleet deploy of brains.
 - Do not print secrets, access codes in docs, or .env.
-- FULL STOP if C.O.M.M.A.N.D. handshake URL is unknown — fail closed locally; do not invent Brain :8123 as Lisa.
+- FULL STOP if C.O.M.M.A.N.D. handshake URL is unknown — fail closed locally; do not invent Brain :8123 as Policy.
 
 ═══════════════════════════════════════════════════════════════
 ORDER (STRICT)
@@ -88,10 +88,10 @@ ORDER (STRICT)
 
 5. Chrome sections
    Browser = default.
-   Lisa section → P.R.O.T.E.C.T.S. organ health (Resolute), not genysys-lisa-assistant stub chat as production.
+   Policy section → P.R.O.T.E.C.T.S. organ health (Resolute), not genysys-policy-assistant stub chat as production.
    Comms → Echonet webview inside GENYSYS.
    Ops/People → Raven webviews inside GENYSYS (CRM + people). Placeholders “Coming soon” are not 100%.
-   Server Control → Resolute/P.R.O.T.E.C.T.S., not localhost:7700 Lisa layer1 as the mind.
+   Server Control → Resolute/P.R.O.T.E.C.T.S., not localhost:7700 Policy layer1 as the mind.
 
 6. Docs
    GENYSYS.md + README: only client; catalog size truth; C.O.M.M.A.N.D. gate; Privacy path.

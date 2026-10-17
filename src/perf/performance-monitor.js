@@ -45,10 +45,10 @@ class PerformanceMonitor {
         window.setGENYSYSSidebarStateBadge?.(perfSummaryState, perfStatusTone === 'busy' ? 'Busy' : genysysConnected ? 'Ready' : 'Idle', perfStatusTone);
         if (perfSummaryText) {
             perfSummaryText.textContent = perfStatusTone === 'busy'
-                ? `GENYSYS under load with ${tabs} tabs and ${memory} MB memory.`
+                ? `G.E.N.E.S.Y.S. under load with ${tabs} tabs and ${memory} MB memory.`
                 : genysysConnected
-                    ? `GENYSYS runtime online · ${liveTurbos} live turbos · ${tabs} tabs.`
-                    : `GENYSYS runtime offline — start it from the status indicator.`;
+                    ? `G.E.N.E.S.Y.S. runtime online · ${liveTurbos} live turbos · ${tabs} tabs.`
+                    : `G.E.N.E.S.Y.S. runtime offline — start it from the status indicator.`;
         }
         
         // Update history

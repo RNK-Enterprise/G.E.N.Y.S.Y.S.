@@ -3,12 +3,12 @@
 //! Contract mirrored from the Resolute Authentication Core organ
 //! (`P.R.O.T.E.C.T.S./Resolute Authentication Core/src/b1-auth.js`) and the
 //! P.R.O.T.E.C.T.S. wire path
-//! (`Mother Lisa App/docs/PROTECTS_WIRE_PATH_2026-09-04.md`):
+//! (`C.O.M.M.A.N.D. authority docs/PROTECTS_WIRE_PATH_2026-09-04.md`):
 //!
 //! - `POST {base}/api/v1/owner/session/start`  — begin exchange; B1 returns
 //!   `{ sessionId, ok }` and, when live, per-layer challenges.
-//! - `POST {base}/api/v1/owner/session/verify` — carry the four-layer Mother
-//!   handshake evidence gathered by C.O.M.M.A.N.D. (the phone app). GENYSYS never
+//! - `POST {base}/api/v1/owner/session/verify` — carry the four-layer authority
+//!   handshake evidence gathered by C.O.M.M.A.N.D. (the owner app). GENYSYS never
 //!   fabricates evidence: booleans carry zero authority on B1 and GENYSYS does
 //!   not try. GENYSYS submits the C.O.M.M.A.N.D.-minted grant and B1 judges it.
 //! - `POST {base}/api/v1/owner/session/end`    — explicit end.
@@ -87,7 +87,7 @@ impl CommandClient {
 
     /// Step 1+2 of the wire path: session/start then session/verify.
     /// `grant` is the C.O.M.M.A.N.D.-minted evidence bundle (produced by the
-    /// Mother app handshake). GENYSYS forwards it verbatim; it never fakes it.
+    /// authority app handshake). GENYSYS forwards it verbatim; it never fakes it.
     pub async fn exchange(&mut self, base_url: &str, grant: &serde_json::Value) -> Result<serde_json::Value, String> {
         if base_url.trim().is_empty() {
             self.state.phase = GatePhase::Dark;

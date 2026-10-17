@@ -309,7 +309,7 @@ describe('shell/rnk-webviews', () => {
     });
 });
 
-describe('lisa/protects-health', () => {
+describe('protection/protects-health', () => {
     test('organ health renders reachable states and saves the URL override', async () => {
         delete window.__TAURI__;
         await bootShell();
@@ -324,7 +324,7 @@ describe('lisa/protects-health', () => {
                 },
             }),
         });
-        const { mountProtectsHealth } = await import(srcUrl('lisa/protects-health.js'));
+        const { mountProtectsHealth } = await import(srcUrl('protection/protects-health.js'));
         const mount = document.createElement('div');
         document.body.appendChild(mount);
         mountProtectsHealth(mount);
@@ -343,7 +343,7 @@ describe('lisa/protects-health', () => {
         delete window.__TAURI__;
         await bootShell();
         window.fetch = async () => { throw new Error('dark'); };
-        const { mountProtectsHealth } = await import(srcUrl('lisa/protects-health.js'));
+        const { mountProtectsHealth } = await import(srcUrl('protection/protects-health.js'));
         const mount = document.createElement('div');
         document.body.appendChild(mount);
         mountProtectsHealth(mount);
@@ -359,7 +359,7 @@ describe('lisa/protects-health', () => {
     test('missing mount element is a no-op', async () => {
         delete window.__TAURI__;
         await bootShell();
-        const { mountProtectsHealth } = await import(srcUrl('lisa/protects-health.js'));
+        const { mountProtectsHealth } = await import(srcUrl('protection/protects-health.js'));
         expect(() => mountProtectsHealth(null)).not.toThrow();
     });
 });

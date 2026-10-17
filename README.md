@@ -1,10 +1,10 @@
 <p align="center"><img src="genysys-icon.svg" width="96" alt="G.E.N.Y.S.Y.S. icon"></p>
 
-# G.E.N.Y.S.Y.S. — RNK's browser, the only access environment
+# G.E.N.E.S.Y.S. — RNK's browser, the only access environment
 
-**GENYSYS** is a Tauri desktop browser with embedded P.R.O.T.E.C.T.S. policy (fail-closed),
-C.O.M.M.A.N.D.-gated sessions, and a small, real engine/turbo runtime. **GENYSYS is the only
-client**: Raven, Echonet, Mail, and RNK product surfaces run inside GENYSYS, and their
+**G.E.N.E.S.Y.S.** is a Tauri desktop browser with embedded P.R.O.T.E.C.T.S. policy (fail-closed),
+C.O.M.M.A.N.D.-gated sessions, and a small, real engine/turbo runtime. **G.E.N.E.S.Y.S. is the only
+client**: Raven, Echonet, Mail, and RNK product surfaces run inside G.E.N.E.S.Y.S., and their
 authenticated APIs refuse a normal browser. Public marketing on `rnk-enterprise.us` may
 stay world-readable; login/API surfaces may not.
 
@@ -31,19 +31,19 @@ repo carries the fix: `scripts/with-webkit-pc.sh` + `src-tauri/.cargo/config.tom
   (`COMMAND_URL` / `RESOLUTE_URL`). A production build without it prints a fail-closed
   HOLD and creates **no sessions**.
 - **Exchange flow:** `POST {COMMAND_URL}/api/v1/owner/session/start` → `session/verify`
-  with the C.O.M.M.A.N.D.-minted grant (four-layer Mother handshake evidence; GENYSYS never
+  with the C.O.M.M.A.N.D.-minted grant (four-layer authority handshake evidence; G.E.N.E.S.Y.S. never
   fabricates it) → verified session mirrored into the policy engine. Explicit `session/end`.
 - **Heartbeat:** every 5 s; B1 owns the 15/10/5 warning tiers; 3 consecutive failed
-  beats = link drop → session dropped → **GENYSYS re-locks** (fail closed). Only a fresh
+  beats = link drop → session dropped → **G.E.N.E.S.Y.S. re-locks** (fail closed). Only a fresh
   grant exchange re-arms.
 - **Shortcodes are DEV/bootstrap only** (`genysys-odinn` full/creator, `genysys-agent` agent);
   refused in production builds.
-- **Biosig stubs never succeed** — `__lisa_handshake__` / `__mother_lisa__` / `__biosig__`
-  / `__fido__` are refused until Mother Lisa ships.
+- **Biosig and FIDO inputs never succeed** — only configured development/bootstrap codes or
+  a verified C.O.M.M.A.N.D. session can establish access.
 
-## GENYSYS-only attestation
+## G.E.N.E.S.Y.S.-only attestation
 
-After a session exists, GENYSYS attaches `X-GENYSYS-Client: 1`, `X-GENYSYS-Session`, and
+After a session exists, G.E.N.E.S.Y.S. attaches `X-GENYSYS-Client: 1`, `X-GENYSYS-Session`, and
 `X-GENYSYS-Tier` (`full` / `agent` / `dev`) to RNK product hosts. Header names are
 documented, not secret; tokens are per-session. Details: `docs/GENYSYS_ATTESTATION.md`.
 
@@ -65,13 +65,13 @@ documented, not secret; tokens are per-session. Details: `docs/GENYSYS_ATTESTATI
 
 `coverage/` and the stale `dist/` build removed (rebuilt with the standard build);
 `.gitignore` hardened. Git remote migrated to private `RNK-Enterprise/G.E.N.Y.S.Y.S.` — the old
-`lisasdungeon/axis` GitHub remote is retired from this tree (history preserved there;
+The prior Axis GitHub remote is retired from this tree (history preserved there;
 nothing pushed to it in this sweep).
 
 ## Sweep 2026-09-20
 
 Vite `server.host` and Tauri `devPath` pin `127.0.0.1`. `.gitignore` covers `.env` /
-`secrets.env` / keys. Package description no longer says Mother Lisa. COMMAND gate
+`secrets.env` / keys. Package descriptions use the current policy naming. COMMAND gate
 still fail-closes when `COMMAND_URL` is empty — no fallback IdP.
 
 ## Secret scanning

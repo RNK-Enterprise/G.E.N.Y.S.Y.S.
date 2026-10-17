@@ -1,9 +1,16 @@
 # Changelog
 
-All notable changes to GENYSYS™ are documented here. The deep, evidence-level
+All notable changes to G.E.N.E.S.Y.S. are documented here. The deep, evidence-level
 journal lives in `memory/2026-08-21-standalone-trusted-client.md`; this file is
 the browsable distillation. Dates refer to the work's journal entries; versions
 mark tagged states of the repository.
+
+## [Unreleased] — 2026-10-17
+
+### Changed
+
+- **Removed the obsolete identity subsystem from active runtime surfaces.** Policy bridge/protection modules, native policy commands and state, authentication UI, tests, and current documentation now use product-neutral protection naming while preserving fail-closed authorization.
+- **Standardized visible product naming.** User-facing shell surfaces now display `G.E.N.E.S.Y.S.`; internal package, crate, protocol, and environment identifiers remain stable for compatibility.
 
 ## [Unreleased] — 2026-10-12
 

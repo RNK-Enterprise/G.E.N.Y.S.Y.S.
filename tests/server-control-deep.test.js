@@ -50,9 +50,9 @@ describe('server control: mount, status, and URL paths', () => {
         await mod.mountServerControl();
         const mount = document.getElementById('server-control-mount');
         expect(mount.querySelector('.sc-status-error').querySelector('img')).toBeNull();
-        expect(mount.querySelector('#sc-lisa-url').value).toBe('<img src=x>');
-        mount.querySelector('#sc-lisa-url').value = '   ';
-        mount.querySelector('#sc-lisa-url-save').click();
+        expect(mount.querySelector('#sc-policy-url').value).toBe('<img src=x>');
+        mount.querySelector('#sc-policy-url').value = '   ';
+        mount.querySelector('#sc-policy-url-save').click();
         expect(localStorage.getItem('genysys_resolute_url')).toBe('<img src=x>');
     });
 

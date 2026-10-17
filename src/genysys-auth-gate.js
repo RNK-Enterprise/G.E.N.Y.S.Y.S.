@@ -8,7 +8,7 @@
  *     refused in production builds.
  *  2. Local shortcodes are DEV/bootstrap only, labeled as such.
  *  3. Dev bypass only when import.meta.env.DEV && genysys_dev_bypass=true.
- *  4. Mother Lisa / biosig / FIDO are stubs (never fake success).
+ *  4. Biosig / FIDO are not available here; never fake success.
  *  5. If a production build starts without COMMAND_URL/RESOLUTE_URL, the
  *     shell reports a fail-closed HOLD and this gate shows it.
  */
@@ -70,7 +70,7 @@ async function tauriInvoke(command, args = {}) {
     if (window.__TAURI__?.invoke) {
         return window.__TAURI__.invoke(command, args);
     }
-    throw new Error('GENYSYS native shell required for authentication');
+    throw new Error('G.E.N.E.S.Y.S. native shell required for authentication');
 }
 
 async function resolveCode(code) {
@@ -120,12 +120,12 @@ async function handleCommandExchange() {
     submitBtn.disabled = true;
     submitBtn.textContent = 'Exchanging with Resolute…';
     try {
-        // The grant is produced by the C.O.M.M.A.N.D. app (Mother handshake).
-        // GENYSYS forwards it verbatim; B1 judges every layer.
+        // The grant is produced by the C.O.M.M.A.N.D. authority app.
+        // G.E.N.E.S.Y.S. forwards it verbatim; B1 judges every layer.
         let grant = null;
         try { grant = JSON.parse(input.value); } catch { grant = null; }
         if (!grant || typeof grant !== 'object') {
-            showError('Paste the C.O.M.M.A.N.D. session grant (JSON) minted by the Mother app.');
+            showError('Paste the C.O.M.M.A.N.D. session grant (JSON) minted by the authority app.');
             submitBtn.disabled = false;
             submitBtn.textContent = 'Exchange C.O.M.M.A.N.D. grant';
             return;
@@ -209,9 +209,9 @@ function toggleVis() {
     visBtn.textContent = isHidden ? 'Hide' : 'Show';
 }
 
-async function probeLisaHealth() {
+async function probePolicyHealth() {
     try {
-        return await tauriInvoke('check_lisa_health');
+        return await tauriInvoke('check_policy_health');
     } catch {
         return { connected: true, mode: 'unknown', localPolicy: true };
     }
@@ -228,14 +228,14 @@ async function applyCommandGateState() {
             if (errorEl) {
                 errorEl.textContent =
                     'FAIL-CLOSED HOLD — C.O.M.M.A.N.D. / Resolute not configured. ' +
-                    'Production GENYSYS opens only on a C.O.M.M.A.N.D. session.';
+                    'Production G.E.N.E.S.Y.S. opens only on a C.O.M.M.A.N.D. session.';
             }
             if (submitBtn) submitBtn.textContent = 'Holding';
             return true;
         }
         if (status && status.mode === 'command' && submitBtn) {
             // Resolute wired: gate the exchange behind the owner's C.O.M.M.A.N.D.
-            // session on the phone. The grant bundle is minted there; GENYSYS
+            // session on the owner device. The grant bundle is minted there; G.E.N.E.S.Y.S.
             // submits it to B1 for judging (booleans carry no authority).
             submitBtn.textContent = 'Exchange C.O.M.M.A.N.D. grant';
             return 'command';
@@ -247,36 +247,21 @@ async function applyCommandGateState() {
     return false;
 }
 
-function setLisaConnectState(health) {
+function setPolicyConnectState(health) {
     const subtitle = document.querySelector('.genysys-auth-subtitle');
     if (!subtitle || !submitBtn) return;
 
     const mode = health?.mode || 'local';
     if (health?.localPolicy || mode === 'local' || mode === 'local-fallback') {
         subtitle.textContent = mode === 'remote' && health.connected
-            ? 'Lisa ready (local + remote)'
-            : 'Lisa ready (local policy)';
+            ? 'G.E.N.E.S.Y.S. ready (local + remote)'
+            : 'G.E.N.E.S.Y.S. ready (local policy)';
         subtitle.classList.add('genysys-auth-subtitle--live');
     } else {
         subtitle.textContent = 'Secure Access Required';
     }
     submitBtn.textContent = 'Authenticate';
 
-    // Mother Lisa affordance — stub only
-    let mother = document.getElementById('genysys-mother-lisa-btn');
-    if (!mother && card) {
-        mother = document.createElement('button');
-        mother.type = 'button';
-        mother.id = 'genysys-mother-lisa-btn';
-        mother.className = 'genysys-auth-mother';
-        mother.textContent = 'Mother Lisa (not wired)';
-        mother.title = 'Biosig / FIDO path ships with Mother Lisa';
-        mother.style.cssText = 'margin-top:0.75rem;width:100%;opacity:0.7;font-size:0.8rem;';
-        form?.appendChild(mother);
-        mother.addEventListener('click', () => {
-            showError('Mother Lisa / biosig not wired yet — use an access code');
-        });
-    }
 }
 
 function bindWindowControls() {
@@ -345,8 +330,8 @@ async function init() {
     const holding = await applyCommandGateState();
     if (holding) return;
 
-    const health = await probeLisaHealth();
-    setLisaConnectState(health);
+    const health = await probePolicyHealth();
+    setPolicyConnectState(health);
     setTimeout(() => input?.focus(), 100);
 }
 

@@ -312,9 +312,9 @@ window.bindClickHandlers([
     ['genysys-status', () => {
         if (window.genysysRuntime.connected) {
             window.genysysRuntime.stop();
-            applyGENYSYSRuntimeStatus(false, 'GENYSYS Runtime stopped');
+            applyGENYSYSRuntimeStatus(false, 'G.E.N.E.S.Y.S. Runtime stopped');
         } else {                window.genysysRuntime.start({ getTabs: () => window.tabManager?.tabs || [] }).then(() => {
-                    applyGENYSYSRuntimeStatus(true, 'GENYSYS Runtime online');
+                    applyGENYSYSRuntimeStatus(true, 'G.E.N.E.S.Y.S. Runtime online');
                 });
         }
     }]

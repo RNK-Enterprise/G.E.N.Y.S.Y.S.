@@ -84,9 +84,9 @@ export function stubTauri(overrides = {}) {
                     return { decision: 'allow', reason: 'policy_ok', audit: true, notify: false, chain: false, domain: args.url, source: 'local' };
                 case 'get_session_info':
                     return { accessTier: 'agent', shortcode: 'stub', deviceVerified: true, authenticated: true };
-                case 'check_lisa_health':
+                case 'check_policy_health':
                 case 'check_genysys_health':
-                    return { connected: true, mode: 'local', localPolicy: true, lisaUrl: '' };
+                    return { connected: true, mode: 'local', localPolicy: true, policyUrl: '' };
                 case 'command_session_status':
                     return { phase: 'closed' };
                 case 'cmd_gate_status':

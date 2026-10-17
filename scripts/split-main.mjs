@@ -206,7 +206,7 @@ import { mountServerControl, unmountServerControl } from '../genysys-server-cont
   writeFile(
     'src/browser/tab-manager.js',
     `${HEADER}
-import { normalizeUrl, navigateWithLISA } from '../lisa-bridge.js';
+import { normalizeUrl, navigateWithPolicy } from '../policy-bridge.js';
 
 ${body}
 

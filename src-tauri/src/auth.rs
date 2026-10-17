@@ -1,5 +1,5 @@
 //! Local shortcode auth for standalone GENYSYS.
-//! Mother Lisa / biosig / FIDO remain stubs until that product ships.
+//! Biosig / FIDO are not available in this client.
 //!
 //! 2026-09-06 doctrine: production auth = C.O.M.M.A.N.D. / Resolute session.
 //! Shortcodes are DEV/bootstrap only and are refused in production builds.
@@ -63,15 +63,6 @@ pub fn auth_resolve_code(code: String, state: State<'_, AppState>) -> Result<ser
     let trimmed = code.trim().to_string();
     if trimmed.is_empty() {
         return Err("Access code required".into());
-    }
-
-    // Mother Lisa / biosig handshake stub — never succeed
-    if trimmed == "__lisa_handshake__"
-        || trimmed == "__mother_lisa__"
-        || trimmed == "__biosig__"
-        || trimmed == "__fido__"
-    {
-        return Err("Mother Lisa / biosig not wired yet — use an access code".into());
     }
 
     // Production gate: shortcodes are DEV/bootstrap only. Production GENYSYS

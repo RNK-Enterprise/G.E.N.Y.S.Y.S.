@@ -148,8 +148,8 @@
 | command_session_tests.rs | 151 | OK |
 | command_session.rs | 325 | OK |
 | commands_health.rs | 110 | OK |
-| lisa_policy_tests.rs | 119 | OK |
-| lisa_policy.rs | 331 | OK |
+| protects_policy_tests.rs | 119 | OK |
+| protects_policy.rs | 331 | OK |
 | main.rs | 485 | OK |
 | README.md | 3 | OK |
 | tab_commands.rs | 143 | OK |
@@ -165,7 +165,7 @@
 | download-manager.js | 122 | OK |
 | history-manager.js | 104 | OK |
 | index.html | 355 | OK |
-| lisa-bridge.js | 418 | OK |
+| policy-bridge.js | 418 | OK |
 | main.js | 153 | OK |
 | newtab.html | 180 | OK |
 | README.md | 16 | OK |
@@ -204,12 +204,12 @@
 | README.md | 3 | OK |
 | runtime.js | 115 | OK |
 
-## src/lisa/
+## src/policy/
 
 | File | LOC | Status |
 |---|---|---|
 | .gitignore | 1 | OK |
-| lisa-bridge-auth-ui.js | 132 | OK |
+| access-auth-ui.js | 132 | OK |
 | protects-health.js | 130 | OK |
 | README.md | 3 | OK |
 
@@ -264,7 +264,6 @@
 | File | LOC | Status |
 |---|---|---|
 | .gitignore | 1 | OK |
-| assistant.css | 114 | OK |
 | base.css | 423 | OK |
 | browser.css | 217 | OK |
 | gate.css | 381 | OK |
@@ -335,7 +334,7 @@
 | shell-bindings-c.test.js | 322 | OK |
 | shell-bindings.test.js | 266 | OK |
 | shell-chrome-core.test.js | 362 | OK |
-| shell-lisa-bridge.test.js | 228 | OK |
+| shell-policy-bridge.test.js | 228 | OK |
 | shell-misc.test.js | 260 | OK |
 | shell-surface-panels.test.js | 347 | OK |
 | shell-tabs.test.js | 312 | OK |

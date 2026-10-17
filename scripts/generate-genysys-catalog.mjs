@@ -18,9 +18,9 @@ const root = join(__dirname, '..');
 // ── Real engine surfaces (browser jobs that actually exist in src/) ─────────
 const ENGINES = [
   { id: 'genysys-browser-core', name: 'Browser Core', category: 'browser', surface: 'browser', description: 'Windowing, tabs, omnibox, navigation, page lifecycle (src/browser).' },
-  { id: 'genysys-security-stack', name: 'Security Stack', category: 'security', surface: 'policy', description: 'P.R.O.T.E.C.T.S. navigation policy, fail-closed gate (src-tauri/lisa_policy.rs).' },
+  { id: 'genysys-security-stack', name: 'Security Stack', category: 'security', surface: 'policy', description: 'P.R.O.T.E.C.T.S. navigation policy, fail-closed gate (src-tauri/protects_policy.rs).' },
   { id: 'genysys-performance-stack', name: 'Performance Stack', category: 'performance', surface: 'performance-panel', description: 'Runtime for the 9 live turbos (src/engines/runtime.js).' },
-  { id: 'genysys-privacy-stack', name: 'Privacy Stack', category: 'privacy', surface: 'browser', description: 'Session hygiene, cross-origin isolation, attestation (src/lisa-bridge.js).' },
+  { id: 'genysys-privacy-stack', name: 'Privacy Stack', category: 'privacy', surface: 'browser', description: 'Session hygiene, cross-origin isolation, attestation (src/policy-bridge.js).' },
   { id: 'genysys-downloads', name: 'Downloads', category: 'browser', surface: 'sidebar', description: 'Download queue and file actions (src/download-manager.js).' },
   { id: 'genysys-bookmarks', name: 'Bookmarks', category: 'browser', surface: 'sidebar', description: 'Bookmark CRUD and bookmarks bar (src/bookmark-manager.js).' },
   { id: 'genysys-history', name: 'History', category: 'browser', surface: 'sidebar', description: 'Visited pages and clear controls (src/history-manager.js).' },

@@ -3,7 +3,7 @@
  */
 
 /**
- * GENYSYS™ — LISA bridge coverage
+ * GENYSYS™ — POLICY bridge coverage
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  */
 
@@ -31,7 +31,7 @@ beforeEach(() => {
     drainListeners();
 });
 
-describe('lisa-bridge', () => {
+describe('policy-bridge', () => {
     test('normalizeUrl covers domains, queries, internal schemes, and garbage', async () => {
         await bootShell();
         expect(window.normalizeUrl('https://ok.test/a')).toBe('https://ok.test/a');
@@ -43,58 +43,58 @@ describe('lisa-bridge', () => {
         expect(window.normalizeUrl('   ')).toBe('genysys://newtab');
     });
 
-    test('navigateWithLISA allow/flag paths dispatch policy-allow', async () => {
+    test('navigateWithPolicy allow/flag paths dispatch policy-allow', async () => {
         const tauri = stubTauri({ invoke: (cmd, args) => (cmd === 'navigate_tab' ? { decision: 'flag', reason: 'low', domain: args.url } : null) });
         await bootShell({ tauri });
-        const { navigateWithLISA } = await import('../src/lisa-bridge.js');
+        const { navigateWithPolicy } = await import('../src/policy-bridge.js');
         const events = [];
         window.addEventListener('genysys:policy-allow', (e) => events.push(e.detail.url));
         let allowed = 0;
-        const policy = await navigateWithLISA(1, 'https://flag.test/', () => allowed++, () => { });
+        const policy = await navigateWithPolicy(1, 'https://flag.test/', () => allowed++, () => { });
         expect(policy.decision).toBe('flag');
         expect(allowed).toBe(1);
         expect(events).toEqual(['https://flag.test/']);
-        expect(document.getElementById('status-text').textContent).toContain('LISA flagged');
+        expect(document.getElementById('status-text').textContent).toContain('G.E.N.E.S.Y.S. flagged');
     });
 
-    test('navigateWithLISA block/quarantine/chain/unknown fail closed', async () => {
+    test('navigateWithPolicy block/quarantine/chain/unknown fail closed', async () => {
         await bootShell();
-        const { navigateWithLISA } = await import('../src/lisa-bridge.js');
+        const { navigateWithPolicy } = await import('../src/policy-bridge.js');
         const decisions = ['block', 'quarantine', 'chain', 'mystery'];
         for (const decision of decisions) {
             window.__TAURI__ = stubTauri({ invoke: (cmd) => (cmd === 'navigate_tab' ? { decision } : null) });
             let blocked = 0;
-            const policy = await navigateWithLISA(1, 'https://x.test/', () => { }, () => blocked++);
+            const policy = await navigateWithPolicy(1, 'https://x.test/', () => { }, () => blocked++);
             expect(blocked).toBe(1);
             if (decision === 'quarantine') expect(policy.quarantined).toBe(true);
         }
     });
 
-    test('navigateWithLISA fail-closed when the bridge throws or returns garbage', async () => {
+    test('navigateWithPolicy fail-closed when the bridge throws or returns garbage', async () => {
         await bootShell();
-        const { navigateWithLISA } = await import('../src/lisa-bridge.js');
+        const { navigateWithPolicy } = await import('../src/policy-bridge.js');
 
         window.__TAURI__ = stubTauri({ invoke: async () => { throw new Error('dark'); } });
         let blocked = 0;
-        const policy = await navigateWithLISA(1, 'https://dark.test/', () => { }, () => blocked++);
+        const policy = await navigateWithPolicy(1, 'https://dark.test/', () => { }, () => blocked++);
         expect(policy.decision).toBe('block');
-        expect(policy.reason).toBe('lisa_unreachable_fail_closed');
+        expect(policy.reason).toBe('policy_unreachable_fail_closed');
         expect(blocked).toBe(1);
 
         window.__TAURI__ = stubTauri({ invoke: async () => null });
         let blocked2 = 0;
-        const policy2 = await navigateWithLISA(1, 'https://void.test/', () => { }, () => blocked2++);
+        const policy2 = await navigateWithPolicy(1, 'https://void.test/', () => { }, () => blocked2++);
         expect(policy2.reason).toBe('missing_policy_fail_closed');
         expect(blocked2).toBe(1);
     });
 
     test('tauriInvoke dev fallback blocks without bypass', async () => {
         await bootShell();
-        const { tauriInvoke } = await import('../src/lisa-bridge.js');
+        const { tauriInvoke } = await import('../src/policy-bridge.js');
         window.__TAURI__ = undefined;
         const result = await tauriInvoke('navigate_tab', { url: 'https://dev.test/' });
         expect(result.decision).toBe('block');
-        expect(result.reason).toBe('lisa_unreachable_fail_closed');
+        expect(result.reason).toBe('policy_unreachable_fail_closed');
         expect(await tauriInvoke('unknown_command', {})).toBeNull();
         await expect(tauriInvoke('auth_resolve_code', { code: 'x' })).rejects.toThrow('Auth requires GENYSYS native shell');
     });
@@ -103,7 +103,7 @@ describe('lisa-bridge', () => {
         globalThis.__GENYSYS_DEV__ = true;
         localStorage.setItem('genysys_dev_bypass', 'true');
         await bootShell();
-        const { tauriInvoke } = await import('../src/lisa-bridge.js');
+        const { tauriInvoke } = await import('../src/policy-bridge.js');
         window.__TAURI__ = undefined;
         const bypassed = await tauriInvoke('navigate_tab', { url: 'https://dev.test/' });
         expect(bypassed.decision).toBe('allow');
@@ -115,7 +115,7 @@ describe('lisa-bridge', () => {
 
     test('session lifecycle: refresh, get, set, clear', async () => {
         await bootShell();
-        const bridge = await import('../src/lisa-bridge.js');
+        const bridge = await import('../src/policy-bridge.js');
         await bridge.refreshSession();
         expect(bridge.getSession().accessTier).toBe('agent');
         expect(bridge.getSession().authenticated).toBe(true);
@@ -134,11 +134,11 @@ describe('lisa-bridge', () => {
         expect(bridge.getSession().authenticated).toBe(false);
     });
 
-    test('initLISABridge wires tauri events, loading events, and section bridge', async () => {
+    test('initPolicyBridge wires tauri events, loading events, and section bridge', async () => {
         const tauri = stubTauri();
         await bootShell({ tauri });
-        const { initLISABridge } = await import('../src/lisa-bridge.js');
-        await initLISABridge(window.tabManager);
+        const { initPolicyBridge } = await import('../src/policy-bridge.js');
+        await initPolicyBridge(window.tabManager);
         expect(window.tabWindowBridge).toBeDefined();
 
         tauri.__emit('genysys:navigate', { tabId: 1, url: 'https://emit.test/' });
@@ -160,7 +160,7 @@ describe('lisa-bridge', () => {
 
     test('auth panel: init/show/hide and successful code resolution', async () => {
         await bootShell();
-        const auth = await import('../src/lisa/lisa-bridge-auth-ui.js');
+        const auth = await import('../src/protection/access-auth-ui.js');
         auth.initAuthPanel();
         auth.initAuthPanel();
         const panel = document.getElementById('genysys-auth-panel');
@@ -198,10 +198,10 @@ describe('lisa-bridge', () => {
 
     test('message listener submits access requests and honors proceed-anyway', async () => {
         await bootShell();
-        const bridge = await import('../src/lisa-bridge.js');
+        const bridge = await import('../src/policy-bridge.js');
         const calls = [];
         window.tabManager.navigateActiveTab = (url) => calls.push(url);
-        await bridge.initLISABridge(window.tabManager);
+        await bridge.initPolicyBridge(window.tabManager);
 
         window.dispatchEvent(new MessageEvent('message', { data: { type: 'genysys:access-request', domain: 'req.test', reason: 'work' } }));
         window.dispatchEvent(new MessageEvent('message', { data: { type: 'genysys:proceed-anyway', domain: 'override.test' } }));
@@ -210,19 +210,19 @@ describe('lisa-bridge', () => {
         expect(calls).toEqual(['override.test']);
     });
 
-    test('injectLisaStatusIndicator appends to the titlebar and toggles auth panel', async () => {
+    test('injectPolicyStatusIndicator appends to the titlebar and toggles auth panel', async () => {
         await bootShell();
-        const { initLISABridge } = await import('../src/lisa-bridge.js');
-        await initLISABridge(window.tabManager);
-        const indicator = document.getElementById('lisa-status-indicator');
+        const { initPolicyBridge } = await import('../src/policy-bridge.js');
+        await initPolicyBridge(window.tabManager);
+        const indicator = document.getElementById('policy-status-indicator');
         expect(indicator).not.toBeNull();
-        expect(indicator.textContent).toBe('LISA: agent');
+        expect(indicator.textContent).toBe('G.E.N.E.S.Y.S.: agent');
         indicator.click();
         expect(document.getElementById('genysys-auth-panel')).toBeNull();
 
         window.__TAURI__ = stubTauri({ invoke: async () => ({ accessTier: 'locked', authenticated: false }) });
-        const bridge = await import('../src/lisa-bridge.js');
+        const bridge = await import('../src/policy-bridge.js');
         await bridge.refreshSession();
-        expect(indicator.textContent).toBe('LISA: unauthenticated');
+        expect(indicator.textContent).toBe('G.E.N.E.S.Y.S.: unauthenticated');
     });
 });

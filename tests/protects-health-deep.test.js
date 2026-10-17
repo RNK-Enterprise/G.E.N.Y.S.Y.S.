@@ -8,7 +8,7 @@
  */
 
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { mountProtectsHealth } from '../src/lisa/protects-health.js';
+import { mountProtectsHealth } from '../src/protection/protects-health.js';
 
 const flush = async () => {
     for (let i = 0; i < 8; i++) await Promise.resolve();

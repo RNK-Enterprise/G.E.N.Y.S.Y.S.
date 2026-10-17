@@ -88,7 +88,7 @@ describe('main.js initializeApp', () => {
         expect(document.getElementById('perf-summary-text').textContent).toContain('live turbos');
         expect(document.querySelectorAll('#perf-turbo-list input[data-turbo-id]').length).toBe(9);
         expect(document.getElementById('status-text').textContent).toContain('Viewing');
-        expect(document.querySelector('[id*="lisa"]')).toBeTruthy();
+        expect(document.querySelector('[id*="policy"]')).toBeTruthy();
     });
 
     test('no saved session creates the initial newtab and the turbo toggles re-arm', async () => {

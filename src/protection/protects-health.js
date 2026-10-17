@@ -1,8 +1,8 @@
 /**
- * GENYSYS™ — P.R.O.T.E.C.T.S. Health Panel (Lisa section)
+ * G.E.N.E.S.Y.S. — P.R.O.T.E.C.T.S. Health Panel
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
- * The Lisa section is NOT a chatbot. It renders P.R.O.T.E.C.T.S. organ health
+ * The health section renders P.R.O.T.E.C.T.S. organ health
  * with Resolute Authentication Core as the handshake organ. Data comes from
  * the native shell (tauri check_protects_health) which probes Resolute
  * directly. No chat stub ships as production.
@@ -14,7 +14,7 @@ const RESOLUTE_URL = () =>
 const ORGANS = [
     { key: 'resolute', label: 'Resolute Authentication Core', icon: 'RA', note: 'Handshake organ — C.O.M.M.A.N.D. master key' },
     { key: 'policyEngine', label: 'Policy Engine', icon: 'PE', note: 'Embedded, fail-closed — clears every navigation' },
-    { key: 'attestation', label: 'GENYSYS Attestation', icon: 'AT', note: 'X-GENYSYS-Client / X-GENYSYS-Session on RNK hosts' },
+    { key: 'attestation', label: 'G.E.N.E.S.Y.S. Attestation', icon: 'AT', note: 'X-GENYSYS-Client / X-GENYSYS-Session on RNK hosts' },
     { key: 'chainRouting', label: 'Ghost Chain Routing', icon: '⛓', note: 'Pentest surface only; off unless GENYSYS_CHAIN_ROUTING=on' },
     { key: 'heartbeat', label: 'Heartbeat', icon: '♥', note: 'Session liveness' },
 ];

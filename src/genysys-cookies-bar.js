@@ -10,7 +10,7 @@ function createBar() {
     bar.id = 'genysys-cookies-bar';
     bar.innerHTML = `
         <span class="genysys-cookies-text">
-            GENYSYS uses local storage to remember your preferences and session state.
+            G.E.N.E.S.Y.S. uses local storage to remember your preferences and session state.
             No data is sent to third parties.
             <a href="https://rnk-enterprise.us/privacy" target="_blank" rel="noopener">Privacy Policy</a>
         </span>

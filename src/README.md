@@ -1,4 +1,4 @@
-# src/ — GENYSYS frontend
+# src/ — G.E.N.E.S.Y.S. frontend
 
 Browser shell: HTML surfaces, JS modules, and the stylesheet manifest.
 
@@ -9,7 +9,7 @@ Browser shell: HTML surfaces, JS modules, and the stylesheet manifest.
 - `browser/` — tab lifecycle; `shell/` — chrome bindings and section rendering
 - `ui/` — density + toast/loading surfaces; `turbos/` — performance mods
 - `engines/` — capability catalog loader and runtime; `session/` — session persistence
-- `lisa/` — Lisa policy frontend
+- `protection/` — P.R.O.T.E.C.T.S. policy frontend
 
 ## Invariants
 - Every module attaches to `window.*`; globals are audited by `npm run audit:globals`.

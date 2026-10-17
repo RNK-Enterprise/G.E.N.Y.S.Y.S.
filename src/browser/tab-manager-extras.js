@@ -288,7 +288,7 @@ TabManager.prototype.navigateTab = function(tabId, url) {
     // restore credit for this tab before the round-trip starts.
     this._restoreCredits?.delete(tabId);
     const normalized = window.normalizeUrl(url);
-    window.navigateWithLISA(
+    window.navigateWithPolicy(
         tabId,
         normalized,
         (finalUrl) => this.onPolicyAllowed(tabId, finalUrl),

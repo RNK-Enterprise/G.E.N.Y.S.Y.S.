@@ -4,8 +4,8 @@
  */
 
 import {
-  initLISABridge,
-} from './lisa-bridge.js';
+  initPolicyBridge,
+} from './policy-bridge.js';
 import { genysysRuntime } from './engines/runtime.js';
 
 // Boot order matters: managers → density/UI → sidebar/surfaces → tabs → bindings → init
@@ -74,10 +74,10 @@ async function initializeApp() {
   const turboCount = manifest.catalog_summary?.turbos || '0';
   const liveCount = manifest.catalog_summary?.live_turbos || engineRuntime.turbos.size;
   window.updateStatusBar?.(
-    `Ready - GENYSYS v0.1.0 | ${engineCount} engines · ${turboCount} turbos (${liveCount} live)`,
+    `Ready - G.E.N.E.S.Y.S. v0.1.0 | ${engineCount} engines · ${turboCount} turbos (${liveCount} live)`,
   );
 
-  initLISABridge(tabManager);
+  initPolicyBridge(tabManager);
 
   console.log('Restoring previous session...');
   if (!tabManager.restoreTabs()) {
@@ -85,7 +85,7 @@ async function initializeApp() {
     tabManager.createTab('genysys://newtab');
   }
 
-  console.log('GENYSYS initialized successfully (standalone runtime)!');
+  console.log('G.E.N.E.S.Y.S. initialized successfully (standalone runtime)!');
 }
 
 function renderLiveTurboPanel() {
@@ -113,7 +113,7 @@ function renderLiveTurboPanel() {
     });
   }
   if (summaryText) {
-    summaryText.textContent = `GENYSYS runtime online with ${states.filter((s) => s.enabled).length} live turbos enabled.`;
+    summaryText.textContent = `G.E.N.E.S.Y.S. runtime online with ${states.filter((s) => s.enabled).length} live turbos enabled.`;
   }
 }
 

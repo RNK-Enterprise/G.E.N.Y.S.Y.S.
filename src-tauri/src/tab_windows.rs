@@ -26,7 +26,7 @@
 //! non-local URLs unless explicitly scoped — we configure no scope), so the
 //! attestation is minted here and injected; page JS never handles the token.
 
-use crate::lisa_policy;
+use crate::protects_policy;
 use crate::{AppState, PolicyResult, Session};
 use std::collections::HashMap;
 use std::sync::Mutex;
@@ -120,7 +120,7 @@ pub fn classify_tab_navigation(url: &str, session: &Session) -> PolicyResult {
             source: "local".into(),
         };
     }
-    let policy = lisa_policy::evaluate_local(url, session);
+    let policy = protects_policy::evaluate_local(url, session);
     if policy.decision == "allow" {
         return policy;
     }

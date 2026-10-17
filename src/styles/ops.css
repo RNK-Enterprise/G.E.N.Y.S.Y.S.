@@ -218,10 +218,10 @@
 }
 
 /* ===================================================================
-   LISA Navigation Gate — status indicator + decision page styles
+   POLICY Navigation Gate — status indicator + decision page styles
    =================================================================== */
 
-#lisa-status-indicator {
+#policy-status-indicator {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -232,28 +232,28 @@
     transition: all 0.3s;
 }
 
-#lisa-status-indicator.lisa-status-active {
+#policy-status-indicator.policy-status-active {
     color: var(--brand-gold, #8ab4f8);
     border-color: rgba(138, 180, 248, 0.25);
     background: rgba(138, 180, 248, 0.08);
 }
 
-#lisa-status-indicator.lisa-status-active::before {
+#policy-status-indicator.policy-status-active::before {
     content: '';
     width: 6px;
     height: 6px;
     border-radius: 50%;
     background: var(--brand-gold, #8ab4f8);
-    animation: lisaPulse 2s ease-in-out infinite;
+    animation: policyPulse 2s ease-in-out infinite;
 }
 
-#lisa-status-indicator.lisa-status-degraded {
+#policy-status-indicator.policy-status-degraded {
     color: #f5a623;
     border-color: rgba(245, 166, 35, 0.25);
     background: rgba(245, 166, 35, 0.08);
 }
 
-#lisa-status-indicator.lisa-status-degraded::before {
+#policy-status-indicator.policy-status-degraded::before {
     content: '';
     width: 6px;
     height: 6px;
@@ -261,12 +261,12 @@
     background: #f5a623;
 }
 
-#lisa-status-indicator.lisa-status-offline {
+#policy-status-indicator.policy-status-offline {
     color: #7a7a9a;
     border-color: rgba(122, 122, 154, 0.2);
 }
 
-#lisa-status-indicator.lisa-status-offline::before {
+#policy-status-indicator.policy-status-offline::before {
     content: '';
     width: 6px;
     height: 6px;
@@ -274,7 +274,7 @@
     background: #4a4a6a;
 }
 
-@keyframes lisaPulse {
+@keyframes policyPulse {
     0%, 100% { opacity: 1; transform: scale(1); }
     50%       { opacity: 0.6; transform: scale(0.8); }
 }
@@ -284,10 +284,10 @@
 }
 
 /* ===================================================================
-   LISA Auth Panel (legacy — for in-page access panel)
+   POLICY Auth Panel (legacy — for in-page access panel)
    =================================================================== */
 
-#lisa-auth-panel {
+#policy-auth-panel {
     position: fixed;
     inset: 0;
     z-index: 10000;
@@ -299,11 +299,11 @@
     backdrop-filter: blur(8px);
 }
 
-#lisa-auth-panel.hidden {
+#policy-auth-panel.hidden {
     display: none;
 }
 
-.lisa-auth-inner {
+.policy-auth-inner {
     width: 360px;
     background: rgba(26, 26, 46, 0.95);
     border: 1px solid rgba(138, 180, 248, 0.35);
@@ -313,7 +313,7 @@
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
-.lisa-auth-title {
+.policy-auth-title {
     font-size: 13px;
     font-weight: 600;
     text-transform: uppercase;
@@ -322,7 +322,7 @@
     margin-bottom: 16px;
 }
 
-.lisa-auth-input {
+.policy-auth-input {
     width: 100%;
     height: 38px;
     background: rgba(18, 18, 31, 0.8);
@@ -336,12 +336,12 @@
     margin-bottom: 12px;
 }
 
-.lisa-auth-input:focus {
+.policy-auth-input:focus {
     border-color: rgba(138, 180, 248, 0.5);
     box-shadow: 0 0 0 2px rgba(138, 180, 248, 0.1);
 }
 
-.lisa-auth-submit {
+.policy-auth-submit {
     width: 100%;
     height: 38px;
     background: linear-gradient(135deg, #8ab4f8, #6d9ae0);
@@ -354,12 +354,12 @@
     transition: opacity 0.2s;
 }
 
-.lisa-auth-submit:hover {
+.policy-auth-submit:hover {
     opacity: 0.9;
 }
 
 /* ===================================================================
-   GENYSYS LIGHT THEME — ops surfaces (cookies bar, Lisa auth submit)
+   GENYSYS LIGHT THEME — ops surfaces (cookies bar, policy auth submit)
    Re-points the hard-coded midnight literals under body.theme-light.
    =================================================================== */
 
@@ -371,4 +371,4 @@ body.theme-light #genysys-cookies-bar {
 
 body.theme-light #genysys-cookies-accept { color: #ffffff; }
 
-body.theme-light .lisa-auth-submit { color: #ffffff; }
+body.theme-light .policy-auth-submit { color: #ffffff; }

@@ -27,7 +27,7 @@
 | Neighbor | Role |
 |---|---|
 | C.O.M.M.A.N.D. / Resolute | Session grant + heartbeat; Genysys never fabricates grants |
-| P.R.O.T.E.C.T.S. | In-process Rust nav policy (`lisa_policy.rs`); fail-closed |
+| P.R.O.T.E.C.T.S. | In-process Rust nav policy (`protects_policy.rs`); fail-closed |
 | Raven / Echonet / Mail | Product webviews **inside** Genysys; APIs refuse normal browsers via attestation |
 | Obfuscation Veil Array | **Different program** — Seat-2 gauntlet/honeypot organ inside P.R.O.T.E.C.T.S. |
 
@@ -79,14 +79,14 @@
 |---|---|
 | Mail + Website demo attestation still **log-only** until `GENYSYS_ATTEST_ENFORCE=1` | Chrome can still hit those APIs until enforce flips. |
 | Ghost chain for `sec.rnk-enterprise.us` unwired | Policy fail-closes (`chain_unavailable_fail_closed`) — correct, incomplete. |
-| Biosig stubs refuse until Mother/COMMAND ships | Correct fail-closed; production path is COMMAND grant, not shortcodes. |
+| Biosig stubs refuse until the authority session ships | Correct fail-closed; production path is a verified authority grant, not shortcodes. |
 | SoT docs that still name `privacy-system/V.E.I.L.` elsewhere in the mesh | Twin/path drift for agents. |
 
 ### P2
 
 | Gap | Impact |
 |---|---|
-| `lisa_policy.rs` / `lisa-bridge` filenames still say Lisa | Functional; naming hygiene residual (mind = P.R.O.T.E.C.T.S.). |
+| `protects_policy.rs` / `policy-bridge` filenames still say Policy | Functional; naming hygiene residual (mind = P.R.O.T.E.C.T.S.). |
 | Rules copies outside this tree may still say Axis/V.E.I.L. | Fleet-wide doc sync pending. |
 | Halo/Echonet “do not call it Genysys” lines | Correct after rename; Halo must never absorb the browser name. |
 | Bundles 0.1.0 exist historically; not re-proven against live COMMAND this sweep | Packaging OK; live gate unproven. |
@@ -118,7 +118,7 @@
 2. Point mesh SoT / agent files at `/media/odinn/privacy-sys/G.E.N.Y.S.Y.S.`.
 3. Live COMMAND_URL prove-out on a bench host.
 4. Flip Mail/Website `GENYSYS_ATTEST_ENFORCE=1` when ready.
-5. Optional: rename `lisa_policy.rs` → `protects_policy.rs` in a dedicated pass.
+5. Optional: rename `protects_policy.rs` → `protects_policy.rs` in a dedicated pass.
 6. Odinn sign-off + push when ready.
 
 ---

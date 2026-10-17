@@ -42,7 +42,7 @@ describe('genysys-welcome-tour', () => {
         expect(document.getElementById('genysys-tour-title').textContent).toBe('Welcome to GENYSYS');
 
         overlay.querySelector('#genysys-tour-action').click();
-        expect(document.getElementById('genysys-tour-title').textContent).toBe('What should Lisa call you?');
+        expect(document.getElementById('genysys-tour-title').textContent).toBe('What should Policy call you?');
         document.getElementById('tour-name').value = 'Odinn';
         overlay.querySelector('#genysys-tour-action').click();
         document.getElementById('tour-role').value = 'Architect';
@@ -86,7 +86,7 @@ describe('genysys-welcome-tour', () => {
 
         const overlay = document.getElementById('genysys-tour-overlay');
         overlay.querySelector('#genysys-tour-action').click();
-        document.getElementById('tour-name').value = 'Lisa';
+        document.getElementById('tour-name').value = 'Policy';
         overlay.querySelector('#genysys-tour-action').click();
         document.getElementById('tour-role').value = 'Owner';
         overlay.querySelector('#genysys-tour-action').click();
@@ -94,7 +94,7 @@ describe('genysys-welcome-tour', () => {
         overlay.querySelector('#genysys-tour-action').click();
         overlay.querySelector('#genysys-tour-action').click();
         await new Promise((resolve) => setTimeout(resolve, 500));
-        expect(completed).toMatchObject({ name: 'Lisa', role: 'Owner', style: 'style-brief' });
+        expect(completed).toMatchObject({ name: 'Policy', role: 'Owner', style: 'style-brief' });
     });
 });
 
@@ -143,8 +143,8 @@ describe('genysys-server-control', () => {
         document.getElementById('sc-refresh-btn').dispatchEvent(new Event('click', { bubbles: true }));
         await new Promise((resolve) => setTimeout(resolve, 0));
 
-        document.getElementById('sc-lisa-url').value = 'http://127.0.0.1:9999';
-        document.getElementById('sc-lisa-url-save').dispatchEvent(new Event('click', { bubbles: true }));
+        document.getElementById('sc-policy-url').value = 'http://127.0.0.1:9999';
+        document.getElementById('sc-policy-url-save').dispatchEvent(new Event('click', { bubbles: true }));
         expect(localStorage.getItem('genysys_resolute_url')).toBe('http://127.0.0.1:9999');
     });
 
@@ -229,7 +229,7 @@ describe('genysys-admin-ops', () => {
         await bootShell();
         const { mountAdminOps } = await import('../src/genysys-admin-ops.js');
         mountAdminOps(document.getElementById('admin-section-mount'), 'agent');
-        expect(document.getElementById('admin-section-mount').innerHTML).toContain('Lisa authorization required');
+        expect(document.getElementById('admin-section-mount').innerHTML).toContain('Policy authorization required');
     });
 
     test('super-admin tier renders the ops plane with tabs and audit trail', async () => {

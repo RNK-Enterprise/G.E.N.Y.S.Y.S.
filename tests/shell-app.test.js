@@ -116,17 +116,14 @@ describe('genysys-auth-gate', () => {
         expect(document.getElementById('genysys-auth-submit').disabled).toBe(false);
     });
 
-    test('empty input is ignored; mother-lisa stub reports unwired', async () => {
+    test('empty input is ignored and the retired identity control is absent', async () => {
         await import('../src/genysys-auth-gate.js');
         await new Promise((resolve) => setTimeout(resolve, 20));
         const form = document.getElementById('genysys-auth-form');
         form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
         expect(document.getElementById('genysys-auth-gate').classList.contains('hidden')).toBe(false);
 
-        const mother = document.getElementById('genysys-mother-lisa-btn');
-        expect(mother).not.toBeNull();
-        mother.dispatchEvent(new Event('click', { bubbles: true }));
-        expect(document.getElementById('genysys-auth-error').textContent).toContain('not wired');
+        expect(document.querySelector('.genysys-auth-legacy')).toBeNull();
     });
 
     test('COMMAND hold state locks the gate fail-closed', async () => {

@@ -3,7 +3,7 @@
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * Creator-only section. Talks to the Resolute Authentication Core
- * (C.O.M.M.A.N.D. master key) — NOT to a Brain/Lisa :7700 as the mind.
+ * (C.O.M.M.A.N.D. master key) — NOT to a Brain/Policy :7700 as the mind.
  * Surfaces: Resolute/authority status, Test Mode toggle, session gate state.
  *
  * Test Mode: issues a session-bound HMAC-signed token to the authority
@@ -26,7 +26,7 @@ function getSessionId() {
     return sid;
 }
 
-// ── LISA authority calls ──────────────────────────────────────────────
+// ── POLICY authority calls ──────────────────────────────────────────────
 
 async function fetchLayer1Status() {
     try {
@@ -165,7 +165,7 @@ function renderTestModePanel() {
             <span class="sc-scope-label">Scope:</span>
             <label class="sc-scope-check"><input type="checkbox" value="benchmark" ${active ? 'disabled' : ''} checked> Benchmark</label>
             <label class="sc-scope-check"><input type="checkbox" value="mesh-test" ${active ? 'disabled' : ''}> Mesh Test</label>
-            <label class="sc-scope-check"><input type="checkbox" value="lisa-eval" ${active ? 'disabled' : ''}> LISA Eval</label>
+            <label class="sc-scope-check"><input type="checkbox" value="policy-eval" ${active ? 'disabled' : ''}> POLICY Eval</label>
         </div>
     </div>`;
 }
@@ -203,9 +203,9 @@ export async function mountServerControl(mountId = 'server-control-mount') {
         <section class="sc-section">
             <h3 class="sc-section-title">Authority URL</h3>
             <div class="sc-url-row">
-                <input type="text" id="sc-lisa-url" class="sc-url-input"
+                <input type="text" id="sc-policy-url" class="sc-url-input"
                     value="${escapeHtml(AUTHORITY_URL())}" placeholder="http://127.0.0.1:7781">
-                <button id="sc-lisa-url-save" class="sc-btn">Save</button>
+                <button id="sc-policy-url-save" class="sc-btn">Save</button>
             </div>
         </section>
     </div>`;
@@ -216,8 +216,8 @@ export async function mountServerControl(mountId = 'server-control-mount') {
     mount.querySelector('#sc-refresh-btn').addEventListener('click', () => refreshAll(mount));
 
     // Wire authority URL save
-    mount.querySelector('#sc-lisa-url-save').addEventListener('click', () => {
-        const val = mount.querySelector('#sc-lisa-url').value.trim();
+    mount.querySelector('#sc-policy-url-save').addEventListener('click', () => {
+        const val = mount.querySelector('#sc-policy-url').value.trim();
         if (val) {
             localStorage.setItem('genysys_resolute_url', val);
             refreshAll(mount);

@@ -4,7 +4,7 @@
  */
 
 import { mountServerControl, unmountServerControl } from '../genysys-server-control.js';
-import { mountProtectsHealth } from '../lisa/protects-health.js';
+import { mountProtectsHealth } from '../protection/protects-health.js';
 import { mountRnkWebview } from './rnk-webviews.js';
 import { mountAdminOps } from '../genysys-admin-ops.js';
 
@@ -24,10 +24,10 @@ function activateSection(sectionId) {
     } else {
         unmountServerControl();
     }
-    if (sectionId === 'lisa') {
-        // Lisa section = P.R.O.T.E.C.T.S. organ health (Resolute-backed),
+    if (sectionId === 'policy') {
+        // Policy section = P.R.O.T.E.C.T.S. organ health (Resolute-backed),
         // not a chat stub.
-        mountProtectsHealth(document.getElementById('lisa-section-mount'));
+        mountProtectsHealth(document.getElementById('policy-section-mount'));
     }
     if (sectionId === 'admin') {
         // Local ops/audit plane (tier-gated inside mountAdminOps).

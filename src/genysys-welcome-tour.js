@@ -1,9 +1,9 @@
 /**
- * GENYSYS™ — Welcome Tour + Daily Lisa Message
+ * G.E.N.E.S.Y.S. — Welcome Tour + Daily Workspace Message
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
  * First sign-in: guided tour + profile setup.
- * Subsequent sign-ins: unique daily message from Lisa, curated per user profile.
+ * Subsequent sign-ins: unique daily message, curated per user profile.
  * Message stored with today's date key — never canned, changes every day.
  */
 
@@ -60,7 +60,7 @@ function buildStubMessage(profile) {
     const hour = new Date().getHours();
     const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
     return {
-        text: `${greeting}${name}. I'm watching over everything. You have my full attention today.`,
+        text: `${greeting}${name}. G.E.N.E.S.Y.S. is ready for your work today.`,
         stub: true,
     };
 }
@@ -89,13 +89,13 @@ function showDailyMessage(msg) {
 const TOUR_STEPS = [
     {
         id: 'welcome',
-        title: 'Welcome to GENYSYS',
-        body: 'GENYSYS is your private workspace — built around Lisa, secured by the chain. Let\'s set up your profile so Lisa knows you.',
+        title: 'Welcome to G.E.N.E.S.Y.S.',
+        body: 'G.E.N.E.S.Y.S. is your private workspace, secured by the policy chain. Let\'s set up your profile so the workspace can be tailored to you.',
         action: 'Begin',
     },
     {
         id: 'name',
-        title: 'What should Lisa call you?',
+        title: 'How should G.E.N.E.S.Y.S. address you?',
         body: '',
         field: { id: 'tour-name', label: 'Your name', placeholder: 'Enter your name' },
         action: 'Next',
@@ -103,14 +103,14 @@ const TOUR_STEPS = [
     {
         id: 'role',
         title: 'What is your role?',
-        body: 'This helps Lisa understand the context of your work.',
+        body: 'This helps tailor the context of your work.',
         field: { id: 'tour-role', label: 'Your role', placeholder: 'e.g. Founder, Engineer, Analyst' },
         action: 'Next',
     },
     {
         id: 'style',
         title: 'How do you prefer to communicate?',
-        body: 'Lisa will match your style.',
+        body: 'G.E.N.E.S.Y.S. will use your preferred style.',
         choices: [
             { id: 'style-direct', label: 'Direct — no fluff, just facts' },
             { id: 'style-conversational', label: 'Conversational — context and explanation' },
@@ -121,8 +121,8 @@ const TOUR_STEPS = [
     {
         id: 'finish',
         title: 'You\'re set.',
-        body: 'Lisa has your profile. Every session she\'ll greet you with something specific to your day. You can update your profile anytime in Settings.',
-        action: 'Enter GENYSYS',
+        body: 'Your profile is ready. Every session can be tailored to your preferences. You can update your profile anytime in Settings.',
+        action: 'Enter G.E.N.E.S.Y.S.',
     },
 ];
 
