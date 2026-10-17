@@ -7,7 +7,7 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "GENYSYS",
+    "productName": "G.E.N.E.S.Y.S.",
     "version": "0.1.0"
   },
   "tauri": {
@@ -63,7 +63,7 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "GENYSYS",
+        "title": "G.E.N.E.S.Y.S.",
         "width": 1280,
         "height": 800,
         "minWidth": 800,

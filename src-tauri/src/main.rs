@@ -375,7 +375,7 @@ fn main() {
     // creation happens before the setup hook runs, and on GPU-less CI runners
     // WebKitGTK init can wedge there — headless verification must observe the
     // gate without depending on webview init succeeding.
-    println!("GENYSYS™ v0.1.0 — P.R.O.T.E.C.T.S.-governed browser (RNK's only client)");
+    println!("G.E.N.E.S.Y.S. v0.1.0 — P.R.O.T.E.C.T.S.-governed browser (RNK's only client)");
     let gate_policy_url = resolve_policy_url();
     if gate_policy_url.is_empty() {
         println!("P.R.O.T.E.C.T.S. mode: embedded local policy (fail-closed)");
