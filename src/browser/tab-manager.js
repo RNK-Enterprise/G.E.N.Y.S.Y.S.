@@ -43,7 +43,7 @@ class TabManager {
         this.renderTabs();
         this.saveTabs();
 
-        if (url === 'genysys://newtab' || url === 'about:blank') {
+        if (url === 'about:blank') {
             this.activateTab(tabId);
         } else {
             this.activateTab(tabId);
@@ -67,7 +67,9 @@ class TabManager {
         // Keep a meaningful restored title while the window loads; tab-meta
         // replaces it with the live page title. Fresh navigations keep the
         // 'Loading...' placeholder createTab stamped.
-        if (!tab.title || tab.title === 'New Tab') tab.title = 'Loading...';
+        if (url !== 'genysys://newtab' && (!tab.title || tab.title === 'New Tab')) {
+            tab.title = 'Loading...';
+        }
         tab.blockedView = null;
         this.renderTabs();
         this.saveTabs();
@@ -76,7 +78,7 @@ class TabManager {
         // status the sync activateTab already wrote. Credit is kept until the
         // navigation settles (genysys:navigate / block / a real navigateTab).
         if (!this._restoreCredits.has(tabId)) {
-            window.updateStatusBar(`Loading ${url}...`);
+            window.updateStatusBar(url === 'genysys://newtab' ? 'Viewing New Tab' : `Loading ${url}...`);
         }
         this.syncContentRect(tabId);
     }
@@ -111,7 +113,7 @@ class TabManager {
         const tab = this.tabs.find(t => t.id === tabId);
         if (!tab) return;
         tab.url = url;
-        if (tab.title === 'New Tab') tab.title = 'Loading...';
+        if (url !== 'genysys://newtab' && tab.title === 'New Tab') tab.title = 'Loading...';
         tab.blockedView = null;
         this.renderTabs();
         this.saveTabs();
@@ -121,7 +123,7 @@ class TabManager {
         if (this._restoreCredits.has(tabId)) {
             this._restoreCredits.delete(tabId);
         } else {
-            window.updateStatusBar(`Loading ${url}...`);
+            window.updateStatusBar(url === 'genysys://newtab' ? 'Viewing New Tab' : `Loading ${url}...`);
         }
         this.syncContentRect(tabId);
     }

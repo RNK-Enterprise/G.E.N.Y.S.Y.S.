@@ -33,8 +33,8 @@ window.SETTINGS_SECTION_RULES = {
 };
 
 window.GENYSYS_SURFACE_RULES = [
-    { selector: '#search-provider-btn', capability: 'genysys-search', mode: 'hide' },
-    { selector: '#search-provider-modal', capability: 'genysys-search', mode: 'hide' },
+    { selector: '#search-provider-btn', capability: 'genysys-browser-core', mode: 'hide' },
+    { selector: '#search-provider-modal', capability: 'genysys-browser-core', mode: 'hide' },
     { selector: '#bookmarks-bar', capability: 'genysys-bookmarks', mode: 'hide' },
     { selector: '#bookmark-btn', capability: 'genysys-bookmarks', mode: 'hide' },
     { selector: '#sessions-btn', capability: 'genysys-browser-core', mode: 'hide' },

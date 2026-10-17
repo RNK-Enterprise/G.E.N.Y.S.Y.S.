@@ -49,7 +49,7 @@ window.bindClickHandlers([
         showSessionsModal();
     }],
     ['search-provider-btn', () => {
-        if (!window.isGENYSYSCapabilityAvailable('genysys-search')) return;
+        if (!window.isGENYSYSCapabilityAvailable('genysys-browser-core')) return;
         window.openSearchProviderModal();
     }],
     ['close-settings', closeSettings],

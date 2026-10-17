@@ -42,6 +42,12 @@ describe('browser: tab-manager core', () => {
         const tab = window.tabManager.createTab();
         expect(tab.url).toBe('genysys://newtab');
         expect(window.tabManager.activeTabId).toBe(tab.id);
+        expect(tauri.__invocations).toEqual(expect.arrayContaining([
+            expect.objectContaining({
+                cmd: 'navigate_tab',
+                args: expect.objectContaining({ tabId: tab.id, url: 'genysys://newtab' }),
+            }),
+        ]));
 
         const external = window.tabManager.createTab('ok.test/page');
         await new Promise((resolve) => setTimeout(resolve, 20));

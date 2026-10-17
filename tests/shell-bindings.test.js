@@ -83,6 +83,13 @@ describe('shell: chrome-bindings', () => {
         expect(performance).toHaveBeenCalledTimes(2);
     });
 
+    test('search provider is available through the shipped browser core', async () => {
+        await bootShell();
+        const search = jest.spyOn(window, 'openSearchProviderModal');
+        document.getElementById('search-provider-btn').click();
+        expect(search).toHaveBeenCalledTimes(1);
+    });
+
     test('density binding setup tolerates a missing settings section toggle', async () => {
         await bootShell();
         document.getElementById('settings-advanced-toggle')?.remove();

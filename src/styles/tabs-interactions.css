@@ -1,9 +1,18 @@
 /* Tab Favicon */
 .tab-favicon {
+    display: inline-flex;
     width: 16px;
+    min-width: 16px;
     height: 16px;
     margin-right: 6px;
+    flex: 0 0 16px;
     flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 8px;
+    line-height: 1;
 }
 
 /* Pin Indicator */

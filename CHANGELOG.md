@@ -11,6 +11,7 @@ mark tagged states of the repository.
 
 - **Removed the obsolete identity subsystem from active runtime surfaces.** Policy bridge/protection modules, native policy commands and state, authentication UI, tests, and current documentation now use product-neutral protection naming while preserving fail-closed authorization.
 - **Standardized visible product naming.** User-facing shell surfaces now display `G.E.N.E.S.Y.S.`; internal package, crate, protocol, and environment identifiers remain stable for compatibility.
+- **Repaired live browser and product surfaces.** Initial `genysys://newtab` navigation now creates its native tab window through the policy gate; fallback tab favicons no longer overlap titles; hidden capability surfaces honor the HTML hidden state; search-provider controls use the shipped browser-core capability; and Raven/Echonet section hosts now occupy their available layout height.
 
 ## [Unreleased] — 2026-10-12
 
