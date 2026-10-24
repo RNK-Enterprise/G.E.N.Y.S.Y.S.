@@ -1,9 +1,9 @@
-//! GENYSYS misc commands — health probes, Raven access requests, DNS lookup.
+//! GENYSYS misc commands — health probes, access-request status, DNS lookup.
 //! Extracted from main.rs (LOC bar).
 
 use crate::AppState;
 use serde_json::json;
-use tauri::{AppHandle, State};
+use tauri::State;
 
 #[tauri::command]
 pub async fn check_policy_health(state: State<'_, AppState>) -> Result<serde_json::Value, String> {
@@ -47,7 +47,6 @@ pub async fn check_policy_health(state: State<'_, AppState>) -> Result<serde_jso
         })),
     }
 }
-
 #[tauri::command]
 pub async fn check_atlas_health(state: State<'_, AppState>) -> Result<serde_json::Value, String> {
     check_policy_health(state).await
@@ -55,43 +54,11 @@ pub async fn check_atlas_health(state: State<'_, AppState>) -> Result<serde_json
 
 #[tauri::command]
 pub async fn request_site_access(
-    domain: String,
-    reason: Option<String>,
-    state: State<'_, AppState>,
+    _domain: String,
+    _reason: Option<String>,
+    _state: State<'_, AppState>,
 ) -> Result<serde_json::Value, String> {
-    let session = state.session.lock().map_err(|e| e.to_string())?.clone();
-    if session.session_token.is_none() {
-        return Err("Not authenticated".into());
-    }
-
-    let raven_url = std::env::var("RAVEN_URL").unwrap_or_else(|_| "http://localhost:3003".into());
-
-    let client = reqwest::Client::builder()
-        .timeout(std::time::Duration::from_secs(10))
-        .build()
-        .map_err(|e| e.to_string())?;
-
-    // GENYSYS attests its own calls too — Raven's /api/genysys/* gate refuses
-    // requests without the X-GENYSYS-Client / X-GENYSYS-Session headers.
-    let token = session.session_token.clone().unwrap_or_default();
-    let resp = client
-        .post(format!("{}/api/genysys/access-request", raven_url))
-        .header("Content-Type", "application/json")
-        .header("Authorization", format!("Bearer {}", token))
-        .header("X-GENYSYS-Client", "1")
-        .header("X-GENYSYS-Session", &token)
-        .header("X-GENYSYS-Tier", &session.access_tier)
-        .json(&json!({
-            "domain": domain,
-            "accessTier": session.access_tier,
-            "reason": reason,
-        }))
-        .send()
-        .await
-        .map_err(|e| e.to_string())?;
-
-    let data: serde_json::Value = resp.json().await.map_err(|e| e.to_string())?;
-    Ok(data)
+    Err("access_request_authority_not_configured".into())
 }
 
 #[tauri::command]
@@ -102,9 +69,5 @@ pub fn turbo_dns_lookup(host: String) -> Result<serde_json::Value, String> {
         .map_err(|e| e.to_string())?
         .map(|a| a.ip().to_string())
         .collect();
-    Ok(json!({ "host": host, "addrs": addrs }))
+    Ok(json!({ "host": host, "addrs": addrs, }))
 }
-
-/// Keep AppHandle import honest if commands change shape later.
-#[allow(dead_code)]
-fn _unused(_a: &AppHandle) {}

@@ -1,6 +1,6 @@
 # GENYSYS Attestation — RNK product surfaces refuse non-GENYSYS clients
 
-Doctrine (2026-09-06, Odinn): **GENYSYS is the only client.** Raven, Echonet, Mail, and the demo product surfaces are usable through GENYSYS; their authenticated/login/API surfaces must refuse a normal browser. Public marketing GETs on `rnk-enterprise.us` may stay world-readable — **login/API may not.**
+Doctrine (2026-09-06, Odinn): **GENYSYS is the only client.** A.R.C.H., the communications platform, Mail, and the demo product surfaces are usable through GENYSYS; their authenticated/login/API surfaces must refuse a normal browser. Public marketing GETs on `rnk-enterprise.us` may stay world-readable — **login/API may not.**
 
 This is the whole contract. No product feature work rides on this file.
 
@@ -44,8 +44,8 @@ app.use('/api', requireGenysysAttestation({ enforced: false }));
 
 | Product | Hook | Mode |
 |---|---|---|
-| Raven | `src/app/api/genysys/**/route.ts` guard helper | enforced on `/api/genysys/*` |
-| Echonet | `server.js` session+control API gate | enforced on session/control endpoints |
+| A.R.C.H. | Product API guard helper | destination contract pending |
+| Communications platform | Session/control API gate | destination contract pending |
 | Mail | `server/server.js` API gate | log-only rollout flag (`GENYSYS_ATTEST_ENFORCE=1` to enforce) |
 | Website demo | `demo/server.js` API gate | log-only rollout flag (`GENYSYS_ATTEST_ENFORCE=1` to enforce) |
 

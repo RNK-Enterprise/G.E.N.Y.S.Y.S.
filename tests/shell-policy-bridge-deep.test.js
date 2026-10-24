@@ -50,7 +50,8 @@ describe('shell: POLICY bridge fallback and session edges', () => {
         expect(await bridge.tauriInvoke('auth_session_info', {})).toMatchObject({ authenticated: false });
         expect(await bridge.tauriInvoke('check_policy_health', {})).toMatchObject({ connected: true });
         expect(await bridge.tauriInvoke('check_genysys_health', {})).toMatchObject({ localPolicy: true });
-        expect(await bridge.tauriInvoke('request_site_access', { domain: 'example.test' })).toMatchObject({ submitted: true });
+        await expect(bridge.tauriInvoke('request_site_access', { domain: 'example.test' }))
+            .rejects.toThrow('access_request_authority_not_configured');
 
         const storageGet = jest.spyOn(Storage.prototype, 'getItem')
             .mockImplementation(() => { throw new Error('storage unavailable'); });
@@ -248,7 +249,7 @@ describe('shell: POLICY auth panel edge paths', () => {
         panel.querySelector('#genysys-auth-submit').click();
         await new Promise((resolve) => setTimeout(resolve, 0));
         expect(panel.querySelector('#genysys-auth-error').textContent)
-            .toBe('Authentication error. GENYSYS native shell required.');
+            .toBe('Authentication error. G.E.N.E.S.Y.S. native shell required.');
 
         Object.defineProperty(panel, 'style', { configurable: true, value: panelStyle });
         window.__TAURI__ = stubTauri({

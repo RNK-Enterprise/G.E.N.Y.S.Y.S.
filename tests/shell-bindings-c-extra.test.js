@@ -68,6 +68,18 @@ describe('shell: chrome-bindings-c', () => {
         window.lastTime = performance.now();
         window.updateFPS();
         expect(window.requestAnimationFrame).toHaveBeenCalled();
+
+        window.startGENYSYSFPS();
+        window.stopGENYSYSFPS();
+        window.stopGENYSYSFPS();
+        window.updateFPS();
+
+        const counter = document.getElementById('fps-counter');
+        counter.remove();
+        window.startGENYSYSFPS();
+        window.lastTime = performance.now() - 1001;
+        window.updateFPS();
+        window.stopGENYSYSFPS();
     });
 
     test('keyboard shortcuts drive browser, session, settings, and runtime actions', async () => {

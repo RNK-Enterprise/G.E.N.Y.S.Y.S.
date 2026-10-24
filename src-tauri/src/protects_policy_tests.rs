@@ -50,7 +50,7 @@ fn unauthenticated_external_navigation_is_blocked() {
 
 #[test]
 fn unauthenticated_rnk_product_navigation_is_blocked() {
-    let p = evaluate_local("https://raven.rnk-enterprise.us/dashboard", &unauth());
+    let p = evaluate_local("https://mail.rnk-enterprise.us/dashboard", &unauth());
     assert_eq!(p.decision, "block");
     assert_eq!(p.reason, "unauthenticated");
 }
@@ -141,7 +141,7 @@ fn privileged_context_never_applies_to_plain_web() {
 #[test]
 fn tab_context_privileged_only_for_rnk_hosts() {
     // Mirrors determine_context expectations via policy's request_privileged.
-    let rnk = evaluate_local("https://echonet.rnk-enterprise.us/", &agent_session("agent"));
+    let rnk = evaluate_local("https://mail.rnk-enterprise.us/", &agent_session("agent"));
     let web = evaluate_local("https://example.com/", &agent_session("agent"));
     assert_eq!(rnk.request_privileged, true);
     assert_eq!(web.request_privileged, false);

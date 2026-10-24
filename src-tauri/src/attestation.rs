@@ -59,7 +59,7 @@ fn header_value(headers: &serde_json::Value, name: &str) -> Option<String> {
 }
 
 /// Validate a request's GENYSYS attestation from headers (server-side mirror of
-/// the JS check used by Raven/Echonet/Mail).
+/// the JS check used by configured RNK product services).
 #[allow(dead_code)] // server-side mirror; see module docs
 pub fn validate(
     headers: &serde_json::Value,

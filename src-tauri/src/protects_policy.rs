@@ -8,14 +8,12 @@ use url::Url;
 
 const INTERNAL_SCHEMES: &[&str] = &["genysys", "about", "data", "blob"];
 
-/// RNK product surfaces. Authenticated GENYSYS sessions may open these; a normal
+/// Configured RNK product surfaces. Authenticated GENYSYS sessions may open these; a normal
 /// browser must be refused by the products' own attestation checks (see
 /// docs/GENYSYS_ATTESTATION.md). `sec.` is the private pentest surface — it is
 /// NOT part of the default agent chrome and is excluded here.
 const RNK_PRODUCT_HOSTS: &[&str] = &[
     "rnk-enterprise.us",
-    "raven.rnk-enterprise.us",
-    "echonet.rnk-enterprise.us",
     "mail.rnk-enterprise.us",
     "demo.rnk-enterprise.us",
     "app.rnk-enterprise.us",

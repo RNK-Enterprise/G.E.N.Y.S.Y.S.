@@ -39,10 +39,10 @@ describe('genysys-welcome-tour', () => {
 
         const overlay = document.getElementById('genysys-tour-overlay');
         expect(overlay).not.toBeNull();
-        expect(document.getElementById('genysys-tour-title').textContent).toBe('Welcome to GENYSYS');
+        expect(document.getElementById('genysys-tour-title').textContent).toBe('Welcome to G.E.N.E.S.Y.S.');
 
         overlay.querySelector('#genysys-tour-action').click();
-        expect(document.getElementById('genysys-tour-title').textContent).toBe('What should Policy call you?');
+        expect(document.getElementById('genysys-tour-title').textContent).toBe('How should G.E.N.E.S.Y.S. address you?');
         document.getElementById('tour-name').value = 'Odinn';
         overlay.querySelector('#genysys-tour-action').click();
         document.getElementById('tour-role').value = 'Architect';

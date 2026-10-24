@@ -110,7 +110,9 @@ elif [ "$RELEASE" = 1 ]; then
   # Bare `cargo build --release` emits the crate name; the tauri CLI build
   # additionally copies it to the productName (tauri.conf package). Accept
   # whichever exists, preferring the CLI layout when present.
-  if [ -f "$ROOT/src-tauri/target/release/genysys" ]; then
+  if [ -f "$ROOT/src-tauri/target/release/g-e-n-e-s-y-s" ]; then
+    BIN="$ROOT/src-tauri/target/release/g-e-n-e-s-y-s"
+  elif [ -f "$ROOT/src-tauri/target/release/genysys" ]; then
     BIN="$ROOT/src-tauri/target/release/genysys"
   elif [ -f "$ROOT/src-tauri/target/release/rnk-genysys" ]; then
     BIN="$ROOT/src-tauri/target/release/rnk-genysys"
@@ -118,7 +120,9 @@ elif [ "$RELEASE" = 1 ]; then
 else
   # Same two-name situation in debug: cargo build emits rnk-genysys, the tauri
   # CLI build copies it to the productName.
-  if [ -f "$ROOT/src-tauri/target/debug/genysys" ]; then
+  if [ -f "$ROOT/src-tauri/target/debug/g-e-n-e-s-y-s" ]; then
+    BIN="$ROOT/src-tauri/target/debug/g-e-n-e-s-y-s"
+  elif [ -f "$ROOT/src-tauri/target/debug/genysys" ]; then
     BIN="$ROOT/src-tauri/target/debug/genysys"
   else
     BIN="$ROOT/src-tauri/target/debug/rnk-genysys"
@@ -156,6 +160,14 @@ wait_win_gone() { # <name-regex> — poll until it disappears
   local waited=0
   while [ "$waited" -lt "$TIMEOUT" ]; do
     have_win "$1" || return 0
+    sleep 1; waited=$((waited + 1))
+  done
+  return 1
+}
+window_id_gone() { # <window-id> — poll until this exact X window is destroyed
+  local window_id=$1 waited=0
+  while [ "$waited" -lt "$TIMEOUT" ]; do
+    if ! xdotool getwindowname "$window_id" >/dev/null 2>&1; then return 0; fi
     sleep 1; waited=$((waited + 1))
   done
   return 1
@@ -239,7 +251,7 @@ drive() { # runs inside the chosen display session
       GENYSYS_TEST_MODE=1 "$BIN" >"$APP_LOG" 2>&1 < /dev/null &
     APP_PID=$!
     echo "app: launched pid $APP_PID ($BIN, attempt $launch)"
-    if wait_win '^GENYSYS$'; then app_ok=1; break; fi
+    if wait_win '^G\.E\.N\.E\.S\.Y\.S\.$'; then app_ok=1; break; fi
     echo "launch attempt $launch: no main window after ${TIMEOUT}s"
     kill -9 -- -"$APP_PID" 2>/dev/null
     tail -8 "$APP_LOG" | sed 's/^/    /'
@@ -249,7 +261,7 @@ drive() { # runs inside the chosen display session
     return 1
   fi
 
-  MAIN=$(xdotool search --onlyvisible --name '^GENYSYS$' | head -1)
+  MAIN=$(xdotool search --onlyvisible --name '^G\.E\.N\.E\.S\.Y\.S\.$' | head -1)
   focus_win "$MAIN"
   echo "main window: up ($MAIN)"
 
@@ -338,7 +350,7 @@ drive() { # runs inside the chosen display session
   for attempt in 1 2 3; do
     focus_win "$MAIN"
     xdotool key --clearmodifiers ctrl+w
-    if wait_win_gone '^GENYSYS Tab$'; then
+    if window_id_gone "$TABWIN"; then
       CLOSED=1
       break
     fi

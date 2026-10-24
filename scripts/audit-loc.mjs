@@ -23,6 +23,9 @@ const EXCLUDE_DIRS = new Set([
   '.git', 'node_modules', 'dist', 'target', 'vendor', '.freebuff',
   'test-results', 'playwright-report', '.pkgconfig', 'coverage',
 ]);
+// A nested checkout owns its own source, generated artifacts, and quality
+// gate. The parent audit must not cross that repository boundary.
+const NESTED_CHECKOUTS = new Set(['H.U.N.T.E.R.']);
 const BINARY_EXT = new Set(['.png', '.ico', '.icns', '.jpg', '.jpeg', '.gif', '.woff', '.woff2']);
 const AUTO_EXEMPT = new Set(['package-lock.json', 'Cargo.lock', 'genysys-manifest.json']);
 
@@ -30,6 +33,7 @@ function* walk(dir) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     if (entry.isDirectory()) {
       if (EXCLUDE_DIRS.has(entry.name)) continue;
+      if (dir === ROOT && NESTED_CHECKOUTS.has(entry.name)) continue;
       yield* walk(path.join(dir, entry.name));
     } else if (entry.isFile()) {
       yield path.join(dir, entry.name);
@@ -73,7 +77,7 @@ function report() {
     '# GENYSYS Platform — LOC Report',
     `**Generated:** ${new Date().toISOString().slice(0, 10)} (by scripts/audit-loc.mjs)`,
     `**LOC Cap:** ${CAP} lines per file (hard limit, hand-written files)`,
-    `**Scope:** all text files, excluding target/, node_modules/, dist/, vendor/`,
+    `**Scope:** all GENYSYS text files, excluding target/, node_modules/, dist/, vendor/, and nested checkouts`,
     '',
   ];
   for (const [dir, files] of byDir) {

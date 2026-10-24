@@ -5,12 +5,12 @@ Questions to Answer
 01: What is Lisa by Definition no the Directory
 02: What is Doomsday
 03: What is Ghost Comms
-04: What is Echonet
+04: What is the communications platform
 05: What is Phantom
 06: What is Axis
 07: What is Halo
 08: What is Mother Lisa
-09: What is Raven
+09: What is A.R.C.H.
 10: What is Xiom
 11: What is Pulse
 12: What is Mail
@@ -27,7 +27,7 @@ The Evidence Package IS the documentation trail. Files are to be written to it, 
 Each node dir is a full deployment.
 The Lisa Directory is where the nodes are built.
 
-1: Every system needs to be built as a stand alone before it can be combined under Echonet
+1: Every system needs to be built as a stand alone before it can be combined under the communications platform
 2: All fixes are build inside the directory and then pushed to the fleet, no building outside of the directories.
 3: Every System gets worked on in it's own directory only
 4: Each system needs a detailed file explaining what the system is, how it works, how it factors into the whole stack.
@@ -135,7 +135,7 @@ By definition she is:
 - Always on. Assume-compromise posture. Encrypted traffic is a signal, not a free pass. She inspects metadata, patterns, identity, rate, and provenance. Relays must not see plaintext.
 - In-process authority, not an adjacent gatekeeper. She evaluates before dispatch. If she is unreachable, traffic blocks; it does not fall open.
 
-How she factors into the whole: Lisa is the mind of the stack. Standalone first, then combined under Echonet. Built and fixed only inside the Lisa directory, then pushed to the fleet. Customer-owned servers; she is not multi-tenant SaaS on RNK’s seven nodes.
+How she factors into the whole: Lisa is the mind of the stack. Standalone first, then combined under the communications platform. Built and fixed only inside the Lisa directory, then pushed to the fleet. Customer-owned servers; she is not multi-tenant SaaS on RNK’s seven nodes.
 
 Sources used (additive, not overwritten): Evidence Package Canonical Source of Truth / LISA_COMPLETE_SYSTEM_PROFILE.md; LISA_ATLAS_TECHNICAL_DEFINITION.md; Lisa/STACK_FULL_CONTEXT.md; Lisa/README.md; Docs/CURRENT_TRUTH.md; Docs/02_Technical/RNK_Whitepaper.md; Docs/11_Sales_Marketing/RNK_HALO_CAPABILITY_BRIEF.md; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md; lisa-personality-profile.md.
 
@@ -143,15 +143,15 @@ Sources used (additive, not overwritten): Evidence Package Canonical Source of T
 
 Genysys is a web browser. That is the definition.
 
-It is RNK’s own desktop browser: tabs, omnibox, bookmarks, history, downloads, settings, and a system webview that loads pages. Package name is `rnk-genysys`. Bundle id `com.rnk.genysys`. Tree: `/media/odinn/privacy-sys/G.E.N.Y.S.Y.S.`. It is a Tauri client (Rust + JS / WebKit). The first section in the live UI is labeled Browser. It is the trusted browser so agents do not open Raven or Echonet in Chrome.
+It is RNK’s own desktop browser: tabs, omnibox, bookmarks, history, downloads, settings, and a system webview that loads pages. Package name is `rnk-genysys`. Bundle id `com.rnk.genysys`. Tree: `/media/odinn/privacy-sys/G.E.N.Y.S.Y.S.`. It is a Tauri client (Rust + JS / WebKit). The first section in the live UI is labeled Browser. It is the trusted browser so agents do not open A.R.C.H. or the communications platform in Chrome.
 
-It is also the single controlled access environment for the platform, because this browser is the only intended client. C.O.M.M.A.N.D. / Resolute grants the session; P.R.O.T.E.C.T.S. policy clears every navigation fail-closed. After auth, the same window holds P.R.O.T.E.C.T.S. health, Operations, People, Comms, Server Control, and Admin. Raven and Echonet are pages/webviews inside this browser.
+It is also the single controlled access environment for the platform, because this browser is the only intended client. C.O.M.M.A.N.D. / Resolute grants the session; P.R.O.T.E.C.T.S. policy clears every navigation fail-closed. After auth, the same window holds P.R.O.T.E.C.T.S. health, Operations, People, Comms, Server Control, and Admin. A.R.C.H. and the communications platform are pages/webviews inside this browser when authoritative destinations exist.
 
 **Naming history (locked 2026-10-12):** Atlas Browser → Axis → V.E.I.L. → **G.E.N.Y.S.Y.S. / Genysys** (the beginning). Do not conflate with **Obfuscation Veil Array** (P.R.O.T.E.C.T.S. Seat-2 organ). Wire scheme `genysys://`; attestation headers `X-GENYSYS-*`; cookie `genysys_attest`.
 
 Who uses this browser:
 - Creator: full browser + full ops plane. 4-layer biosig (fingerprint → jump drive → face/voice → session). HeartbeatMonitor armed. Session is C.O.M.M.A.N.D.-gated; heartbeat drop closes every tab.
-- Agents in the field: tenant-scoped Genysys browser. Biosig via Field App over UWB / BLE / QR. Their Raven and Echonet only.
+- Agents in the field: tenant-scoped Genysys browser. Biosig via Field App over UWB / BLE / QR. Their A.R.C.H. and communications-platform surfaces only.
 - Agencies use Genysys for RNK product surfaces (Odinn 2026-09-06 supersede). Public marketing may stay world-readable; login/API refuse a normal browser.
 
 What it is not:
@@ -161,7 +161,7 @@ What it is not:
 - Not Obfuscation Veil Array (Seat-2 gauntlet / honeypot).
 - Not the Foundry public performance browser. That is a split product.
 
-How it factors into the whole: Genysys is the browser the stack is used through. P.R.O.T.E.C.T.S. is the mind/policy behind it. Raven and Echonet are sites/apps it opens under that session. Built and fixed only inside the `G.E.N.Y.S.Y.S.` directory.
+How it factors into the whole: Genysys is the browser the stack is used through. P.R.O.T.E.C.T.S. is the mind/policy behind it. A.R.C.H. and the communications platform are sites/apps it opens under that session when configured. Built and fixed only inside the `G.E.N.Y.S.Y.S.` directory.
 
 Sources used (additive, not overwritten): GENYSYS.md; package.json (`rnk-genysys`); Evidence Package AXIS_ARCHITECTURE.md (historical); Docs/02_Technical/RNK_System_Architecture.md.
 
@@ -189,7 +189,7 @@ What it is not (do not collapse):
 - Not the rnkstudios.uk Postfix/Dovecot homelab stack. That is a different mail host.
 - Not alerts@ warmup. Warmup is personal/business sender reputation, not the agency mailbox.
 
-How it factors into the whole: Mail is the mailbox. Ghost Comms is the pipe. Lisa watches the pipe. Axis can open the mailbox. Built and fixed only inside the Mail directory. Standalone first, then combined under Echonet.
+How it factors into the whole: Mail is the mailbox. Ghost Comms is the pipe. Lisa watches the pipe. Axis can open the mailbox. Built and fixed only inside the Mail directory. Standalone first, then combined under the communications platform.
 
 Sources used (additive, not overwritten): Mail/README.md; Mail/mail/package.json; Mail/mail/docs/v2-feature-build.md; Mail/mail/docs/server-modules-send-adapter.md; Docs/02_Technical/RNK_System_Architecture.md; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md.
 
@@ -232,34 +232,34 @@ What it is not:
 - Not Lisa. Lisa watches the pipe.
 - Not Mail. Mail is the mailbox that can hand mail to this pipe.
 - Not Phantom (Q05). Phantom is the redesigned / covert-chain lineage. Do not collapse them.
-- Not Echonet. Echonet is the buyer-facing UI that uses this pipe.
+- Not the communications platform. The communications platform is the buyer-facing UI that uses this pipe.
 - Not the RPi noise box. That is a red herring.
 
-How it factors into the whole: Ghost Comms is the product you pitch. Lisa is the surprise that comes with it. Demo connection is demo.rnkenterprise.us, not the EU demo VPS boxes. Built and fixed only inside the Ghost Comms directory. Standalone first, then combined under Echonet.
+How it factors into the whole: Ghost Comms is the product you pitch. Lisa is the surprise that comes with it. Demo connection is demo.rnkenterprise.us, not the EU demo VPS boxes. Built and fixed only inside the Ghost Comms directory. Standalone first, then combined under the communications platform.
 
 Sources used (additive, not overwritten): Rules doc lock (Cyphur Ghost Comms V2); Lisa/STACK_FULL_CONTEXT.md; Ghost Comms/GHOST_COMMS_BUILD_PLAN.md; Ghost Comms/CYPHUR_CHAIN_VNEXT_COMPLETE_ARCHITECTURE.md; Docs/02_Technical/RNK_Whitepaper.md; Docs/11_Sales_Marketing/RNK_TRADEWINDS_SUBMISSION.md; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md.
 
-04: What is Echonet
+04: What is the communications platform
 
-Echonet is the buyer-facing communications workspace. It is the product UI over the unchanged Ghost Comms chain. Never call it Genysys.
+The communications platform is the buyer-facing communications workspace. It is the product UI over the unchanged Ghost Comms chain. It has no replacement product name yet. Never call it Genysys.
 
 What it is:
 - Standalone browser room: branded shell, room chat, files, voice, multi-feed video, waiting-room roster.
 - FIDO2 / passkey unlock. Shortcode routes on rnk-enterprise.us. Session-only: logout wipe. Login does not persist.
 - Dual feel: static webmail vs active workspace, so two-way use does not break traffic shape. Mode is shortcode uiMode, not a login picker.
-- Pairs with Raven (admin/CRM). Messaging and email go through Ghost Comms. Pulse is A/V through Echonet.
-- Axis embeds Echonet as a webview. Agencies can hit Echonet directly. They do not need the Axis browser.
+- Pairs with A.R.C.H. (admin/CRM). Messaging and email go through Ghost Comms. Pulse is A/V through the communications platform.
+- GENYSYS embeds the communications platform as a webview when an authoritative destination is configured. Agencies use the owning access path; they do not bypass the intended access controls.
 
 What it is not:
-- Not Ghost Comms. Ghost is the pipe. Echonet is the room that uses the pipe.
-- Not Raven. Raven is CRM / agency admin.
-- Not Axis. Axis is the browser that can open Echonet.
-- Not Pulse. Pulse is the voice/video layer through Echonet.
-- Not Genysys. That name is retired for this product.
+- Not Ghost Comms. Ghost is the pipe. The communications platform is the room that uses the pipe.
+- Not A.R.C.H. A.R.C.H. is CRM / agency admin.
+- Not Axis. Axis is the browser layer, distinct from the communications platform.
+- Not Pulse. Pulse is the voice/video layer through the communications platform.
+- Not Genysys. That name is reserved for the browser.
 
-How it factors into the whole: Echonet is the wrapper the buyer sits in. Ghost is the transport under it. Raven is the admin next to it. Axis is the trusted browser around it. Systems are built standalone first, then combined under Echonet. Built and fixed only inside the Echonet directory.
+How it factors into the whole: The communications platform is the wrapper the buyer sits in. Ghost is the transport under it. A.R.C.H. is the admin next to it. Axis is the trusted browser around it. Systems are built standalone first, then combined under the communications platform. Its replacement product name and authoritative destination remain pending.
 
-Sources used (additive, not overwritten): Echonet/README.md; Echonet/CURRENT-STATUS.md; Docs/02_Technical/RNK_System_Architecture.md; Lisa/STACK_FULL_CONTEXT.md; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md.
+Sources used (additive, not overwritten): owning communications-platform documentation; Docs/02_Technical/RNK_System_Architecture.md; Lisa/STACK_FULL_CONTEXT.md; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md.
 
 05: What is Phantom
 
@@ -273,10 +273,10 @@ What it is:
 What it is not:
 - Not the phone service. Phone collided with this name and was locked as Prysum. Older threads that call the handset Phantom are superseded.
 - Not the DocuSeal monorepo. The Phantom/README.md still describes a DocuSeal stack; that is leftover text, not this system.
-- Not Echonet. Echonet is the buyer UI over the chain.
+- Not the communications platform. The communications platform is the buyer UI over the chain.
 - Not Pulse. Pulse is A/V.
 
-How it factors into the whole: Ghost Comms is the product name and the live/proof lineage. Phantom is the redesigned chain under that family. Lisa watches every hop. Built and fixed only inside the Phantom directory. Standalone first, then combined under Echonet.
+How it factors into the whole: Ghost Comms is the product name and the live/proof lineage. Phantom is the redesigned chain under that family. Lisa watches every hop. Built and fixed only inside the Phantom directory. Standalone first, then combined under the communications platform.
 
 Sources used (additive, not overwritten): Phantom/core/TOPOLOGY_REFERENCE.txt; Phantom/relay-bridge/; Phantom/rpi/; Phantom/README.md (leftover DocuSeal text — not the definition); AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md (Phantom = redesigned Ghost chain lock).
 
@@ -294,10 +294,10 @@ What it is:
 What it is not:
 - Not Ghost Comms. Ghost is the pipe Halo exfils through.
 - Not Lisa. Lisa is the authority that receives / shreds / guards.
-- Not Pulse. Pulse is voice/video through Echonet.
-- Not Echonet. Echonet is the buyer workspace.
+- Not Pulse. Pulse is voice/video through the communications platform.
+- Not the communications platform. The communications platform is the buyer workspace.
 
-How it factors into the whole: Halo is the collector. The chain is the courier. Lisa is the mind at the far end. Built and fixed only inside the Halo directory. Standalone first, then combined under Echonet.
+How it factors into the whole: Halo is the collector. The chain is the courier. Lisa is the mind at the far end. Built and fixed only inside the Halo directory. Standalone first, then combined under the communications platform.
 
 Sources used (additive, not overwritten): Halo/stealth/HaloController.js; Halo/models/HaloConfig.js; Halo/collectors/; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md.
 
@@ -322,25 +322,25 @@ How it factors into the whole: Without this app, upgraded Lisa has no handshake 
 
 Sources used (additive, not overwritten): Evidence Package Canonical Source of Truth / MOTHER_LISA_APP_BUILD_PLAN.md; AXIS_ARCHITECTURE.md; LISA_COMPLETE_SYSTEM_PROFILE.md; Lisa/STACK_FULL_CONTEXT.md; Mother Lisa App/releases/; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md.
 
-09: What is Raven
+09: What is A.R.C.H.
 
-Raven is the CRM. It is the agency admin / system-of-record. Next.js app, Prisma, live path https://rnk-ent.us/raven (port 3001 behind TLS).
+A.R.C.H. is the CRM. It is the agency admin / system-of-record. Next.js app and Prisma-backed product; its live destination is configured by the owning product contract.
 
 What it is:
 - Contacts, organizations, leads, opportunities, partners, proposals, contracts, tasks, audit, company library.
 - Government-contracting CRM and pursuit command center. Standalone. Runs on production servers, not a workstation toy.
-- Axis embeds Raven as a webview. Agencies use Raven directly. Field shortcodes live on nws88.uk.
-- Enrollment / identity / operator UI sit next to the CRM. CRM scope must not rewrite Ghost, Mail, Axis, or Echonet.
+- GENYSYS embeds A.R.C.H. as a webview when an authoritative destination is configured. Agencies use A.R.C.H. through its intended access path. Field shortcodes live on nws88.uk.
+- Enrollment / identity / operator UI sit next to the CRM. CRM scope must not rewrite Ghost, Mail, Axis, or the communications platform.
 
 What it is not:
-- Not Axis. Axis is the browser that can open Raven.
-- Not Echonet. Echonet is the comms workspace.
+- Not Axis. Axis is the browser layer that can open A.R.C.H.
+- Not the communications platform. The communications platform is the comms workspace.
 - Not Mail. Mail is the mailbox.
 - Not Lisa. Lisa guards and audits.
 
-How it factors into the whole: Raven is the books and the roster. Echonet is the room. Axis is the browser. Built and fixed only inside the Raven directory. Standalone first, then combined under Echonet.
+How it factors into the whole: A.R.C.H. is the books and the roster. The communications platform is the room. Axis is the browser. Built and fixed only inside the A.R.C.H. directory. Standalone first, then combined under the communications platform.
 
-Sources used (additive, not overwritten): Raven/README.md; Raven/RAVEN_CRM_FEATURE_SPECIFICATION.md; Docs/02_Technical/RNK_System_Architecture.md; Evidence Package Canonical Source of Truth / AXIS_ARCHITECTURE.md.
+Sources used (additive, not overwritten): A.R.C.H. product documentation; Docs/02_Technical/RNK_System_Architecture.md; Evidence Package Canonical Source of Truth / AXIS_ARCHITECTURE.md.
 
 10: What is Xiom
 
@@ -349,7 +349,7 @@ Xiom is the mobile / gateway / device-aware layer. It is how phones and field en
 What it is:
 - Two trees in the Xiom directory: rnk-lisa-android-endpoint (Kotlin field/endpoint app) and rnk-lisa-mobile-gateway (Fastify gateway).
 - Gateway routes: admin, commands, enrollment, events, heartbeat, incidents, intel, lisa-conversation, lisa-owner, owner, policy.
-- Device-aware middleware: detect desktop/mobile/tablet, adapt UI, codec, sync, resources. Quality adapter already exists in Echonet; Xiom is the device layer.
+- Device-aware middleware: detect desktop/mobile/tablet, adapt UI, codec, sync, resources. Quality adapter already exists in the communications platform; Xiom is the device layer.
 - Mother Lisa app source historically lives under this Xiom android-endpoint path. Mother Lisa (Q08) is the creator-only activation app. Xiom is the broader mobile/gateway surface. Do not collapse them.
 
 What it is not:
@@ -358,18 +358,18 @@ What it is not:
 - Not Pulse. Pulse is voice on the chain.
 - Not Prysum. Prysum is the phone service name.
 
-How it factors into the whole: Xiom is the field door. Lisa is the mind. Mother Lisa is the creator key. Built and fixed only inside the Xiom directory. Standalone first, then combined under Echonet.
+How it factors into the whole: Xiom is the field door. Lisa is the mind. Mother Lisa is the creator key. Built and fixed only inside the Xiom directory. Standalone first, then combined under the communications platform.
 
-Sources used (additive, not overwritten): Xiom/rnk-lisa-mobile-gateway/; Xiom/rnk-lisa-android-endpoint/; Raven/README.md; Lisa/STACK_FULL_CONTEXT.md; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md.
+Sources used (additive, not overwritten): Xiom/rnk-lisa-mobile-gateway/; Xiom/rnk-lisa-android-endpoint/; A.R.C.H. product documentation; Lisa/STACK_FULL_CONTEXT.md; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md.
 
 11: What is Pulse
 
-Pulse is tactical voice / video through the Ghost Comms chain. It is A/V for Echonet, not a phone company and not the mailbox.
+Pulse is tactical voice / video through the Ghost Comms chain. It is A/V for the communications platform, not a phone company and not the mailbox.
 
 What it is:
 - Package pulse-ghost. Zero-dependency CLI and core: call, listen, codec, FEC, noise-emitter, voice-transport.
 - Voice packets are encrypted, fragmented, and sent on the same chain as Ghost messages, tuned for real-time (tighter jitter, smaller payloads, continuous stream).
-- Echonet holds Pulse browser/worklet code (audio, call, video, noise). Pulse is the A/V layer through Echonet.
+- The communications platform holds Pulse browser/worklet code (audio, call, video, noise). Pulse is its A/V layer.
 
 What it is not:
 - Not Prysum. Prysum is the phone service. Pulse is not a carrier plan.
@@ -377,9 +377,9 @@ What it is not:
 - Not Halo. Halo is collection, not a call.
 - Not Mail.
 
-How it factors into the whole: Pulse is the voice. Ghost is the pipe. Echonet is the room you hear it in. Built and fixed only inside the Pulse directory. Standalone first, then combined under Echonet.
+How it factors into the whole: Pulse is the voice. Ghost is the pipe. The communications platform is the room you hear it in. Built and fixed only inside the Pulse directory. Standalone first, then combined under the communications platform.
 
-Sources used (additive, not overwritten): Pulse/package.json; Pulse/pulse.js; Pulse/core/voice-transport.js; Echonet/scripts/pulse/; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md.
+Sources used (additive, not overwritten): Pulse/package.json; Pulse/pulse.js; Pulse/core/voice-transport.js; owning communications-platform documentation; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md.
 
 13: What is Anvil
 
@@ -450,7 +450,7 @@ What it is:
 - Public story: Ghost Comms, P.R.O.T.E.C.T.S. (Lisa), Cyphur Chain, C.O.M.M.A.N.D.
 
 What it is not:
-- Not Echonet. Not Axis. Not Mail. Not the Anvil locker.
+- Not the communications platform. Not Axis. Not Mail. Not the Anvil locker.
 
 How it factors into the whole: One public door. Built and fixed only inside the P.O.R.T.A.L. directory.
 
@@ -475,6 +475,6 @@ What it is not:
 - Not Lisa. XL renders her state; it is not her.
 - Not Mother Lisa. She remains the creator-only activation app on both platforms.
 
-How it factors into the whole: Xiom XL is the desktop door; Xiom is the mobile door. Lisa is the mind, Ghost the pipe, Mother Lisa the creator key. Built and fixed only inside the Xiom-XL directory (Rules #3), with its own git, memory, and agent dir (Rules #8). Standalone first, then combined under Echonet.
+How it factors into the whole: Xiom XL is the desktop door; Xiom is the mobile door. Lisa is the mind, Ghost the pipe, Mother Lisa the creator key. Built and fixed only inside the Xiom-XL directory (Rules #3), with its own git, memory, and agent dir (Rules #8). Standalone first, then combined under the communications platform.
 
 Sources used (additive, not overwritten): Xiom-XL/README.md (2026-09-10 OS lock); Xiom-XL/GATE.md (2026-09-10, session-manager-as-gate spec); Xiom-XL/flake.nix; Xiom-XL/modules/; Xiom-XL/agent/AGENT.md; Xiom-OS.md; Xiom-Session-Contract.md; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md.

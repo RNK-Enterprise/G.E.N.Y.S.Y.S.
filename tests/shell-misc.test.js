@@ -159,28 +159,27 @@ describe('shell/tauri-api', () => {
 });
 
 describe('shell/rnk-webviews', () => {
-    test('privileged webview shell renders and the iframe fallback mounts Raven', async () => {
-        delete window.__TAURI__;
+    test('operations surface identifies A.R.C.H. without inventing a destination', async () => {
         await bootShell();
         const { mountRnkWebview } = await import(srcUrl('shell/rnk-webviews.js'));
         mountRnkWebview('operations');
         const mount = document.getElementById('rnk-webview-operations');
-        expect(mount.querySelector('.rnk-webview-url').textContent).toBe('https://raven.rnk-enterprise.us/dashboard');
-        expect(mount.querySelector('iframe.rnk-webview').getAttribute('src')).toBe(
-            'https://raven.rnk-enterprise.us/dashboard',
-        );
-        expect(mount.querySelector('#rnk-webview-note-operations').hidden).toBe(true);
+        expect(mount.textContent).toContain('A.R.C.H.');
+        expect(mount.textContent).toContain('Operations surface');
+        expect(mount.querySelector('.rnk-webview-url').textContent).toBe('Destination not configured');
+        expect(mount.querySelector('iframe')).toBeNull();
     });
 
-    test('Echonet comms target mounts over the previous frame', async () => {
-        delete window.__TAURI__;
+    test('people and comms surfaces remain inert until contracts are configured', async () => {
         await bootShell();
         const { mountRnkWebview } = await import(srcUrl('shell/rnk-webviews.js'));
+        mountRnkWebview('people');
         mountRnkWebview('comms');
-        const mount = document.getElementById('rnk-webview-comms');
-        expect(mount.querySelector('iframe.rnk-webview').getAttribute('src')).toBe(
-            'https://echonet.rnk-enterprise.us/',
+        expect(document.getElementById('rnk-webview-people').textContent).toContain('Users database');
+        expect(document.getElementById('rnk-webview-comms').textContent).toContain(
+            'Replacement platform name not configured',
         );
+        expect(document.querySelectorAll('.rnk-webview-host iframe')).toHaveLength(0);
     });
 
     test('each product section receives its own webview host id', async () => {
@@ -195,82 +194,6 @@ describe('shell/rnk-webviews', () => {
             'rnk-webview-host-people',
             'rnk-webview-host-comms',
         ]);
-    });
-
-    test('native shell without a tab manager surfaces the honest degraded note', async () => {
-        await bootShell();
-        window.__TAURI__ = { ...window.__TAURI__, invoke: jest.fn() };
-        const originalTabManager = window.tabManager;
-        window.tabManager = null;
-        const { mountRnkWebview } = await import(srcUrl('shell/rnk-webviews.js'));
-        mountRnkWebview('people');
-        await new Promise((resolve) => setTimeout(resolve, 0));
-        const note = document.querySelector('#rnk-webview-note-people');
-        expect(note.hidden).toBe(false);
-        expect(note.textContent).toContain('RNK product unreachable');
-        window.tabManager = originalTabManager;
-    });
-
-    test('native shell opens a product through the browser tab manager', async () => {
-        await bootShell();
-        window.__TAURI__ = { ...window.__TAURI__, invoke: jest.fn() };
-        const createTab = jest.spyOn(window.tabManager, 'createTab').mockReturnValue({ id: 9 });
-        const activateSection = jest.spyOn(window, 'activateSection').mockImplementation(() => {});
-        const { mountRnkWebview } = await import(srcUrl('shell/rnk-webviews.js'));
-        mountRnkWebview('people');
-        await new Promise((resolve) => setTimeout(resolve, 0));
-        expect(activateSection).toHaveBeenCalledWith('browser');
-        expect(createTab).toHaveBeenCalledWith('https://raven.rnk-enterprise.us/hr');
-        expect(document.querySelector('#rnk-webview-note-people').hidden).toBe(true);
-        activateSection.mockRestore();
-        createTab.mockRestore();
-    });
-
-    test('webview fallback reports DOM failures without pretending success', async () => {
-        delete window.__TAURI__;
-        await bootShell();
-        const { mountRnkWebview } = await import(srcUrl('shell/rnk-webviews.js'));
-        const createElement = document.createElement;
-        document.createElement = () => { throw new Error('dom failure'); };
-        try {
-            mountRnkWebview('operations');
-            await new Promise((resolve) => setTimeout(resolve, 0));
-            const note = document.querySelector('#rnk-webview-note-operations');
-            expect(note.hidden).toBe(false);
-            expect(note.textContent).toContain('RNK product unreachable');
-        } finally {
-            document.createElement = createElement;
-        }
-    });
-
-    test('webview fallback reports a missing host without throwing', async () => {
-        delete window.__TAURI__;
-        await bootShell();
-        const { mountRnkWebview } = await import(srcUrl('shell/rnk-webviews.js'));
-        const mount = document.getElementById('rnk-webview-operations');
-        const querySelector = mount.querySelector.bind(mount);
-        mount.querySelector = (selector) => (
-            selector === '#rnk-webview-host-operations' ? null : querySelector(selector)
-        );
-        mountRnkWebview('operations');
-        await new Promise((resolve) => setTimeout(resolve, 0));
-        const note = querySelector('#rnk-webview-note-operations');
-        expect(note.hidden).toBe(false);
-        expect(note.textContent).toContain('RNK product unreachable');
-    });
-
-    test('webview open tolerates a missing status note', async () => {
-        delete window.__TAURI__;
-        await bootShell();
-        const { mountRnkWebview } = await import(srcUrl('shell/rnk-webviews.js'));
-        const mount = document.getElementById('rnk-webview-operations');
-        const querySelector = mount.querySelector.bind(mount);
-        mount.querySelector = (selector) => (
-            selector === '#rnk-webview-note-operations' ? null : querySelector(selector)
-        );
-        mountRnkWebview('operations');
-        await new Promise((resolve) => setTimeout(resolve, 0));
-        expect(querySelector('#rnk-webview-host-operations iframe')).not.toBeNull();
     });
 
     test('unknown section and missing mount are no-ops', async () => {

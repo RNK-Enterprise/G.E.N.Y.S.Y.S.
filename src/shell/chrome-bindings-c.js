@@ -65,19 +65,41 @@ function setGENYSYSBridgePerformanceState(connected) {
 // FPS Counter
 window.lastTime = performance.now();
 window.frameCount = 0;
+let fpsFrame = null;
+let fpsRunning = false;
 
 function updateFPS() {
+    if (!fpsRunning) return;
     window.frameCount++;
     const now = performance.now();
     if (now - window.lastTime >= 1000) {
-        document.getElementById('fps-counter').textContent = `${window.frameCount} FPS`;
+        const counter = document.getElementById('fps-counter');
+        if (counter) counter.textContent = `${window.frameCount} FPS`;
         window.frameCount = 0;
         window.lastTime = now;
     }
-    requestAnimationFrame(updateFPS);
+    fpsFrame = requestAnimationFrame(updateFPS);
 }
 
-updateFPS();
+function startGENYSYSFPS() {
+    if (fpsRunning) return;
+    fpsRunning = true;
+    window.lastTime = performance.now();
+    window.frameCount = 0;
+    updateFPS();
+}
+
+function stopGENYSYSFPS() {
+    fpsRunning = false;
+    if (fpsFrame !== null && typeof cancelAnimationFrame === 'function') {
+        cancelAnimationFrame(fpsFrame);
+    }
+    fpsFrame = null;
+}
+
+window.startGENYSYSFPS = startGENYSYSFPS;
+window.stopGENYSYSFPS = stopGENYSYSFPS;
+startGENYSYSFPS();
 
 // ===================================================================
 // Keyboard Shortcuts

@@ -14,7 +14,7 @@
     justify-content: center;
     background: radial-gradient(ellipse at 40% 30%, rgba(138, 180, 248, 0.08) 0%, transparent 60%),
                 linear-gradient(180deg, #0a1120 0%, #10192b 100%);
-    /* grid overlay like Raven */
+/* grid overlay for the access surface */
     background-image: radial-gradient(ellipse at 40% 30%, rgba(138, 180, 248, 0.08) 0%, transparent 60%),
                       linear-gradient(rgba(138, 180, 248, 0.03) 1px, transparent 1px),
                       linear-gradient(90deg, rgba(138, 180, 248, 0.03) 1px, transparent 1px),

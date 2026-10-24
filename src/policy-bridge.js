@@ -112,7 +112,7 @@ function _devFallback(command, args) {
     case 'check_genysys_health':
       return { connected: true, mode: 'local', localPolicy: true, policyUrl: '' }
     case 'request_site_access':
-      return { submitted: true, requestId: 'dev-' + Date.now() }
+      return Promise.reject(new Error('access_request_authority_not_configured'))
     default:
       return null
   }

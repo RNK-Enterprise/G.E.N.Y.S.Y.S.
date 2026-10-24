@@ -12,7 +12,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import url from 'node:url';
-import { jest } from '@jest/globals';
+import { afterEach as jestAfterEach, jest } from '@jest/globals';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 export const ROOT = path.resolve(__dirname, '../..');
@@ -136,6 +136,13 @@ export function resetModuleRegistry() {
 const __originalAdd = EventTarget.prototype.addEventListener;
 const __originalRemove = EventTarget.prototype.removeEventListener;
 const __tracked = [];
+
+// Shell suites boot the real runtime repeatedly. Stop it after every test so
+// the final test in a file cannot leave live turbo timers in the Jest process.
+jestAfterEach(() => {
+    try { window.genysysRuntime?.stop?.(); } catch { /* already gone */ }
+    try { window.stopGENYSYSFPS?.(); } catch { /* already gone */ }
+});
 
 if (!globalThis.__genysysListenerAuditInstalled) {
     globalThis.__genysysListenerAuditInstalled = true;

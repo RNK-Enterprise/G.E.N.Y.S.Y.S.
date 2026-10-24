@@ -11,7 +11,7 @@ You are in the **G.E.N.E.S.Y.S.** tree. G.E.N.E.S.Y.S. is RNK's **only client / 
 
 ## Job
 
-Be the door. Session from C.O.M.M.A.N.D. (Resolute). Every navigation cleared by in-process P.R.O.T.E.C.T.S. policy (fail-closed). Raven, Echonet, Mail, and other RNK product surfaces open **inside G.E.N.E.S.Y.S.**. Their login/API surfaces refuse a normal browser.
+Be the door. Session from C.O.M.M.A.N.D. (Resolute). Every navigation cleared by in-process P.R.O.T.E.C.T.S. policy (fail-closed). A.R.C.H., Mail, the communications platform, and other RNK product surfaces open **inside G.E.N.E.S.Y.S.**. Their login/API surfaces refuse a normal browser.
 
 Public marketing on `rnk-enterprise.us` may stay world-readable. Login/API may not.
 
@@ -24,7 +24,7 @@ C.O.M.M.A.N.D. / Resolute  (master key, session grant)
   -> G.E.N.E.S.Y.S. shell     (Tauri + Vite chrome, tabs, omnibox)
        P.R.O.T.E.C.T.S. policy in Rust clears every nav
        Attestation headers on RNK product hosts
-  -> Raven / Echonet / Mail / Command chrome  (webviews inside GENYSYS)
+  -> A.R.C.H. / communications platform / Mail / Command chrome  (webviews inside GENYSYS)
 ```
 
 G.E.N.E.S.Y.S. opens **after** the key app. G.E.N.E.S.Y.S. does not replace it.
@@ -74,16 +74,16 @@ Iframe cookie bootstrap: native `attestation_bootstrap` → `genysys_attest`. Co
 
 | Product | Mode as of 2026-09-06 |
 |---|---|
-| Raven `/api/genysys/*` | **enforced** |
-| Echonet session/control | **enforced** |
+| A.R.C.H. product APIs | **destination contract pending** |
+| Communications platform session/control | **destination contract pending** |
 | Mail `/api` | **log-only** until `GENYSYS_ATTEST_ENFORCE=1` |
 | Website demo `/api` | **log-only** until `GENYSYS_ATTEST_ENFORCE=1` |
 
 ## Chrome
 
-Browser (default). P.R.O.T.E.C.T.S. health (Resolute). Ops/People = Raven webviews. Comms = Echonet webview. Server Control = Resolute. Admin = local audit. Sidebar was removed 2026-09-06; Spotlight (Ctrl+K) is the launcher.
+Browser (default). P.R.O.T.E.C.T.S. health (Resolute). Ops/People = A.R.C.H. surfaces. Comms = unnamed communications platform surface. Server Control = Resolute. Admin = local audit. Sidebar was removed 2026-09-06; Spotlight (Ctrl+K) is the launcher.
 
-Webview hosts in `src/shell/rnk-webviews.js`: `raven.rnk-enterprise.us`, `echonet.rnk-enterprise.us`.
+Product destinations in `src/shell/rnk-webviews.js` remain intentionally unconfigured until their owning contracts provide authoritative routes.
 
 Health default Resolute URL in the panel is still `http://127.0.0.1:7781` (localStorage `genysys_resolute_url`). That is **not** live C.O.M.M.A.N.D. Do not treat it as the fleet.
 

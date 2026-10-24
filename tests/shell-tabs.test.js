@@ -56,6 +56,9 @@ describe('browser: tab-manager core', () => {
         const cmds = tauri.__invocations.map((i) => i.cmd);
         expect(cmds).toContain('navigate_tab');
         expect(cmds).toContain('tab_window_sync_rect');
+
+        const blank = window.tabManager.createTab('about:blank');
+        expect(window.tabManager.activeTabId).toBe(blank.id);
     });
 
     test('onPolicyAllowed refreshes state and syncs window rect', async () => {
@@ -114,17 +117,22 @@ describe('browser: tab-manager core', () => {
         window.tabManager.onTauriNavigate(tab.id, 'https://nav.test/', 'normal', false);
         expect(tab.url).toBe('https://nav.test/');
         expect(tab.blockedView).toBeNull();
+        window.tabManager.onTauriNavigate(tab.id, 'genysys://newtab', 'normal', false);
+        expect(document.getElementById('status-text').textContent).toBe('Viewing New Tab');
 
-        window.tabManager.onTabMeta(tab.id, { title: 'Real Title', url: 'https://nav.test/final' });
+        window.tabManager.onTabMeta(tab.id, { title: 'Real Title', url: 'https://nav.test/updated' });
         expect(tab.title).toBe('Real Title');
-        expect(document.getElementById('omnibox').value).toBe('https://nav.test/final');
+        expect(document.getElementById('omnibox').value).toBe('https://nav.test/updated');
         expect(document.getElementById('status-text').textContent).toBe('Real Title');
 
+        window.tabManager.onTabMeta(tab.id, { url: 'https://nav.test/changed' });
+        expect(tab.url).toBe('https://nav.test/changed');
+
         window.tabManager.onTabMeta(tab.id, { url: 'data:text/html,hi' });
-        expect(tab.url).toBe('https://nav.test/final');
+        expect(tab.url).toBe('https://nav.test/changed');
 
         const renderSpy = jest.spyOn(window.tabManager, 'renderTabs');
-        window.tabManager.onTabMeta(tab.id, { title: 'Real Title', url: 'https://nav.test/final' });
+        window.tabManager.onTabMeta(tab.id, { title: 'Real Title', url: 'https://nav.test/changed' });
         expect(renderSpy).not.toHaveBeenCalled();
         renderSpy.mockRestore();
 

@@ -28,7 +28,7 @@
 |---|---|
 | C.O.M.M.A.N.D. / Resolute | Session grant + heartbeat; Genysys never fabricates grants |
 | P.R.O.T.E.C.T.S. | In-process Rust nav policy (`protects_policy.rs`); fail-closed |
-| Raven / Echonet / Mail | Product webviews **inside** Genysys; APIs refuse normal browsers via attestation |
+| A.R.C.H. / communications platform / Mail | Product webviews **inside** Genysys; APIs refuse normal browsers via attestation |
 | Obfuscation Veil Array | **Different program** — Seat-2 gauntlet/honeypot organ inside P.R.O.T.E.C.T.S. |
 
 **Pipeline:** C.O.M.M.A.N.D. grant → Genysys shell → policy clears every nav → attestation on RNK hosts → product webviews.
@@ -69,7 +69,7 @@
 
 | Gap | Impact |
 |---|---|
-| **Product API consumers still on old `/api/veil` + `X-VEIL-*`** | Raven (Archive-OOS path seen); Mail/Website demo gates. Until those trees accept `X-GENYSYS-*` / `/api/genysys` (or dual-accept), live “only client” enforcement breaks the wrong way. |
+| **Product API consumers still on old `/api/veil` + `X-VEIL-*`** | A.R.C.H. (Archive-OOS path seen); Mail/Website demo gates. Until those trees accept `X-GENYSYS-*` / `/api/genysys` (or dual-accept), live “only client” enforcement breaks the wrong way. |
 | **No Odinn sign-off / no push** | Rename is local; remotes and agency installs still say V.E.I.L. until published. |
 | **C.O.M.M.A.N.D. not live-wired on this seat** | Gate is honest HOLD; Genysys is not fleet-proven as the access door yet. |
 
@@ -88,7 +88,7 @@
 |---|---|
 | `protects_policy.rs` / `policy-bridge` filenames still say Policy | Functional; naming hygiene residual (mind = P.R.O.T.E.C.T.S.). |
 | Rules copies outside this tree may still say Axis/V.E.I.L. | Fleet-wide doc sync pending. |
-| Halo/Echonet “do not call it Genysys” lines | Correct after rename; Halo must never absorb the browser name. |
+| Legacy communications-platform “do not call it Genysys” lines | Correct after rename; Halo must never absorb the browser name. |
 | Bundles 0.1.0 exist historically; not re-proven against live COMMAND this sweep | Packaging OK; live gate unproven. |
 
 ### Explicit non-gaps
@@ -108,7 +108,7 @@
 | **Only-client attestation** | Coded in Genysys; **product consumers lag** after header rename |
 | **Ship readiness** | Local rename green; not fleet-shipped |
 
-**Bottom line:** Genysys is the browser (beginning). Seat-2 Veil is the honeypot organ. This tree’s rename + tests are green locally. Next risk is coordinating Raven/Mail/Echonet attestation to `X-GENYSYS-*` before claiming live only-client enforcement.
+**Bottom line:** Genysys is the browser (beginning). Seat-2 Veil is the honeypot organ. This tree’s rename + tests are green locally. Next risk is coordinating A.R.C.H./Mail/communications-platform attestation to `X-GENYSYS-*` before claiming live only-client enforcement.
 
 ---
 

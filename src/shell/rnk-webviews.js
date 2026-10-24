@@ -1,93 +1,45 @@
 /**
- * GENYSYS™ — RNK Product Webviews (Ops / People / Comms sections)
- * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
+ * GENYSYS — product surfaces for the Operations, People, and Comms sections.
+ * Copyright © 2026 Asgard Innovations / RNK. All Rights Reserved.
  *
- * GENYSYS is RNK's only client: Raven and Echonet open HERE, inside GENYSYS, as
- * privileged-tab webviews. A normal browser hitting these hosts is refused by
- * the products' attestation checks (X-GENYSYS-Client / X-GENYSYS-Session).
- *
- * Native shell (Tauri): product URLs go through the browser tab manager so
- * P.R.O.T.E.C.T.S. and the attestation cookie stay in the same path.
- * Vite preview (no shell): an honest degraded state, not a fake success.
+ * Destinations are deliberately absent until their owning product contracts
+ * provide authoritative routes. Rendering a clear, inert state prevents the
+ * shell from inventing hosts, paths, or replacement product names.
  */
 
-const SECTION_TARGETS = {
+const SECTION_SURFACES = {
     operations: {
-        host: 'raven.rnk-enterprise.us',
-        path: '/dashboard',
-        title: 'Raven — Operations',
+        product: 'A.R.C.H.',
+        surface: 'Operations',
+        detail: 'Operations surface',
     },
     people: {
-        host: 'raven.rnk-enterprise.us',
-        path: '/hr',
-        title: 'Raven — People',
+        product: 'A.R.C.H.',
+        surface: 'People',
+        detail: 'Users database',
     },
     comms: {
-        host: 'echonet.rnk-enterprise.us',
-        path: '/',
-        title: 'Echonet — Comms',
+        product: 'Comms platform',
+        surface: 'Comms',
+        detail: 'Replacement platform name not configured',
     },
 };
-
-function productUrl(target) {
-    return `https://${target.host}${target.path}`;
-}
-
-async function createGENYSYSWindow(url, _label, container) {
-    if (window.__TAURI__?.invoke) {
-        if (!window.tabManager?.createTab) return false;
-        window.activateSection?.('browser');
-        return Boolean(window.tabManager.createTab(url));
-    }
-    // Same-host iframe fallback (works inside the shell's dist build too).
-    try {
-        const frame = document.createElement('iframe');
-        frame.src = url;
-        frame.className = 'webview rnk-webview';
-        frame.setAttribute('aria-label', `RNK product — ${label}`);
-        frame.style.cssText = 'width:100%;height:100%;border:0;display:block;';
-        if (!container) return false;
-        container.innerHTML = '';
-        container.appendChild(frame);
-        return true;
-    } catch {
-        return false;
-    }
-}
 
 export function mountRnkWebview(sectionId) {
     const mount = document.getElementById(`rnk-webview-${sectionId}`);
     if (!mount) return;
-    const target = SECTION_TARGETS[sectionId];
-    if (!target) return;
+    const surface = SECTION_SURFACES[sectionId];
+    if (!surface) return;
 
     mount.innerHTML = `
         <div class="rnk-webview-shell">
             <div class="rnk-webview-bar">
-                <span class="rnk-webview-badge">Privileged — RNK product surface</span>
-                <span class="rnk-webview-url">${productUrl(target)}</span>
-                <button class="sc-btn" id="rnk-webview-open-${sectionId}">Open in G.E.N.E.S.Y.S.</button>
+                <span class="rnk-webview-badge">${surface.product} — ${surface.surface}</span>
+                <span class="rnk-webview-url">Destination not configured</span>
             </div>
             <div class="rnk-webview-host" id="rnk-webview-host-${sectionId}"></div>
-            <div class="rnk-webview-note" id="rnk-webview-note-${sectionId}" hidden></div>
+            <div class="rnk-webview-note" id="rnk-webview-note-${sectionId}">
+                ${surface.detail}. An authoritative destination is required before this surface can open.
+            </div>
         </div>`;
-
-    const open = async () => {
-        const container = mount.querySelector(`#rnk-webview-host-${sectionId}`);
-        const ok = await createGENYSYSWindow(productUrl(target), target.title, container);
-        const note = mount.querySelector(`#rnk-webview-note-${sectionId}`);
-        if (note) {
-            if (ok) {
-                note.hidden = true;
-            } else {
-                note.hidden = false;
-                note.textContent =
-                    'RNK product unreachable from this preview — open the full G.E.N.E.S.Y.S. shell. ' +
-                    'These hosts refuse non-G.E.N.E.S.Y.S. browsers by design.';
-            }
-        }
-    };
-
-    mount.querySelector(`#rnk-webview-open-${sectionId}`)?.addEventListener('click', open);
-    open();
 }

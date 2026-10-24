@@ -36,7 +36,7 @@ function activateSection(sectionId) {
         mountAdminOps(document.getElementById('admin-section-mount'), tier);
     }
     if (['operations', 'people', 'comms'].includes(sectionId)) {
-        // Raven / Echonet open INSIDE GENYSYS — privileged product webviews.
+// Product surfaces remain explicit and fail closed until destinations are configured.
         mountRnkWebview(sectionId);
     }
     // Tab windows live above the chrome: hide them outside the Browser

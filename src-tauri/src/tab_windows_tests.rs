@@ -55,7 +55,7 @@ fn authenticated_plain_site_allowed_unprivileged() {
 #[test]
 fn rnk_surface_is_privileged() {
     let p = classify_tab_navigation(
-        "https://raven.rnk-enterprise.us/inbox",
+        "https://mail.rnk-enterprise.us/inbox",
         &session("agent", Some("t")),
     );
     assert_eq!(p.decision, "allow");
@@ -74,7 +74,7 @@ fn privilege_is_host_based_not_tier_or_build_based() {
     // session tier or build type. Tier enforcement is the products'
     // attestation gate (dev is an allowed tier there by contract).
     let p = classify_tab_navigation(
-        "https://raven.rnk-enterprise.us",
+        "https://mail.rnk-enterprise.us",
         &session("dev", Some("t")),
     );
     assert_eq!(p.decision, "allow");

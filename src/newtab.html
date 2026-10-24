@@ -8,7 +8,7 @@
     (no query)          New Tab
     ?view=block&reason=&domain=   P.R.O.T.E.C.T.S. block page
     ?view=quarantine&reason=&domain=  Quarantine notice
-    ?view=access-request&domain=    Access request form (posts to shell)
+    ?view=access-request&domain=    Access request status (no authority configured)
     ?view=locked            Session locked (fail-closed state)
   This page never loads remote resources and never touches the network.
 -->
@@ -134,23 +134,8 @@
       document.getElementById('domain').hidden = false;
       document.getElementById('domain').textContent = domain || 'this site';
       document.getElementById('body-text').textContent =
-        'This site is not on your authorized list. Submit a request — your management chain will be notified for approval.';
-      document.getElementById('form-wrap').hidden = false;
-      button('Cancel', function () { history.back(); });
-      button('Submit Request', function () {
-        var input = document.getElementById('reason-input');
-        var value = input.value.trim();
-        if (!value) { input.focus(); return; }
-        try {
-          if (window.__TAURI__ && window.__TAURI__.invoke) {
-            window.__TAURI__.invoke('request_site_access', { domain: domain, reason: value });
-          } else {
-            window.parent.postMessage({ type: 'genysys:access-request', domain: domain, reason: value }, '*');
-          }
-        } catch (e) { /* best-effort */ }
-        document.getElementById('result').style.display = 'block';
-        document.getElementById('actions').style.display = 'none';
-      }, 'submit');
+        'This site is not on your authorized list. No access-request authority is configured for this standalone shell.';
+      backButton();
     } else if (view === 'locked') {
       document.title = 'G.E.N.E.S.Y.S. — Locked';
       document.querySelector('.container').classList.add('locked');

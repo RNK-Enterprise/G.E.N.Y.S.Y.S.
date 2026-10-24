@@ -8,10 +8,12 @@ mark tagged states of the repository.
 ## [Unreleased] — 2026-10-17
 
 ### Changed
+- Restored the parent audit boundary around the standalone H.U.N.T.E.R. checkout, made shell animation lifecycle-cancellable, cleaned test timer teardown, and repaired exact live-window verification for the current product binary.
 
 - **Removed the obsolete identity subsystem from active runtime surfaces.** Policy bridge/protection modules, native policy commands and state, authentication UI, tests, and current documentation now use product-neutral protection naming while preserving fail-closed authorization.
 - **Standardized visible product naming.** User-facing shell surfaces now display `G.E.N.E.S.Y.S.`; internal package, crate, protocol, and environment identifiers remain stable for compatibility.
-- **Repaired live browser and product surfaces.** Initial `genysys://newtab` navigation now creates its native tab window through the policy gate; fallback tab favicons no longer overlap titles; hidden capability surfaces honor the HTML hidden state; search-provider controls use the shipped browser-core capability; and Raven/Echonet section hosts now occupy their available layout height.
+- **Repaired live browser and product surfaces.** Initial `genysys://newtab` navigation now creates its native tab window through the policy gate; fallback tab favicons no longer overlap titles; hidden capability surfaces honor the HTML hidden state; and product section hosts now occupy their available layout height.
+- **Removed obsolete product identities from GENYSYS.** A.R.C.H. is the current identity for Operations and People; the Comms surface has no replacement name yet. Obsolete hosts, routes, access-request wiring, drills, tests, and active-module documentation were removed. Product destinations now fail closed until authoritative contracts are supplied.
 - **Stabilized watcher updates and privileged product launch.** Identical native tab metadata no longer re-renders the browser chrome every 400 ms; generic child-window titles are ignored for the internal new-tab page; and Ops/People/Comms launches now use the policy-gated browser-tab path that carries GENYSYS attestation.
 
 ## [Unreleased] — 2026-10-12
@@ -120,7 +122,7 @@ mark tagged states of the repository.
   and section-scoped host IDs. Verified: Vite build, global audit across 57
   files, 221 files under the 500 LOC cap, Jest 321/321, Chromium E2E 4/4, and
   Rust tests 44/44.
-- **Full product rename: V.E.I.L. → G.E.N.Y.S.Y.S. / Genysys.** Directory already `G.E.N.Y.S.Y.S.`. Package `rnk-genysys`, crate `rnk-genysys`, bundle `com.rnk.genysys`, scheme `genysys://`, attestation `X-GENYSYS-*` + cookie `genysys_attest`, env `GENYSYS_TEST_MODE` / `GENYSYS_ATTEST_ENFORCE`, shortcodes `genysys-odinn` / `genysys-agent`, docs `GENYSYS.md`. Distinct from P.R.O.T.E.C.T.S. Seat-2 **Obfuscation Veil Array**. Verified: Jest 320/320, cargo test 40/40. Local commit only; Raven/Mail/Echonet product gates still need matching `/api/genysys` + header accept when those trees are next touched. Live C.O.M.M.A.N.D. wiring still held.
+- **Full product rename: V.E.I.L. → G.E.N.Y.S.Y.S. / Genysys.** Directory already `G.E.N.Y.S.Y.S.`. Package `rnk-genysys`, crate `rnk-genysys`, bundle `com.rnk.genysys`, scheme `genysys://`, attestation `X-GENYSYS-*` + cookie `genysys_attest`, env `GENYSYS_TEST_MODE` / `GENYSYS_ATTEST_ENFORCE`, shortcodes `genysys-odinn` / `genysys-agent`, docs `GENYSYS.md`. Distinct from P.R.O.T.E.C.T.S. Seat-2 **Obfuscation Veil Array**. Verified: Jest 320/320, cargo test 40/40. Local commit only; product gates still need matching `/api/genysys` + header accept when those trees are next touched. Live C.O.M.M.A.N.D. wiring still held.
 
 ## [Unreleased] — 2026-09-16
 

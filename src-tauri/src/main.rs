@@ -33,10 +33,8 @@ use std::collections::HashMap;
 use std::sync::Mutex;
 use tauri::{AppHandle, Manager, State, Window};
 
-const ECHONET_DOMAINS: &[&str] = &[
+const PRIVILEGED_PRODUCT_DOMAINS: &[&str] = &[
     "rnk-enterprise.us",
-    "raven.rnk-enterprise.us",
-    "echonet.rnk-enterprise.us",
     "mail.rnk-enterprise.us",
     "demo.rnk-enterprise.us",
     "app.rnk-enterprise.us",
@@ -130,9 +128,9 @@ fn extract_domain(url: &str) -> Option<String> {
         .and_then(|p| p.host_str().map(|h| h.trim_start_matches("www.").to_lowercase()))
 }
 
-fn is_echonet_url(url: &str) -> bool {
+fn is_privileged_product_url(url: &str) -> bool {
     if let Some(domain) = extract_domain(url) {
-        return ECHONET_DOMAINS
+        return PRIVILEGED_PRODUCT_DOMAINS
             .iter()
             .any(|d| domain == *d || domain.ends_with(&format!(".{}", d)));
     }
@@ -140,7 +138,7 @@ fn is_echonet_url(url: &str) -> bool {
 }
 
 fn determine_context(url: &str) -> TabContext {
-    if is_echonet_url(url) {
+    if is_privileged_product_url(url) {
         TabContext::Privileged
     } else {
         TabContext::Normal

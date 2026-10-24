@@ -247,7 +247,7 @@ describe('shell: capabilities + surfaces-core', () => {
         expect(window.createGENYSYSChip('Explicit default', undefined).className)
             .toBe('genysys-chip genysys-chip-neutral');
         expect(document.getElementById('genysys-manifest-summary').textContent).toContain(
-            '2 capabilities loaded from GENYSYS (unknown engines, unknown turbos)',
+            '2 capabilities loaded from G.E.N.E.S.Y.S. (unknown engines, unknown turbos)',
         );
         expect(document.getElementById('genysys-capability-list').children).toHaveLength(2);
 

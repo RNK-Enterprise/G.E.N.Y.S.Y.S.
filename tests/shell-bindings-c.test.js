@@ -234,11 +234,11 @@ describe('shell: section-nav + bind-helpers', () => {
     test('operations/people/comms mount RNK webview shells', async () => {
         await bootShell();
         window.activateSection('operations');
-        expect(document.getElementById('rnk-webview-operations').innerHTML).toContain('raven.rnk-enterprise.us');
+        expect(document.getElementById('rnk-webview-operations').innerHTML).toContain('A.R.C.H.');
         window.activateSection('people');
-        expect(document.getElementById('rnk-webview-people').innerHTML).toContain('raven.rnk-enterprise.us');
+        expect(document.getElementById('rnk-webview-people').innerHTML).toContain('Users database');
         window.activateSection('comms');
-        expect(document.getElementById('rnk-webview-comms').innerHTML).toContain('echonet.rnk-enterprise.us');
+        expect(document.getElementById('rnk-webview-comms').innerHTML).toContain('Comms platform');
     });
 
     test('section-nav click routing and the genysys:section-changed event', async () => {

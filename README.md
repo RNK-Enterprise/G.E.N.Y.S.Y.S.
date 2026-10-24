@@ -4,7 +4,7 @@
 
 **G.E.N.E.S.Y.S.** is a Tauri desktop browser with embedded P.R.O.T.E.C.T.S. policy (fail-closed),
 C.O.M.M.A.N.D.-gated sessions, and a small, real engine/turbo runtime. **G.E.N.E.S.Y.S. is the only
-client**: Raven, Echonet, Mail, and RNK product surfaces run inside G.E.N.E.S.Y.S., and their
+client**: A.R.C.H., Mail, the communications platform, and RNK product surfaces run inside G.E.N.E.S.Y.S., and their
 authenticated APIs refuse a normal browser. Public marketing on `rnk-enterprise.us` may
 stay world-readable; login/API surfaces may not.
 
@@ -58,8 +58,8 @@ documented, not secret; tokens are per-session. Details: `docs/GENYSYS_ATTESTATI
   image lazy, cache budget, startup defer, network idle.
 - **Catalog** → 8 engines + 9 live turbos. **Zero stubs** — the 800-engine/4000-turbo
   stub catalog was retired 2026-09-06; `npm run catalog` emits only real entries.
-- **Chrome sections** → Browser (default), P.R.O.T.E.C.T.S. health, Ops/People (Raven
-  webviews), Comms (Echonet webview), Server Control (Resolute), Admin (local audit).
+- **Chrome sections** → Browser (default), P.R.O.T.E.C.T.S. health, Ops/People (A.R.C.H.
+  surfaces), Comms (communications platform surface), Server Control (Resolute), Admin (local audit).
 
 ## Sweep 2026-09-17
 

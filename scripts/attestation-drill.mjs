@@ -97,32 +97,26 @@ function classify(r) {
   return `gate passed → handler (${r.status})`;
 }
 
-// [product, port, method, path, body, expectGate]
+// [surface, port, method, path, body, expectGate]
 // expectGate=true  → the gate must refuse unattested/expired/bad-tier requests
 //                    with contract reasons, and PASS valid attestations.
 // expectGate=false → log-only rollout: the gate must refuse NOTHING.
 const DRILLS = [
-  ['Echonet', 3111, 'GET', '/api/control/poll', null, true],
-  ['Echonet', 3111, 'POST', '/api/control/push', { lines: [] }, true],
-  ['Echonet', 3111, 'POST', '/api/session/close', {}, true],
   ['Mail log-only', 8900, 'GET', '/api/mailbox/folders', null, false],
   ['Mail enforce', 8901, 'GET', '/api/mailbox/folders', null, true],
   ['Mail enforce', 8901, 'POST', '/api/auth/login', { email: 'x@y.z', password: 'nope' }, true],
   ['Demo log-only', 3021, 'GET', '/api/counter', null, false],
   ['Demo enforce', 3022, 'GET', '/api/counter', null, true],
   ['Demo enforce', 3022, 'POST', '/api/orgs', { name: 'x' }, true],
-  ['Raven', 3002, 'GET', '/api/genysys/access-request', null, true],
-  ['Raven', 3002, 'POST', '/api/genysys/access-request', { domain: 'x' }, true],
-  ['Raven', 3002, 'GET', '/api/genysys/auth-list', null, true],
 ];
 
 const KINDS = ['none', 'headers', 'cookie', 'expired', 'badtier'];
 
 const results = [];
-for (const [product, port, method, path, body, expectGate] of DRILLS) {
+for (const [surface, port, method, path, body, expectGate] of DRILLS) {
   for (const kind of KINDS) {
     const r = await hit(port, path, method, headersFor(kind), body);
-    results.push({ product, port, method, path, kind, expectGate, status: r.status, reason: r.reason, verdict: classify(r) });
+    results.push({ surface, port, method, path, kind, expectGate, status: r.status, reason: r.reason, verdict: classify(r) });
   }
 }
 
