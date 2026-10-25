@@ -52,6 +52,10 @@
     text-shadow: 0 0 8px var(--accent-glow);
 }
 
+.camofox-status:not(.connected) {
+    color: var(--brand-gold);
+}
+
 #fps-counter {
     color: var(--brand-gold);
     font-family: 'Courier New', monospace;

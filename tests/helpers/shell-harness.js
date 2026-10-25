@@ -214,6 +214,8 @@ export async function bootShell({ tauri = null, fetchImpl = null, skipModules = 
 
     const MODULES = [
         './shell/tauri-api.js',
+        './shell/camofox-bridge.js',
+        './shell/camofox-status.js',
         './shell/settings-panel-render.js',
         './shell/managers-boot.js',
         './shell/fallback-manifest.js',

@@ -8,6 +8,37 @@ mark tagged states of the repository.
 ## [Unreleased] — 2026-10-17
 
 ### Changed
+- Closed the Camofox main-frame redirect gap with a hop-by-hop GENYSYS loopback
+  policy callback. Camofox pauses each top-level navigation hop, GENYSYS
+  decides allow/block before the request continues, navigate responses carry
+  the hop chain for audit, and a missing guard chain fails closed.
+
+- Added the explicit Camofox content backend boundary without replacing the
+  GENYSYS shell: policy-gated logical tabs can bind to a live loopback noVNC
+  surface, expose bounded read-only snapshots and link extraction, retain
+  URL/history/lifecycle ownership in Rust, and add bounded typed click, type,
+  and scroll IPC actions that revalidate the remote page after use. The
+  backend also reports structured Camofox/VNC readiness, exposes that readiness
+  in the shell status bar with the native refusal reason, and fails closed when
+  the Camofox service or its display is unavailable.
+
+- Tightened Camofox content inspection: link extraction now verifies the
+  current remote URL before returning page data, scroll actions revalidate the
+  page afterward, and the shell prefers the native service refusal reason when
+  the backend is held.
+
+- Added bounded Camofox keyboard-press and page-readiness commands. Both pass
+  through the same logical-tab handle and revalidate the reported URL before
+  returning results.
+
+- Repaired Camofox logical-tab transitions: the existing browser action
+  `reload` now maps to Camofox's `refresh` route, and returning to the internal
+  new-tab surface closes the remote page before recreating the local surface.
+
+- Published `window.camofoxBrowser` as the typed shell capability surface for
+  Jess, covering status, inspection, interaction, readiness, and scrolling
+  without exposing the Camofox loopback service to frontend code.
+
 - Restored the parent audit boundary around the standalone H.U.N.T.E.R. checkout, made shell animation lifecycle-cancellable, cleaned test timer teardown, and repaired exact live-window verification for the current product binary.
 
 - **Removed the obsolete identity subsystem from active runtime surfaces.** Policy bridge/protection modules, native policy commands and state, authentication UI, tests, and current documentation now use product-neutral protection naming while preserving fail-closed authorization.
@@ -268,3 +299,10 @@ source correctness and packaged artifacts.
 - Evidence journal: `memory/2026-08-21-standalone-trusted-client.md`
 - Verification entry points: `npm run verify`, `npm run verify:live`,
   `bash scripts/smoke-suite.sh` (packaging), `.github/workflows/verify.yml`
+
+## 2026-10-24
+
+- Introduced an explicit tab-backend boundary. WebKit remains the default;
+  Camofox selection is fail-closed until its service and single-tab
+  visible-surface readiness checks pass, with status reporting and parallel
+  documentation.

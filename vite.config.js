@@ -2,9 +2,9 @@
  * GENYSYS™ — Vite config
  * Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
  *
- * `newtab.html` is an explicit input: Rust tab windows and the locked view
- * load {app_origin}/newtab.html, and the blocked-view iframe embeds it too.
- * Without it the packaged app ships no newtab page and tab windows 404.
+ * `newtab.html` and `camofox.html` are explicit inputs: Rust tab windows load
+ * them as internal surfaces, and the blocked/locked views depend on newtab.
+ * Without these inputs the packaged app ships no tab surface.
  */
 
 import { defineConfig } from 'vite';
@@ -30,6 +30,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'src/index.html'),
         newtab: resolve(__dirname, 'src/newtab.html'),
+        camofox: resolve(__dirname, 'src/camofox.html'),
       },
     },
   },

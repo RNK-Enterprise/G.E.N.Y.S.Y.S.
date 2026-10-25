@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GENYSYS Camofox Live Surface</title>
+    <style>
+      :root { color-scheme: dark; font-family: system-ui, sans-serif; }
+      html, body, #surface { width: 100%; height: 100%; margin: 0; }
+      body { background: #090d16; overflow: hidden; }
+      #surface { display: grid; place-items: center; }
+      #status { color: #aeb8c8; font-size: 14px; letter-spacing: .02em; }
+      #status[data-error="true"] { color: #f09a9a; padding: 24px; text-align: center; }
+      iframe { width: 100%; height: 100%; border: 0; display: block; }
+    </style>
+  </head>
+  <body>
+    <main id="surface">
+      <p id="status">Starting interactive Camofox surface...</p>
+    </main>
+    <script>
+      (() => {
+        const status = document.getElementById('status');
+        const params = new URLSearchParams(window.location.search);
+        const port = Number(params.get('vncPort'));
+        const validPort = Number.isInteger(port) && port > 0 && port <= 65535;
+        if (!validPort) {
+          status.dataset.error = 'true';
+          status.textContent = 'Camofox surface refused: invalid VNC port.';
+          return;
+        }
+        const frame = document.createElement('iframe');
+        frame.id = 'camofox-frame';
+        frame.title = 'Camofox live surface';
+        frame.allow = 'clipboard-read; clipboard-write';
+        frame.src = `http://127.0.0.1:${port}/vnc.html?autoconnect=1&resize=scale&reconnect=1&view_only=1&path=websockify`;
+        frame.addEventListener('error', () => {
+          status.dataset.error = 'true';
+          status.textContent = 'Camofox surface unavailable.';
+        });
+        frame.addEventListener('load', () => status.remove());
+        document.getElementById('surface').appendChild(frame);
+      })();
+    </script>
+  </body>
+</html>

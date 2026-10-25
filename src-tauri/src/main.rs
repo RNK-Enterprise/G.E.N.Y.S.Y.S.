@@ -11,11 +11,20 @@
 
 mod attestation;
 mod auth;
+mod camofox_capabilities;
+mod camofox_client;
+mod camofox_client_actions;
+mod camofox_client_navigate;
+mod camofox_policy_bridge;
+mod tab_windows_camofox;
 mod command_gate;
 mod command_session;
 mod commands_health;
 mod protects_policy;
+mod tab_backend;
 mod tab_commands;
+mod tab_navigation;
+mod tab_windows_webkit;
 mod tab_windows;
 
 #[cfg(test)]
@@ -25,22 +34,19 @@ mod protects_policy_tests;
 mod command_session_tests;
 
 #[cfg(test)]
+mod camofox_client_tests;
+
+#[cfg(test)]
 mod tab_windows_tests;
+
+#[cfg(test)]
+mod tab_backend_tests;
 
 use auth::{load_access_map, AccessEntry};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Mutex;
 use tauri::{AppHandle, Manager, State, Window};
-
-const PRIVILEGED_PRODUCT_DOMAINS: &[&str] = &[
-    "rnk-enterprise.us",
-    "mail.rnk-enterprise.us",
-    "demo.rnk-enterprise.us",
-    "app.rnk-enterprise.us",
-    "localhost",
-    "127.0.0.1",
-];
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "lowercase")]
@@ -117,89 +123,6 @@ fn resolve_policy_url() -> String {
         .unwrap_or_default()
 }
 
-fn extract_domain(url: &str) -> Option<String> {
-    let u = if url.starts_with("http") {
-        url.to_string()
-    } else {
-        format!("https://{}", url)
-    };
-    url::Url::parse(&u)
-        .ok()
-        .and_then(|p| p.host_str().map(|h| h.trim_start_matches("www.").to_lowercase()))
-}
-
-fn is_privileged_product_url(url: &str) -> bool {
-    if let Some(domain) = extract_domain(url) {
-        return PRIVILEGED_PRODUCT_DOMAINS
-            .iter()
-            .any(|d| domain == *d || domain.ends_with(&format!(".{}", d)));
-    }
-    false
-}
-
-fn determine_context(url: &str) -> TabContext {
-    if is_privileged_product_url(url) {
-        TabContext::Privileged
-    } else {
-        TabContext::Normal
-    }
-}
-
-#[tauri::command]
-async fn navigate_tab(
-    tab_id: u32,
-    url: String,
-    state: State<'_, AppState>,
-    window: Window,
-    app: AppHandle,
-) -> Result<PolicyResult, String> {
-    let (policy_url, policy_key, session, prefer_remote) = {
-        let au = state.policy_url.lock().map_err(|e| e.to_string())?.clone();
-        let lk = state.policy_key.lock().map_err(|e| e.to_string())?.clone();
-        let s = state.session.lock().map_err(|e| e.to_string())?.clone();
-        let pr = *state.prefer_remote.lock().map_err(|e| e.to_string())?;
-        (au, lk, s, pr)
-    };
-
-    let policy =
-        protects_policy::check_policy(&url, &session, &policy_url, &policy_key, prefer_remote).await;
-
-    if policy.decision == "block" {
-        return Ok(policy);
-    }
-
-    let context = determine_context(&url);
-    {
-        let mut tabs = state.tabs.lock().map_err(|e| e.to_string())?;
-        if let Some(tab) = tabs.iter_mut().find(|t| t.id == tab_id) {
-            tab.url = url.clone();
-            tab.context = context.clone();
-            tab.loading = true;
-        }
-    }
-
-    // Real WebviewWindow mode: create/reuse the tab window HERE, after the
-    // policy allow — the frontend never loads URLs itself.
-    if let Err(e) = tab_windows::create_tab_window(&app, tab_id, &url, policy.request_privileged) {
-        // Window layer unavailable → surface as a policy refusal (fail-closed
-        // behavior: no window, no load).
-        return Ok(protects_policy::block_result(&format!("tab_window_refused:{}", e), &policy.domain));
-    }
-
-    let _ = window.emit(
-        "genysys:navigate",
-        serde_json::json!({
-            "tabId": tab_id,
-            "url": url,
-            "context": context,
-            "chain": policy.chain,
-            "privileged": policy.request_privileged,
-        }),
-    );
-
-    Ok(policy)
-}
-
 #[tauri::command]
 fn create_tab(state: State<'_, AppState>) -> Result<Tab, String> {
     let mut tabs = state.tabs.lock().map_err(|e| e.to_string())?;
@@ -221,13 +144,18 @@ fn create_tab(state: State<'_, AppState>) -> Result<Tab, String> {
 }
 
 #[tauri::command]
-fn close_tab(tab_id: u32, state: State<'_, AppState>, app: AppHandle) -> Result<(), String> {
+async fn close_tab(tab_id: u32, state: State<'_, AppState>, app: AppHandle) -> Result<(), String> {
     {
         let mut tabs = state.tabs.lock().map_err(|e| e.to_string())?;
         tabs.retain(|t| t.id != tab_id);
     }
-    tab_windows::close_tab_window(&app, tab_id);
-    Ok(())
+    match tab_windows::backend(&app)? {
+        tab_backend::TabBackendKind::Camofox => tab_windows_camofox::close(&app, tab_id).await,
+        tab_backend::TabBackendKind::Webkit => {
+            tab_windows::close_tab_window(&app, tab_id);
+            Ok(())
+        }
+    }
 }
 
 #[tauri::command]
@@ -402,8 +330,9 @@ fn main() {
     tauri::Builder::default()
         .manage(state)
         .manage(tab_windows::TabWindows::default())
+        .manage(camofox_policy_bridge::CamofoxPolicyBridgeState::default())
         .invoke_handler(tauri::generate_handler![
-            navigate_tab,
+            tab_navigation::navigate_tab,
             create_tab,
             log_boot,
             close_tab,
@@ -422,6 +351,15 @@ fn main() {
             command_gate::cmd_gate_status,
             command_gate::get_policy_headers,
             command_gate::attestation_bootstrap,
+            camofox_capabilities::camofox_snapshot,
+            camofox_capabilities::camofox_screenshot,
+            camofox_capabilities::camofox_links,
+            camofox_capabilities::camofox_click,
+            camofox_capabilities::camofox_type,
+            camofox_capabilities::camofox_press,
+            camofox_capabilities::camofox_wait,
+            camofox_capabilities::camofox_scroll,
+            camofox_capabilities::camofox_status,
             command_session::command_session_status,
             command_session::command_exchange,
             command_session::command_end,

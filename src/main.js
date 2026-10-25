@@ -7,6 +7,8 @@ import {
   initPolicyBridge,
 } from './policy-bridge.js';
 import { genysysRuntime } from './engines/runtime.js';
+import './shell/camofox-bridge.js';
+import './shell/camofox-status.js';
 
 // Boot order matters: managers → density/UI → sidebar/surfaces → tabs → bindings → init
 import './shell/tauri-api.js';
@@ -78,6 +80,7 @@ async function initializeApp() {
   );
 
   initPolicyBridge(tabManager);
+  void window.refreshCamofoxStatus?.();
 
   console.log('Restoring previous session...');
   if (!tabManager.restoreTabs()) {

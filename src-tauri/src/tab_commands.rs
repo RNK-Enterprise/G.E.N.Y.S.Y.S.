@@ -3,6 +3,7 @@
 //! WebviewWindows (remote pages have no IPC channel, so the Rust side polls
 //! and emits events instead).
 
+use crate::tab_backend::TabBackendKind;
 use crate::tab_windows::{self, TabWindows};
 use crate::AppState;
 use serde_json::json;
@@ -22,7 +23,16 @@ pub fn tab_window_sync_rect(
     height: i32,
     app: AppHandle,
 ) -> Result<(), String> {
-    tab_windows::store_rect(&app, tab_id, tab_windows::TabRect { x, y, width, height })
+    tab_windows::store_rect(
+        &app,
+        tab_id,
+        tab_windows::TabRect {
+            x,
+            y,
+            width,
+            height,
+        },
+    )
 }
 
 /// Shell → Rust: switch the visible tab window.
@@ -49,7 +59,21 @@ pub fn tab_window_sync_moved(app: AppHandle) -> Result<(), String> {
 /// Shell → Rust: run a bounded navigation action in a tab window's history.
 /// Only whitelisted JS is evaluated — never shell-supplied script text.
 #[tauri::command]
-pub fn tab_window_history(tab_id: u32, action: String, app: AppHandle) -> Result<(), String> {
+pub async fn tab_window_history(
+    tab_id: u32,
+    action: String,
+    app: AppHandle,
+    state: tauri::State<'_, AppState>,
+) -> Result<(), String> {
+    if matches!(tab_windows::backend(&app)?, TabBackendKind::Camofox) {
+        let session = state.session.lock().map_err(|e| e.to_string())?.clone();
+        let url = crate::tab_windows_camofox::history(&app, tab_id, &action, &session).await?;
+        let _ = app.emit_all(
+            "genysys:tab-meta",
+            json!({ "tabId": tab_id, "url": url, "title": "Camofox", "privileged": false }),
+        );
+        return Ok(());
+    }
     let window = app
         .get_window(&TabWindows::label(tab_id))
         .ok_or_else(|| format!("tab window {} not found", tab_id))?;
@@ -85,17 +109,26 @@ pub fn tab_window_internal_load(tab_id: u32, path: String, app: AppHandle) -> Re
 
 /// Diagnostics: which tab windows exist and what the main window sees.
 #[tauri::command]
-pub fn tab_window_status(app: AppHandle) -> Result<serde_json::Value, String> {
+pub async fn tab_window_status(app: AppHandle) -> Result<serde_json::Value, String> {
     let tw = app.state::<TabWindows>();
     let map = tw.windows.lock().map_err(|e| e.to_string())?.clone();
     let state = app.state::<AppState>();
     let tabs = state.tabs.lock().map_err(|e| e.to_string())?.clone();
+    let backend = TabWindows::backend(&app)?;
+    let backend_status = if backend == TabBackendKind::Camofox {
+        Some(crate::camofox_capabilities::camofox_status().await?)
+    } else {
+        None
+    };
     Ok(json!({
+        "configuredBackend": backend.as_str(),
+        "backendStatus": backend_status,
         "windows": map.iter().map(|(id, meta)| json!({
             "tabId": id,
             "label": TabWindows::label(*id),
             "exists": app.get_window(&TabWindows::label(*id)).is_some(),
             "privileged": meta.privileged,
+            "backend": meta.backend.as_str(),
         })).collect::<Vec<_>>(),
         "tabs": tabs.iter().map(|t| json!({
             "id": t.id, "url": t.url, "title": t.title, "context": t.context,
@@ -110,22 +143,51 @@ pub fn spawn_meta_watcher(app: AppHandle) {
     tauri::async_runtime::spawn(async move {
         loop {
             tokio::time::sleep(std::time::Duration::from_millis(WATCH_INTERVAL_MS)).await;
-            let Some(tw) = app.try_state::<TabWindows>() else { continue };
-            let snapshot: Vec<(u32, bool)> = match tw.windows.lock() {
-                Ok(map) => map.iter().map(|(k, v)| (*k, v.privileged)).collect(),
+            let Some(tw) = app.try_state::<TabWindows>() else {
+                continue;
+            };
+            let snapshot: Vec<(u32, bool, TabBackendKind)> = match tw.windows.lock() {
+                Ok(map) => map
+                    .iter()
+                    .map(|(k, v)| (*k, v.privileged, v.backend))
+                    .collect(),
                 Err(_) => continue,
             };
-            for (id, privileged) in snapshot {
+            for (id, privileged, backend) in snapshot {
                 let Some(window) = app.get_window(&TabWindows::label(id)) else {
                     // Window died outside our control → prune bookkeeping.
                     if let Ok(mut map) = tw.windows.lock() {
                         map.remove(&id);
+                    }
+                    if backend == TabBackendKind::Camofox {
+                        let orphan = tw
+                            .camofox_tabs
+                            .lock()
+                            .ok()
+                            .and_then(|mut map| map.remove(&id));
+                        if let Some(handle) = orphan {
+                            crate::tab_windows_camofox::schedule_remote_close(handle);
+                        }
                     }
                     continue;
                 };
                 // Active tabs only: hidden windows don't need title syncs and
                 // WebKitGTK title reads are not free.
                 if !window.is_visible().unwrap_or(false) {
+                    continue;
+                }
+                if backend == TabBackendKind::Camofox {
+                    let current = tw
+                        .camofox_tabs
+                        .lock()
+                        .ok()
+                        .and_then(|map| map.get(&id).cloned());
+                    if let Some(handle) = current {
+                        let _ = window.emit(
+                            "genysys:tab-meta",
+                            json!({ "tabId": id, "url": handle.current_url, "title": "Camofox", "privileged": privileged, "vncPort": handle.vnc_port }),
+                        );
+                    }
                     continue;
                 }
                 let url = window.url().to_string();
