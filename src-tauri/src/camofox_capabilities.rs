@@ -244,14 +244,33 @@ async fn enforce_reported_url<R: tauri::Runtime>(
         })
         .unwrap_or_else(Session::default);
     let policy = classify_tab_navigation(url, &session);
-    if !window_allowed(&policy) || policy.request_privileged {
+    if !window_allowed(&policy) {
         let _ = crate::tab_windows_camofox::close(app, tab_id).await;
-        let reason = if policy.request_privileged {
-            "camofox_attestation_bridge_unavailable"
-        } else {
-            &policy.reason
-        };
-        return Err(format!("camofox_surface_refused:{reason}"));
+        return Err(format!("camofox_surface_refused:{}", policy.reason));
+    }
+    if policy.request_privileged {
+        let handle = app
+            .state::<TabWindows>()
+            .camofox_tabs
+            .lock()
+            .map_err(|error| error.to_string())?
+            .get(&tab_id)
+            .cloned()
+            .ok_or_else(|| "camofox_tab_not_found".to_string())?;
+        let client = CamofoxClient::from_environment()?;
+        crate::camofox_attestation::arm_privileged_navigation(
+            &client,
+            &handle.user_id,
+            url,
+            &session,
+        )
+        .await
+        .map_err(|error| format!("camofox_surface_refused:{error}"))?;
+        app.state::<TabWindows>()
+            .camofox_attested_tabs
+            .lock()
+            .map_err(|error| error.to_string())?
+            .insert(tab_id);
     }
     if let Ok(mut handles) = app.state::<TabWindows>().camofox_tabs.lock() {
         if let Some(handle) = handles.get_mut(&tab_id) {

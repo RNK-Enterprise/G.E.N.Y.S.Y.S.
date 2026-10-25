@@ -8,7 +8,7 @@ Rust backend: window/tab-window management, auth gate, P.R.O.T.E.C.T.S. policy e
 
 ## Layout
 - `src/main.rs` — app setup, IPC command registration, diagnostics journal (`[genysys:page]`, `[genysys:boot]`, `[genysys:mainwin]`)
-- `src/tab_windows.rs` + `tab_windows_webkit.rs` + `tab_windows_camofox.rs` + `camofox_client.rs` + `camofox_client_actions.rs` + `camofox_client_navigate.rs` + `camofox_policy_bridge.rs` + `camofox_capabilities.rs` + `tab_commands.rs` — the `[genysys:tabwin]` lifecycle, loopback Camofox bridge, hop-by-hop redirect policy callback, bounded inspection and interaction capabilities, and backend boundary the live proof asserts
+- `src/tab_windows.rs` + `tab_windows_webkit.rs` + `tab_windows_camofox.rs` + `camofox_client.rs` + `camofox_client_actions.rs` + `camofox_client_navigate.rs` + `camofox_policy_bridge.rs` + `camofox_attestation.rs` + `camofox_capabilities.rs` + `tab_commands.rs` — the `[genysys:tabwin]` lifecycle, loopback Camofox bridge, hop-by-hop redirect policy callback, first-request privileged attestation, bounded inspection and interaction capabilities, and backend boundary the live proof asserts
 - `../docs/TAB_BACKENDS.md` — one-logical-tab backend contract and Camofox bridge status
 - `src/protects_policy.rs`, `auth.rs`, `command_session.rs`, `attestation.rs` — the policy plane
 - `*_tests.rs` — Rust unit tests, compiled as modules of their counterparts

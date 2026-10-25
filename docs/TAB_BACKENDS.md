@@ -2,7 +2,8 @@
 
 Status: backend boundary introduced; Camofox live noVNC surface is wired behind
 an explicit readiness gate; main-frame redirect hops are fail-closed through a
-loopback GENYSYS policy callback.
+loopback GENYSYS policy callback; privileged RNK navigations arm first-request
+`genysys_attest` cookies before the remote page loads.
 
 GENYSYS owns the logical tab, policy decision, session, attestation, lifecycle,
 history, and chrome. A content backend is an implementation detail of that same
@@ -59,10 +60,12 @@ passing through GENYSYS policy.
 
 Click, type, press, scroll, wait, and link extraction are exposed only as typed
 GENYSYS IPC commands. They refresh the remote snapshot before or after the
-operation and close the remote tab if the reported page becomes blocked or
-privileged. Direct noVNC input remains disabled; first-request attestation is
-still required for a complete security proof.
+operation and close the remote tab if the reported page becomes blocked.
+Direct noVNC input remains disabled.
 
-Privileged RNK pages remain fail-closed until first-request GENYSYS attestation
-can be transferred into Camofox's browser context. A screenshot-only
-implementation is not an acceptable bridge.
+Privileged RNK pages arm first-request attestation before navigate: GENYSYS
+mints the documented `genysys_attest` bootstrap cookie and imports it into the
+Camofox session for `.rnk-enterprise.us` before the first hop. Policy callbacks
+refuse privileged hops unless that tab is marked attested. Session refresh
+re-arms privileged Camofox tabs. A screenshot-only implementation is not an
+acceptable bridge.

@@ -1,4 +1,4 @@
-//! Bounded keyboard and readiness actions for the local Camofox service.
+//! Bounded keyboard, readiness, and attestation-cookie actions for Camofox.
 
 use crate::camofox_client::{validate_path_segment, validate_user_id, CamofoxClient};
 use reqwest::Method;
@@ -7,8 +7,38 @@ use serde_json::{json, Value};
 const DEFAULT_WAIT_MS: u32 = 10_000;
 const MAX_WAIT_MS: u32 = 60_000;
 const MAX_KEY_BYTES: usize = 64;
+const MAX_COOKIE_IMPORT: usize = 16;
 
 impl CamofoxClient {
+    /// Import Playwright-format cookies into one Camofox user session.
+    pub async fn import_cookies(&self, user_id: &str, cookies: &[Value]) -> Result<(), String> {
+        validate_user_id(user_id)?;
+        if cookies.is_empty() || cookies.len() > MAX_COOKIE_IMPORT {
+            return Err("camofox_cookies_count_invalid".into());
+        }
+        for cookie in cookies {
+            let name = cookie.get("name").and_then(Value::as_str).unwrap_or_default();
+            let value = cookie.get("value").and_then(Value::as_str);
+            let domain = cookie.get("domain").and_then(Value::as_str).unwrap_or_default();
+            if name.is_empty() || value.is_none() || domain.is_empty() {
+                return Err("camofox_cookie_fields_invalid".into());
+            }
+        }
+        let encoded_user = urlencoding_path_segment(user_id)?;
+        let body = self
+            .request(
+                Method::POST,
+                &format!("/sessions/{encoded_user}/cookies"),
+                None,
+                Some(json!({ "cookies": cookies })),
+            )
+            .await?;
+        if body.get("ok").and_then(Value::as_bool) != Some(true) {
+            return Err("camofox_cookie_import_refused".into());
+        }
+        Ok(())
+    }
+
     /// Press one bounded browser key through the Camofox service.
     pub async fn press(
         &self,
@@ -74,6 +104,17 @@ fn validate_wait_timeout(timeout_ms: u32) -> Result<(), String> {
         return Err("camofox_wait_timeout_invalid".into());
     }
     Ok(())
+}
+
+fn urlencoding_path_segment(value: &str) -> Result<String, String> {
+    if value.is_empty()
+        || !value
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'-' | b'_' | b'.' | b'@'))
+    {
+        return Err("camofox_user_id_invalid".into());
+    }
+    Ok(value.to_string())
 }
 
 #[cfg(test)]

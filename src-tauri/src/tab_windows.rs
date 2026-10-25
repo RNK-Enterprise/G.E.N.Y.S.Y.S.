@@ -27,7 +27,7 @@ use crate::camofox_client::CamofoxTabHandle;
 use crate::protects_policy;
 use crate::tab_backend::TabBackendKind;
 use crate::{PolicyResult, Session};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::sync::Mutex;
 use tauri::{AppHandle, Manager, Runtime, State};
 
@@ -66,6 +66,8 @@ pub struct TabWindows {
     pub windows: Mutex<HashMap<u32, TabWindowMeta>>,
     pub camofox_tabs: Mutex<HashMap<u32, CamofoxTabHandle>>,
     pub camofox_vnc_origin: Mutex<Option<String>>,
+    /// Logical tabs whose Camofox context already holds genysys_attest.
+    pub camofox_attested_tabs: Mutex<HashSet<u32>>,
     pub rects: Mutex<HashMap<u32, TabRect>>,
     /// Last known main-window position, for delta-move of children.
     pub last_main_pos: Mutex<(i32, i32)>,
@@ -78,6 +80,7 @@ impl Default for TabWindows {
             windows: Mutex::new(HashMap::new()),
             camofox_tabs: Mutex::new(HashMap::new()),
             camofox_vnc_origin: Mutex::new(None),
+            camofox_attested_tabs: Mutex::new(HashSet::new()),
             rects: Mutex::new(HashMap::new()),
             last_main_pos: Mutex::new((0, 0)),
         }
@@ -199,7 +202,9 @@ pub fn lock_all<R: Runtime>(app: &AppHandle<R>) {
 }
 
 pub fn refresh_privileged<R: Runtime>(app: &AppHandle<R>) {
-    if matches!(TabWindows::backend(app), Ok(TabBackendKind::Webkit)) {
-        crate::tab_windows_webkit::refresh_privileged(app);
+    match TabWindows::backend(app) {
+        Ok(TabBackendKind::Webkit) => crate::tab_windows_webkit::refresh_privileged(app),
+        Ok(TabBackendKind::Camofox) => crate::tab_windows_camofox::refresh_privileged(app),
+        Err(_) => {}
     }
 }

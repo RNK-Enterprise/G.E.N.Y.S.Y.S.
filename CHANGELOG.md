@@ -8,6 +8,10 @@ mark tagged states of the repository.
 ## [Unreleased] — 2026-10-17
 
 ### Changed
+- Armed Camofox first-request attestation for privileged RNK hosts. GENYSYS
+  mints `genysys_attest`, imports it into the Camofox session before navigate,
+  marks the logical tab attested for hop checks, and re-arms on session refresh.
+
 - Closed the Camofox main-frame redirect gap with a hop-by-hop GENYSYS loopback
   policy callback. Camofox pauses each top-level navigation hop, GENYSYS
   decides allow/block before the request continues, navigate responses carry

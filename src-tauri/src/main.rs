@@ -11,6 +11,7 @@
 
 mod attestation;
 mod auth;
+mod camofox_attestation;
 mod camofox_capabilities;
 mod camofox_client;
 mod camofox_client_actions;

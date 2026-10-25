@@ -3,7 +3,7 @@
 //! Camofox pauses each main-frame navigation hop and asks GENYSYS before the
 //! request continues. Unreachable, unauthorized, or blocked decisions refuse.
 
-use crate::tab_windows::{classify_tab_navigation, window_allowed};
+use crate::tab_windows::{classify_tab_navigation, window_allowed, TabWindows};
 use crate::AppState;
 use serde::Deserialize;
 use serde_json::json;
@@ -221,13 +221,6 @@ fn evaluate_request<R: Runtime>(
         })
         .unwrap_or_default();
     let policy = classify_tab_navigation(&request.url, &session);
-    if policy.request_privileged {
-        return Ok(json!({
-            "decision": "block",
-            "reason": "camofox_attestation_bridge_unavailable",
-            "domain": policy.domain,
-        }));
-    }
     if !window_allowed(&policy) {
         return Ok(json!({
             "decision": "block",
@@ -235,10 +228,32 @@ fn evaluate_request<R: Runtime>(
             "domain": policy.domain,
         }));
     }
+    if policy.request_privileged {
+        let armed = request
+            .tab_id
+            .and_then(|tab_id| {
+                app.try_state::<TabWindows>().and_then(|state| {
+                    state
+                        .camofox_attested_tabs
+                        .lock()
+                        .ok()
+                        .map(|set| set.contains(&tab_id))
+                })
+            })
+            .unwrap_or(false);
+        if !armed {
+            return Ok(json!({
+                "decision": "block",
+                "reason": "camofox_attestation_not_armed",
+                "domain": policy.domain,
+            }));
+        }
+    }
     Ok(json!({
         "decision": "allow",
         "reason": policy.reason,
         "domain": policy.domain,
+        "privileged": policy.request_privileged,
     }))
 }
 

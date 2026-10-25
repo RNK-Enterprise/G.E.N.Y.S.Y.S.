@@ -1,5 +1,6 @@
 //! Camofox-backed single-tab surface using the service's live noVNC display.
 
+use crate::camofox_attestation;
 use crate::camofox_client::{CamofoxClient, CamofoxTabHandle};
 use crate::camofox_client_navigate::CamofoxNavigatePolicy;
 use crate::camofox_policy_bridge;
@@ -19,9 +20,6 @@ pub async fn navigate<R: Runtime>(
     privileged: bool,
     session: &Session,
 ) -> Result<String, String> {
-    if privileged {
-        return Err("camofox_attestation_bridge_unavailable".into());
-    }
     if url == "genysys://newtab" {
         close(app, tab_id).await?;
         ensure_window(app, tab_id, &newtab_url(), false, None)?;
@@ -47,6 +45,19 @@ pub async fn navigate<R: Runtime>(
         Some(handle) => (handle.remote_tab_id, false),
         None => (client.create_tab(user_id, &session_key).await?.tab_id, true),
     };
+    if privileged {
+        if let Err(error) =
+            camofox_attestation::arm_privileged_navigation(&client, user_id, url, session).await
+        {
+            if is_new {
+                let _ = client.close(&remote_tab_id, user_id).await;
+            }
+            return Err(error);
+        }
+        mark_attested(app, tab_id, true)?;
+    } else {
+        mark_attested(app, tab_id, false)?;
+    }
     let bridge = camofox_policy_bridge::ensure_bridge(app)?;
     let navigate_policy = CamofoxNavigatePolicy {
         callback_url: format!("{}/camofox/policy/check", bridge.origin),
@@ -68,6 +79,7 @@ pub async fn navigate<R: Runtime>(
             if is_new {
                 let _ = client.close(&remote_tab_id, user_id).await;
             }
+            let _ = mark_attested(app, tab_id, false);
             return Err(error);
         }
     };
@@ -77,6 +89,11 @@ pub async fn navigate<R: Runtime>(
         let _ = client.close(&remote_tab_id, user_id).await;
         remove_handle(app, tab_id)?;
         return Err(format!("camofox_redirect_refused:{}", policy.reason));
+    }
+    if policy.request_privileged && !privileged {
+        let _ = client.close(&remote_tab_id, user_id).await;
+        remove_handle(app, tab_id)?;
+        return Err("camofox_redirect_refused:camofox_attestation_not_armed".into());
     }
     if !navigated.hops.is_empty() {
         tabwin_log(&format!(
@@ -101,7 +118,7 @@ pub async fn navigate<R: Runtime>(
         app,
         tab_id,
         &tab_windows::camofox_surface_url(vnc.novnc_port),
-        false,
+        privileged || policy.request_privileged,
         Some(final_url.clone()),
     )?;
     Ok(final_url)
@@ -121,14 +138,15 @@ pub async fn history<R: Runtime>(
         .history(&handle.remote_tab_id, &handle.user_id, action)
         .await?;
     let policy = tab_windows::classify_tab_navigation(&url, session);
-    if !window_allowed(&policy) || policy.request_privileged {
+    if !window_allowed(&policy) {
         close(app, tab_id).await?;
-        let reason = if policy.request_privileged {
-            "camofox_attestation_bridge_unavailable"
-        } else {
-            &policy.reason
-        };
-        return Err(format!("camofox_history_refused:{reason}"));
+        return Err(format!("camofox_history_refused:{}", policy.reason));
+    }
+    if policy.request_privileged {
+        camofox_attestation::arm_privileged_navigation(&client, &handle.user_id, &url, session)
+            .await
+            .map_err(|error| format!("camofox_history_refused:{error}"))?;
+        mark_attested(app, tab_id, true)?;
     }
     let mut updated = handle;
     updated.current_url = url.clone();
@@ -151,12 +169,66 @@ pub async fn close<R: Runtime>(app: &AppHandle<R>, tab_id: u32) -> Result<(), St
     remote_result
 }
 
+/// Re-arm attestation cookies for privileged Camofox tabs after a session refresh.
+pub fn refresh_privileged<R: Runtime>(app: &AppHandle<R>) {
+    let session = match app.try_state::<AppState>() {
+        Some(state) => state
+            .session
+            .lock()
+            .map(|value| value.clone())
+            .unwrap_or_default(),
+        None => return,
+    };
+    let state = app.state::<TabWindows>();
+    let targets: Vec<(u32, String, String)> = {
+        let Ok(windows) = state.windows.lock() else {
+            return;
+        };
+        let Ok(handles) = state.camofox_tabs.lock() else {
+            return;
+        };
+        windows
+            .iter()
+            .filter(|(_, meta)| meta.privileged)
+            .filter_map(|(tab_id, _)| {
+                handles
+                    .get(tab_id)
+                    .map(|handle| (*tab_id, handle.user_id.clone(), handle.current_url.clone()))
+            })
+            .collect()
+    };
+    for (tab_id, user_id, url) in targets {
+        let session = session.clone();
+        let app = app.clone();
+        tauri::async_runtime::spawn(async move {
+            let Ok(client) = CamofoxClient::from_environment() else {
+                return;
+            };
+            match camofox_attestation::arm_privileged_navigation(
+                &client, &user_id, &url, &session,
+            )
+            .await
+            {
+                Ok(()) => {
+                    let _ = mark_attested(&app, tab_id, true);
+                }
+                Err(error) => {
+                    eprintln!("[genysys:camofox] attestation refresh refused: {error}");
+                }
+            }
+        });
+    }
+}
+
 /// Lock the visible surface immediately and close remote pages asynchronously.
 pub fn lock_all<R: Runtime>(app: &AppHandle<R>) {
     let handles = match app.state::<TabWindows>().camofox_tabs.lock() {
         Ok(mut map) => map.drain().map(|(_, handle)| handle).collect::<Vec<_>>(),
         Err(_) => Vec::new(),
     };
+    if let Ok(mut attested) = app.state::<TabWindows>().camofox_attested_tabs.lock() {
+        attested.clear();
+    }
     for handle in handles {
         schedule_remote_close(handle);
     }
@@ -318,11 +390,26 @@ fn remove_handle<R: Runtime>(
     app: &AppHandle<R>,
     tab_id: u32,
 ) -> Result<Option<CamofoxTabHandle>, String> {
+    mark_attested(app, tab_id, false)?;
     app.state::<TabWindows>()
         .camofox_tabs
         .lock()
         .map_err(|error| error.to_string())
         .map(|mut map| map.remove(&tab_id))
+}
+
+fn mark_attested<R: Runtime>(app: &AppHandle<R>, tab_id: u32, armed: bool) -> Result<(), String> {
+    let state = app.state::<TabWindows>();
+    let mut set = state
+        .camofox_attested_tabs
+        .lock()
+        .map_err(|error| error.to_string())?;
+    if armed {
+        set.insert(tab_id);
+    } else {
+        set.remove(&tab_id);
+    }
+    Ok(())
 }
 
 fn set_vnc_origin<R: Runtime>(app: &AppHandle<R>, port: u16) -> Result<(), String> {
