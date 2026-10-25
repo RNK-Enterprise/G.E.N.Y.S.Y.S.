@@ -8,6 +8,10 @@ mark tagged states of the repository.
 ## [Unreleased] — 2026-10-17
 
 ### Changed
+- Added `scripts/camofox-live-proof.mjs` for live Camofox contract proof:
+  hop-by-hop redirect refusal, attestation cookie import, and noVNC readiness
+  against a local Camofox instance.
+
 - Armed Camofox first-request attestation for privileged RNK hosts. GENYSYS
   mints `genysys_attest`, imports it into the Camofox session before navigate,
   marks the logical tab attested for hop checks, and re-arms on session refresh.
