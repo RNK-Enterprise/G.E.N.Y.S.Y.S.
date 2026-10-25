@@ -183,6 +183,27 @@ async function main() {
       cookies.status === 200 && cookies.json?.ok === true && cookies.json?.count === 1,
       JSON.stringify(cookies.json),
     );
+
+    const vnc = await camofox('GET', '/vnc/status');
+    const novncPort = Number(vnc.json?.novncPort || 0);
+    let novncOk = false;
+    if (novncPort > 0) {
+      try {
+        const page = await fetch(`http://127.0.0.1:${novncPort}/vnc.html`);
+        novncOk = page.ok;
+      } catch {
+        novncOk = false;
+      }
+    }
+    record(
+      'vnc_display_ready',
+      vnc.status === 200
+        && vnc.json?.enabled === true
+        && vnc.json?.running === true
+        && vnc.json?.path === '/vnc.html'
+        && novncOk,
+      JSON.stringify({ status: vnc.status, body: vnc.json, novncOk }),
+    );
   } finally {
     allowPolicy.server.close();
     redirectPolicy.server.close();
