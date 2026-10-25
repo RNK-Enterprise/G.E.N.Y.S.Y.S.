@@ -8,6 +8,10 @@ mark tagged states of the repository.
 ## [Unreleased] — 2026-10-17
 
 ### Changed
+- Added `scripts/camofox-tauri-proof.sh` for GENYSYS shell e2e against
+  `GENYSYS_TAB_BACKEND=camofox`: auth, navigate, hop-accept journal, and
+  `camofox.html?vncPort=` surface under Xvfb.
+
 - Added `scripts/camofox-live-proof.mjs` for live Camofox contract proof:
   hop-by-hop redirect refusal, attestation cookie import, and noVNC readiness
   against a local Camofox instance.

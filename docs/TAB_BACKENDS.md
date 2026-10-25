@@ -3,7 +3,9 @@
 Status: backend boundary introduced; Camofox live noVNC surface is wired behind
 an explicit readiness gate; main-frame redirect hops are fail-closed through a
 loopback GENYSYS policy callback; privileged RNK navigations arm first-request
-`genysys_attest` cookies before the remote page loads.
+`genysys_attest` cookies before the remote page loads. Live proofs:
+`scripts/camofox-live-proof.mjs` (service) and `scripts/camofox-tauri-proof.sh`
+(GENYSYS shell under Xvfb).
 
 GENYSYS owns the logical tab, policy decision, session, attestation, lifecycle,
 history, and chrome. A content backend is an implementation detail of that same
