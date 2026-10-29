@@ -27,9 +27,9 @@ Cyphur is the commercial / chain face of that same family. Phantom is the redesi
 
 ## How a human actually uses it
 
-Axis is a web browser. RNK’s own desktop browser — tabs, omnibox, bookmarks, history, downloads — so nobody opens the stack in Chrome. Mother Lisa is the gate on that browser, not a replacement for it. For the creator she *is* the session: biosig opens it, heartbeat drop kills every tab.
+Axis is a web browser. RNK’s own desktop browser — tabs, omnibox, bookmarks, history, downloads — so nobody opens the stack in Chrome. C.O.M.M.A.N.D. is the gate on that browser, not a replacement for it. For the co-owners it *is* the session: biosig opens it, heartbeat drop kills every tab.
 
-Mother Lisa is the creator-only Android app. One person. Master key. Fingerprint, jump drive, face and voice, then session. Without her, upgraded Lisa has no handshake and the fleet stays dark. Agents get a tenant-scoped Axis. Agencies do not use Axis at all. They use the configured A.R.C.H. and communications-platform surfaces through their intended access path.
+C.O.M.M.A.N.D. is the household Android app. Co-owners Odinn and Ravyn — equal unlock; Odinn holds fleet-destructive approval until succession phases advance. Fingerprint, jump drive, face and voice, then session. Without it, the handshake organ (01 Resolute Authentication Core) has no handshake and P.R.O.T.E.C.T.S. stays dark. Agents get a tenant-scoped Axis. Agencies do not use Axis at all. They use the configured A.R.C.H. and communications-platform surfaces through their intended access path.
 
 The communications platform is the room the buyer sits in: chat, files, voice, video, shortcodes, FIDO2, session-only. Ghost is the pipe under the floor. Pulse is the voice and video riding that pipe — not a phone company. A.R.C.H. is the CRM and the roster — who exists, what the pursuit is, what the agency is allowed to see. Mail is the actual mailbox. Internal stays on the box. External goes out through Ghost. MailerSend is only the last-hop exit, not the product.
 
@@ -45,8 +45,8 @@ Anvil is RNK attacking RNK. Tool locker, rules of engagement, Armageddon numbers
 
 ## How the pieces lock
 
-Lisa thinks. Doomsday is what she thinks *with*. Seeker is the local officer that hands her a case. Ghost / Cyphur / Phantom move the sealed thing. Mail, Pulse, Halo, and the communications platform are why something needs to move. Axis is the browser. Mother Lisa is the only key that opens the house. A.R.C.H. keeps the books. Xiom is the phone-side door. Demos proves it. Website advertises it. Anvil tries to break it.
+Lisa thinks. Doomsday is what she thinks *with*. Seeker is the local officer that hands her a case. Ghost / Cyphur / Phantom move the sealed thing. Mail, Pulse, Halo, and the communications platform are why something needs to move. Axis is the browser. C.O.M.M.A.N.D. is the only key that opens the house. A.R.C.H. keeps the books. Xiom is the phone-side door. Demos proves it. Website advertises it. Anvil tries to break it.
 
 The business fleet is OCI: Lyra, Cygnus, Nova, Solace, orion. Customer Lisa is supposed to run on *their* servers, not as multi-tenant SaaS on yours. Evidence is additive. Every system is built in its own directory. The plan does not change unless you say so.
 
-That is the whole machine: a mind on seven hops, a local officer on each hop, a covert pipe, a real browser, a creator-only key, and a set of rooms that only become one product after each room can stand on its own.
+That is the whole machine: a mind on seven hops, a local officer on each hop, a covert pipe, a real browser, the household key (C.O.M.M.A.N.D., co-owners Odinn + Ravyn), and a set of rooms that only become one product after each room can stand on its own.

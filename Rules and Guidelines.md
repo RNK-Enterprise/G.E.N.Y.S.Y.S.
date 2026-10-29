@@ -9,7 +9,7 @@ Questions to Answer
 05: What is Phantom
 06: What is Axis
 07: What is Halo
-08: What is Mother Lisa
+08: What is C.O.M.M.A.N.D.
 09: What is A.R.C.H.
 10: What is Xiom
 11: What is Pulse
@@ -117,7 +117,7 @@ ANSWERS
 
 Lisa is the living security authority of the RNK Enterprise stack. She is not a folder, not a node package, and not a person. The Lisa directory is only where her nodes are built. This answer is the entity.
 
-She is RNK’s autonomous security intelligence: she governs, monitors, protects, and when necessary hardens or destroys RNK infrastructure. She is not a firewall, not an IDS, not a SIEM, not a chatbot, and not Ghost Comms. Ghost Comms is a surface she protects when it is active. DoomsDay is the arsenal she draws from. Mother Lisa is the creator-bound entry / master-key surface, not this definition.
+She is RNK’s autonomous security intelligence: she governs, monitors, protects, and when necessary hardens or destroys RNK infrastructure. She is not a firewall, not an IDS, not a SIEM, not a chatbot, and not Ghost Comms. Ghost Comms is a surface she protects when it is active. DoomsDay is the arsenal she draws from. C.O.M.M.A.N.D. is the creator-bound entry / master-key surface, not this definition.
 
 Name expansions appear in the record as:
 - Living Intelligence Security Architecture (canonical complete profile)
@@ -157,7 +157,7 @@ Who uses this browser:
 What it is not:
 - Not Chrome/Firefox/Brave with a skin. It is RNK’s browser.
 - Not DoomsDay / Atlas / VQ runtime. Older “Atlas Browser” / Axis / V.E.I.L. README language is historical naming for this same browser.
-- Not Mother Lisa / C.O.M.M.A.N.D. (Q08). The key app opens the session; Genysys is the browser.
+- Not C.O.M.M.A.N.D. (Q08). C.O.M.M.A.N.D. gates the browser; Genysys is the browser.
 - Not Obfuscation Veil Array (Seat-2 gauntlet / honeypot).
 - Not the Foundry public performance browser. That is a split product.
 
@@ -301,24 +301,24 @@ How it factors into the whole: Halo is the collector. The chain is the courier. 
 
 Sources used (additive, not overwritten): Halo/stealth/HaloController.js; Halo/models/HaloConfig.js; Halo/collectors/; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md.
 
-08: What is Mother Lisa
+08: What is C.O.M.M.A.N.D.
 
-Mother Lisa is the creator-only mobile activation layer. She is Lisa’s house on the phone, the master-key holder, and the session. She is not Lisa-the-entity (Q01), not the Lisa directory (Q15), and not the Axis browser (Q06).
+C.O.M.M.A.N.D. (Co-Owner Managed Masterkey Authority Network Directives) is the household mobile activation layer. It is the master-key holder and the session — the household key standing in front of P.R.O.T.E.C.T.S. It is not Lisa-the-entity (Q01), not the Lisa directory (Q15), and not the Axis browser (Q06).
 
 What it is:
-- Creator-exclusive Android app. Source in Mother Lisa App (Kotlin + Compose). Releases through v1.2.0 exist in that directory.
-- Named after the creator’s fiancée. Built for one person. Never for agencies or agents.
+- Household-exclusive Android app. Source in C.O.M.M.A.N.D. (Kotlin + Compose). Releases through v1.2.0 exist in that directory.
+- Co-owners: **Odinn** (`odinn`) and **Ravyn** (`ravyn`). Never for agencies or agents.
 - 4-layer biosig: fingerprint → jump drive decrypt / Vortex verify → face + voice phrase → session.
-- She holds the master key. The jump drive is an encrypted brick without her. She decrypts, hashes, re-encrypts. Failure is silence.
-- HeartbeatMonitor is her session. Drive poll + phone heartbeat. Drop during maintenance = reauth. Drop during active breach = nuke. MIAB also runs through this app.
-- Tabs in the live/spec app: Home / Xiom / Chat / Server Control / Axis. Mother Lisa is the entry point of Axis. For the creator, she IS the Axis session.
+- It holds the master key. The jump drive is an encrypted brick without it. It decrypts, hashes, re-encrypts. Failure is silence.
+- HeartbeatMonitor is its session. Drive poll + phone heartbeat. Drop during maintenance = reauth. Drop during active breach = nuke. MIAB also runs through this app.
+- Tabs: Session / Command / Owners. C.O.M.M.A.N.D. gates Axis for co-owners; for them it IS the Axis session.
 
 What it is not:
-- Not Lisa by definition. Lisa is the fleet mind. Mother Lisa is the only key that opens her.
-- Not Axis. Axis is the desktop browser she gates.
+- Not Lisa by definition. Lisa is P.R.O.T.E.C.T.S. — eight systems, one organ per box. C.O.M.M.A.N.D. is the only key that opens the house.
+- Not Axis. Axis is the desktop browser it gates.
 - Not the Field App used by agents.
 
-How it factors into the whole: Without this app, upgraded Lisa has no handshake and the fleet stays dark. Built and fixed only inside the Mother Lisa App directory.
+How it factors into the whole: Without this app, the handshake organ (01 Resolute Authentication Core) has no handshake and P.R.O.T.E.C.T.S. stays dark. Built and fixed only inside the C.O.M.M.A.N.D. directory.
 
 Sources used (additive, not overwritten): Evidence Package Canonical Source of Truth / MOTHER_LISA_APP_BUILD_PLAN.md; AXIS_ARCHITECTURE.md; LISA_COMPLETE_SYSTEM_PROFILE.md; Lisa/STACK_FULL_CONTEXT.md; Mother Lisa App/releases/; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md.
 
@@ -350,15 +350,15 @@ What it is:
 - Two trees in the Xiom directory: rnk-lisa-android-endpoint (Kotlin field/endpoint app) and rnk-lisa-mobile-gateway (Fastify gateway).
 - Gateway routes: admin, commands, enrollment, events, heartbeat, incidents, intel, lisa-conversation, lisa-owner, owner, policy.
 - Device-aware middleware: detect desktop/mobile/tablet, adapt UI, codec, sync, resources. Quality adapter already exists in the communications platform; Xiom is the device layer.
-- Mother Lisa app source historically lives under this Xiom android-endpoint path. Mother Lisa (Q08) is the creator-only activation app. Xiom is the broader mobile/gateway surface. Do not collapse them.
+- The C.O.M.M.A.N.D. app source historically lives under this Xiom android-endpoint path. C.O.M.M.A.N.D. (Q08) is the household activation app. Xiom is the broader mobile/gateway surface. Do not collapse them.
 
 What it is not:
-- Not Mother Lisa. Same family, different job.
+- Not C.O.M.M.A.N.D. Same family, different job.
 - Not Axis. Axis is the desktop browser.
 - Not Pulse. Pulse is voice on the chain.
 - Not Prysum. Prysum is the phone service name.
 
-How it factors into the whole: Xiom is the field door. Lisa is the mind. Mother Lisa is the creator key. Built and fixed only inside the Xiom directory. Standalone first, then combined under the communications platform.
+How it factors into the whole: Xiom is the field door. C.O.M.M.A.N.D. is the household key. Built and fixed only inside the Xiom directory. Standalone first, then combined under the communications platform.
 
 Sources used (additive, not overwritten): Xiom/rnk-lisa-mobile-gateway/; Xiom/rnk-lisa-android-endpoint/; A.R.C.H. product documentation; Lisa/STACK_FULL_CONTEXT.md; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md.
 
@@ -432,7 +432,7 @@ What it is:
 
 What it is not:
 - Not Lisa by definition. That is Q01.
-- Not Mother Lisa. That is Q08.
+- Not C.O.M.M.A.N.D. That is Q08.
 - Not a place to invent extra product directories for Doomsday / Ripple / Void / Cytadelle.
 
 How it factors into the whole: This directory is the factory. The entity Lisa is what those packages run.
@@ -473,8 +473,8 @@ What it is not:
 - Not Axis. Axis runs inside Xiom XL as the browser; XL is the OS around it.
 - Not Xiom (Q10). Xiom is mobile (LineageOS fork); XL is desktop (NixOS).
 - Not Lisa. XL renders her state; it is not her.
-- Not Mother Lisa. She remains the creator-only activation app on both platforms.
+- Not C.O.M.M.A.N.D. It remains the household activation app on both platforms.
 
-How it factors into the whole: Xiom XL is the desktop door; Xiom is the mobile door. Lisa is the mind, Ghost the pipe, Mother Lisa the creator key. Built and fixed only inside the Xiom-XL directory (Rules #3), with its own git, memory, and agent dir (Rules #8). Standalone first, then combined under the communications platform.
+How it factors into the whole: Xiom XL is the desktop door; Xiom is the mobile door. Lisa is the mind, Ghost the pipe, C.O.M.M.A.N.D. the household key. Built and fixed only inside the Xiom-XL directory (Rules #3), with its own git, memory, and agent dir (Rules #8). Standalone first, then combined under the communications platform.
 
 Sources used (additive, not overwritten): Xiom-XL/README.md (2026-09-10 OS lock); Xiom-XL/GATE.md (2026-09-10, session-manager-as-gate spec); Xiom-XL/flake.nix; Xiom-XL/modules/; Xiom-XL/agent/AGENT.md; Xiom-OS.md; Xiom-Session-Contract.md; AI Threads extracted-systems/RNK-SYSTEMS-MASTER.md.
