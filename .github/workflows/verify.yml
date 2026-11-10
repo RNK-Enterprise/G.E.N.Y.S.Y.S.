@@ -198,38 +198,42 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
     runs-on: windows-latest
     timeout-minutes: 40
-    defaults:
-      run:
-        shell: bash
-        working-directory: repo
     steps:
       # The repository name ends in a dot, which Windows normalizes out of the
-      # default checkout path. Check out into a child directory with a safe
-      # name and run every step there instead.
-      - uses: actions/checkout@v4
-        with:
-          path: repo
+      # runner workspace path. A shallow clone under RUNNER_TEMP avoids the
+      # uncreatable default checkout directory entirely.
+      - name: Checkout into a Windows-safe path
+        shell: bash
+        run: |
+          git clone --depth 1 --branch "$GITHUB_REF_NAME" \
+            https://github.com/RNK-Enterprise/G.E.N.Y.S.Y.S..git \
+            "$RUNNER_TEMP/genysys"
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: repo/package-lock.json
 
       - uses: dtolnay/rust-toolchain@stable
 
       - uses: Swatinem/rust-cache@v2
         with:
-          workspaces: src-tauri
+          workspaces: ${{ runner.temp }}/genysys/src-tauri
 
-      - run: npm ci --no-audit --no-fund
+      - name: Install dependencies
+        shell: bash
+        working-directory: ${{ runner.temp }}/genysys
+        run: npm ci --no-audit --no-fund
 
       - name: Run positive WebView2 proof
+        shell: bash
+        working-directory: ${{ runner.temp }}/genysys
         run: |
           set -o pipefail
           npm run proof:native-cookie 2>&1 | tee "$RUNNER_TEMP/native-cookie-windows-positive.log"
 
       - name: Run negative WebView2 proof
+        shell: bash
+        working-directory: ${{ runner.temp }}/genysys
         run: |
           set -o pipefail
           npm run proof:native-cookie -- --negative 2>&1 | tee "$RUNNER_TEMP/native-cookie-windows-negative.log"
