@@ -201,13 +201,20 @@ jobs:
     defaults:
       run:
         shell: bash
+        working-directory: repo
     steps:
+      # The repository name ends in a dot, which Windows normalizes out of the
+      # default checkout path. Check out into a child directory with a safe
+      # name and run every step there instead.
       - uses: actions/checkout@v4
+        with:
+          path: repo
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: repo/package-lock.json
 
       - uses: dtolnay/rust-toolchain@stable
 

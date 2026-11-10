@@ -66,12 +66,19 @@ CERT="$TMP/cert.pem"
 cleanup() {
   if [ -n "$APP_PID" ]; then kill "$APP_PID" >/dev/null 2>&1 || true; fi
   if [ -n "$SERVER_PID" ]; then kill "$SERVER_PID" >/dev/null 2>&1 || true; fi
-  if [ "$TRUSTED" = 1 ]; then
-    security remove-trusted-cert "$CERT" >/dev/null 2>&1 || true
+  if [ "$TRUSTED" != 0 ]; then
     local fingerprint
     fingerprint="$(openssl x509 -in "$CERT" -noout -fingerprint -sha1 2>/dev/null | cut -d= -f2 | tr -d ':')"
-    if [ -n "$fingerprint" ]; then
-      security delete-certificate -Z "$fingerprint" "$KEYCHAIN" >/dev/null 2>&1 || true
+    if [ "$TRUSTED" = 2 ]; then
+      sudo security remove-trusted-cert -d "$CERT" >/dev/null 2>&1 || true
+      if [ -n "$fingerprint" ]; then
+        sudo security delete-certificate -Z "$fingerprint" "$KEYCHAIN" >/dev/null 2>&1 || true
+      fi
+    else
+      security remove-trusted-cert "$CERT" >/dev/null 2>&1 || true
+      if [ -n "$fingerprint" ]; then
+        security delete-certificate -Z "$fingerprint" "$KEYCHAIN" >/dev/null 2>&1 || true
+      fi
     fi
   fi
   rm -rf "$TMP"
@@ -96,12 +103,23 @@ openssl req -x509 -newkey rsa:2048 -nodes -sha256 -days 2 \
   -config "$TMP/openssl.cnf" -keyout "$TMP/key.pem" -out "$CERT" >/dev/null 2>&1
 
 if [ "$OS" = "Darwin" ]; then
-  KEYCHAIN="${HOME}/Library/Keychains/login.keychain-db"
-  if ! security add-trusted-cert -r trustRoot -p ssl -k "$KEYCHAIN" "$CERT" >/dev/null; then
-    echo "native-cookie-live-proof: could not trust the temporary certificate in $KEYCHAIN" >&2
-    exit 2
+  if [ "${CI:-}" = "true" ]; then
+    # Hosted macOS runners may keep the login keychain locked; the system
+    # keychain with passwordless sudo avoids an interactive trust prompt.
+    KEYCHAIN="/Library/Keychains/System.keychain"
+    if ! sudo security add-trusted-cert -d -r trustRoot -p ssl -k "$KEYCHAIN" "$CERT" >/dev/null; then
+      echo "native-cookie-live-proof: could not trust the temporary certificate in $KEYCHAIN" >&2
+      exit 2
+    fi
+    TRUSTED=2
+  else
+    KEYCHAIN="${HOME}/Library/Keychains/login.keychain-db"
+    if ! security add-trusted-cert -r trustRoot -p ssl -k "$KEYCHAIN" "$CERT" >/dev/null; then
+      echo "native-cookie-live-proof: could not trust the temporary certificate in $KEYCHAIN" >&2
+      exit 2
+    fi
+    TRUSTED=1
   fi
-  TRUSTED=1
 fi
 
 TOKEN="proof.$(openssl rand -hex 16).sig"
