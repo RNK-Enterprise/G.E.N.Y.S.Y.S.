@@ -25,6 +25,7 @@
     "test:watch": "npm run test -- --watch",
     "verify": "bash scripts/verify.sh",
     "verify:live": "bash scripts/verify-live.sh",
+    "proof:native-cookie": "bash scripts/native-cookie-live-proof.sh",
     "hooks:install": "git config core.hooksPath .githooks",
     "lint": "eslint src/**/*.js",
     "format": "prettier --write \"src/**/*.{js,html,css}\""

@@ -1,7 +1,7 @@
 # GENYSYS™ — verification gate
 # Copyright © 2026 Asgard Innovations / RNK™. All Rights Reserved.
 #
-# Three jobs on every push:
+# Four jobs on every push (plus two native-engine jobs on manual dispatch):
 #   1. verify — scripts/ci-verify.sh: global audit → jest → playwright →
 #      cargo test (scripts/verify.sh --fail-fast), so an unwired global, a
 #      broken page, or a failing Rust test can never land.
@@ -10,7 +10,12 @@
 #      the [genysys:tabwin] create → close → destroyed journal lines + OS-level
 #      X-window teardown. A first-class job so branch protection can require
 #      it independently (required checks attach per job, not per step).
-#   3. package — builds the real .deb/.rpm/AppImage and runs the packaging
+#   3. native-cookie-proof — the real WebKitGTK cookie manager under Xvfb:
+#      first-request delivery, HttpOnly, cross-site SameSite=None, and logout
+#      through the real attestation_cookie_clear command. Also runs the
+#      SameSite=Lax negative mode and the production-domain clear proof, then
+#      verifies the feature-off binary contains no proof code.
+#   4. package — builds the real .deb/.rpm/AppImage and runs the packaging
 #      smoke suite (integrity, freshness, dependency sanity, headless
 #      launch-verify), so CI proves the BUNDLES, not just the source tree.
 
@@ -124,6 +129,149 @@ jobs:
             /tmp/genysys-live.*/app.log
             /tmp/genysys-live.*/vite.log
           if-no-files-found: ignore
+
+  # Real WebKitGTK cookie proof. The hidden proof window starts on a plain
+  # HTTP boot page, switches the proof-only web context to ignore the
+  # temporary certificate, then exercises the HTTPS probe. Production builds
+  # do not enable the feature and keep normal certificate enforcement.
+  native-cookie-proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Install build + display dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq \
+            libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev \
+            librsvg2-dev libsoup2.4-dev patchelf xvfb bubblewrap \
+            libegl1 libgl1
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
+      - run: npm ci
+
+      - name: Run native-cookie proof under Xvfb
+        run: |
+          set -o pipefail
+          xvfb-run -a npm run proof:native-cookie 2>&1 | tee /tmp/genysys-native-cookie-proof.log
+
+      - name: Run negative SameSite=Lax proof under Xvfb
+        run: |
+          set -o pipefail
+          xvfb-run -a npm run proof:native-cookie -- --negative 2>&1 | tee /tmp/genysys-native-cookie-proof-negative.log
+
+      - name: Run production-domain clear proof (Linux WebKitGTK)
+        run: |
+          set -o pipefail
+          xvfb-run -a npm run proof:native-cookie -- --domain 2>&1 | tee /tmp/genysys-native-cookie-production-domain.log
+
+      - name: Verify production binary excludes proof code
+        run: bash scripts/verify-production-cookie-exclusion.sh
+
+      - name: Upload proof logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-cookie-proof-logs
+          path: |
+            /tmp/genysys-native-cookie-proof.log
+            /tmp/genysys-native-cookie-proof-negative.log
+            /tmp/genysys-native-cookie-production-domain.log
+          if-no-files-found: warn
+
+  # Native engine runs for the two host-specific targets Linux cannot prove.
+  # They are manual-only so ordinary Linux pushes do not pay for two GUI
+  # builders; dispatch this workflow on the PR branch to run them.
+  native-cookie-proof-windows:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: windows-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - run: npm ci --no-audit --no-fund
+
+      - name: Run positive WebView2 proof
+        run: |
+          set -o pipefail
+          npm run proof:native-cookie 2>&1 | tee "$RUNNER_TEMP/native-cookie-windows-positive.log"
+
+      - name: Run negative WebView2 proof
+        run: |
+          set -o pipefail
+          npm run proof:native-cookie -- --negative 2>&1 | tee "$RUNNER_TEMP/native-cookie-windows-negative.log"
+
+      - name: Upload Windows proof logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-cookie-windows-logs
+          path: ${{ runner.temp }}/native-cookie-windows-*.log
+          if-no-files-found: warn
+
+  native-cookie-proof-macos:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: macos-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - run: npm ci --no-audit --no-fund
+
+      - name: Run positive WKWebView proof
+        run: |
+          set -o pipefail
+          npm run proof:native-cookie 2>&1 | tee "$RUNNER_TEMP/native-cookie-macos-positive.log"
+
+      - name: Run negative WKWebView proof
+        run: |
+          set -o pipefail
+          npm run proof:native-cookie -- --negative 2>&1 | tee "$RUNNER_TEMP/native-cookie-macos-negative.log"
+
+      - name: Upload macOS proof logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-cookie-macos-logs
+          path: ${{ runner.temp }}/native-cookie-macos-*.log
+          if-no-files-found: warn
 
   package:
     needs: verify

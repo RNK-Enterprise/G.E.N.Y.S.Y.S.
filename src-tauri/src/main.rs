@@ -21,6 +21,9 @@ mod tab_windows_camofox;
 mod command_gate;
 mod command_session;
 mod commands_health;
+mod native_cookie;
+#[cfg(feature = "native-cookie-live-proof")]
+mod native_cookie_proof;
 mod protects_policy;
 mod tab_backend;
 mod tab_commands;
@@ -352,6 +355,7 @@ fn main() {
             command_gate::cmd_gate_status,
             command_gate::get_policy_headers,
             command_gate::attestation_bootstrap,
+            tab_windows_webkit::attestation_cookie_clear,
             camofox_capabilities::camofox_snapshot,
             camofox_capabilities::camofox_screenshot,
             camofox_capabilities::camofox_links,
@@ -389,6 +393,8 @@ fn main() {
             }
         })
         .on_page_load(|window, payload| {
+            #[cfg(feature = "native-cookie-live-proof")]
+            native_cookie_proof::on_page_load(&window, payload.url());
             // CI diagnostics: Tauri 1.x fires this hook when a page's JS runs
             // the __initialized handshake, so seeing this line means the page
             // loaded AND tauri IPC is alive in that window.
@@ -399,6 +405,16 @@ fn main() {
             );
         })
         .setup(|_app| {
+            #[cfg(feature = "native-cookie-live-proof")]
+            if std::env::var("GENYSYS_NATIVE_COOKIE_PROOF")
+                .map(|value| value == "1")
+                .unwrap_or(false)
+            {
+                if let Err(error) = native_cookie_proof::start(_app.handle().clone()) {
+                    eprintln!("[native-cookie-proof] FAIL: start: {error}");
+                    _app.handle().exit(2);
+                }
+            }
             if let Some(window) = tauri::Manager::get_window(_app, "main") {
                 let size = window.outer_size().unwrap_or_default();
                 eprintln!(

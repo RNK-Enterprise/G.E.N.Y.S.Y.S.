@@ -2553,14 +2553,21 @@ dependencies = [
 name = "rnk-genysys"
 version = "0.1.0"
 dependencies = [
+ "block",
+ "cocoa",
+ "objc",
  "reqwest",
  "rusqlite",
  "serde",
  "serde_json",
+ "soup2",
  "tauri",
  "tauri-build",
  "tokio",
  "url",
+ "webkit2gtk",
+ "webview2-com",
+ "windows 0.39.0",
 ]
 
 [[package]]

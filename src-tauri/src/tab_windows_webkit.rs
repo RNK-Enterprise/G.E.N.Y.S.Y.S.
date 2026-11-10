@@ -1,5 +1,6 @@
 //! WebKit/Tauri implementation of the GENYSYS tab content surface.
 
+use crate::native_cookie::clear_cookie;
 use crate::tab_windows::{
     classify_tab_navigation, locked_url, newtab_url, tabwin_log, window_allowed, TabRect,
     TabWindowMeta, TabWindows, DEFAULT_RECT,
@@ -7,6 +8,17 @@ use crate::tab_windows::{
 use crate::AppState;
 use tauri::window::WindowBuilder;
 use tauri::{AppHandle, Manager, PhysicalPosition, PhysicalSize, Runtime, Window, WindowUrl};
+
+/// Clear the native attestation cookie on session end / tab lock.
+#[tauri::command]
+pub fn attestation_cookie_clear(window: Window) -> Result<(), String> {
+    #[cfg(feature = "native-cookie-live-proof")]
+    eprintln!(
+        "[native-cookie-proof] attestation_cookie_clear on window {}",
+        window.label()
+    );
+    clear_cookie(&window)
+}
 
 /// Create a tab window for an allowed navigation after the backend gate.
 pub fn create_tab_window<R: Runtime>(
