@@ -95,7 +95,7 @@ pub fn start(app: AppHandle) -> Result<(), String> {
         .visible(false);
     #[cfg(target_os = "windows")]
     let builder = builder.additional_browser_args(
-        "--ignore-certificate-errors --disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection",
+        "--ignore-certificate-errors --disable-gpu --no-sandbox --disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection",
     );
     let _window = builder.build().map_err(|e| e.to_string())?;
 

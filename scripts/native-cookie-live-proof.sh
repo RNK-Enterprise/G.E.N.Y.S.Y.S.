@@ -107,7 +107,7 @@ if [ "$OS" = "Darwin" ]; then
     # Hosted macOS runners may keep the login keychain locked; the system
     # keychain with passwordless sudo avoids an interactive trust prompt.
     KEYCHAIN="/Library/Keychains/System.keychain"
-    if ! sudo security add-trusted-cert -d -r trustRoot -p ssl -k "$KEYCHAIN" "$CERT" >/dev/null; then
+    if ! sudo security add-trusted-cert -d -r trustRoot -k "$KEYCHAIN" "$CERT" >/dev/null; then
       echo "native-cookie-live-proof: could not trust the temporary certificate in $KEYCHAIN" >&2
       exit 2
     fi
@@ -167,22 +167,34 @@ if [ ! -x "$BIN" ] && [ ! -f "$BIN" ]; then
   exit 1
 fi
 
+PROOF_ENV=(
+  GENYSYS_NATIVE_COOKIE_PROOF=1
+  GENYSYS_COOKIE_PROOF_URL="https://localhost:$PORT"
+  GENYSYS_COOKIE_PROOF_START_URL="$START_URL"
+  GENYSYS_COOKIE_PROOF_SAMESITE="$SAMESITE"
+  GENYSYS_COOKIE_PROOF_TOKEN="$TOKEN"
+)
+if [ "$OS" = "Linux" ]; then
+  # Match verify-live.sh: hosted runners cannot spawn WebKitGTK's sandboxed
+  # web process, and software rendering avoids the GPU-less compositor wedge.
+  PROOF_ENV+=(
+    NO_AT_BRIDGE=1
+    GDK_BACKEND=x11
+    WEBKIT_FORCE_SANDBOX=0
+    WEBKIT_DISABLE_SANDBOX_THIS_IS_DANGEROUS=1
+    WEBKIT_DISABLE_COMPOSITING_MODE=1
+    WEBKIT_DISABLE_DMABUF_RENDERER=1
+    LIBGL_ALWAYS_SOFTWARE=1
+  )
+fi
 if [ "$MODE" = domain ]; then
-  GENYSYS_NATIVE_COOKIE_PROOF=1 \
-  GENYSYS_COOKIE_PROOF_URL="https://localhost:$PORT" \
-  GENYSYS_COOKIE_PROOF_START_URL="$START_URL" \
-  GENYSYS_COOKIE_PROOF_SAMESITE="$SAMESITE" \
-  GENYSYS_COOKIE_PROOF_DOMAIN_PROOF=1 \
-  GENYSYS_COOKIE_PROOF_DOMAIN_REPORT="$TMP/domain-report.json" \
-  GENYSYS_COOKIE_PROOF_TOKEN="$TOKEN" \
+  env "${PROOF_ENV[@]}" \
+    GENYSYS_COOKIE_PROOF_DOMAIN_PROOF=1 \
+    GENYSYS_COOKIE_PROOF_DOMAIN_REPORT="$TMP/domain-report.json" \
     "$BIN" >"$TMP/app.log" 2>&1 &
 else
-  GENYSYS_NATIVE_COOKIE_PROOF=1 \
-  GENYSYS_COOKIE_PROOF_URL="https://localhost:$PORT" \
-  GENYSYS_COOKIE_PROOF_START_URL="$START_URL" \
-  GENYSYS_COOKIE_PROOF_SAMESITE="$SAMESITE" \
-  GENYSYS_COOKIE_PROOF_DOMAIN="localhost" \
-  GENYSYS_COOKIE_PROOF_TOKEN="$TOKEN" \
+  env "${PROOF_ENV[@]}" \
+    GENYSYS_COOKIE_PROOF_DOMAIN="localhost" \
     "$BIN" >"$TMP/app.log" 2>&1 &
 fi
 APP_PID=$!
