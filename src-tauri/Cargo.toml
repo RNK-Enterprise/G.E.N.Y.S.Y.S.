@@ -19,9 +19,24 @@ reqwest = { version = "0.11", features = ["json"] }
 rusqlite = { version = "0.30", features = ["bundled"] }
 url = "2.5"
 
+[target.'cfg(target_os = "linux")'.dependencies]
+webkit2gtk = "0.18"
+soup2 = { version = "0.2", features = ["v2_70"] }
+
+[target.'cfg(target_os = "windows")'.dependencies]
+webview2-com = "0.19.1"
+windows = { version = "0.39", features = ["Win32_Foundation"] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc = "0.2"
+cocoa = "0.24"
+block = "0.1"
+
 [features]
 default = ["custom-protocol"]
 custom-protocol = ["tauri/custom-protocol"]
+# Feature-gated local WebView2/WKWebView cookie proof. Not part of production.
+native-cookie-live-proof = []
 
 [dev-dependencies]
 # Unlocks tauri::test (mock runtime) for headless window-lifecycle tests.
